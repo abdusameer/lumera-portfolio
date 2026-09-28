@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumera Creative | Creative developers</title>
+<meta name="description" content="Lumera Creative designs and builds cinematic, scroll-driven websites. Selected work: rōk coffee and tea, Lenny's Casita and Stagger Coffee.">
+<meta name="theme-color" content="#0B0B0A">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="Lumera Creative | Creative developers">
+<meta property="og:description" content="Cinematic, scroll-driven websites, designed and built by hand.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://abdusameer.github.io/lumera-portfolio/">
+<meta property="og:image" content="https://abdusameer.github.io/lumera-portfolio/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://abdusameer.github.io/lumera-portfolio/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230B0B0A%22/%3E%3Ctext x=%2232%22 y=%2245%22 font-family=%22Arial Black,Arial,sans-serif%22 font-weight=%22900%22 font-size=%2236%22 text-anchor=%22middle%22 fill=%22%23EEEAE2%22%3EL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0B0A;
+  --bg-2: #131311;
+  --bg-3: #1B1A18;
+  --fg: #EEEAE2;
+  --fg-2: #BDB7AC;
+  --muted: #8C867B;
+  --line: rgba(238, 234, 226, .12);
+  --signal: #E8C07A;
+  --pad: clamp(20px, 4vw, 56px);
+  --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 17px/1.55 var(--sans); font-stretch: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  /* film grain, static */
+  content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+::selection { background: var(--fg); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; border-radius: 2px; }
+.skip { position: absolute; left: -9999px; top: 12px; background: var(--fg); color: var(--bg); padding: 10px 14px; z-index: 100; }
+.skip:focus { left: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.mono { font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; }
+
+/* ---------- header ---------- */
+.top {
+  position: fixed; inset: 0 0 auto 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px var(--pad);
+  background: linear-gradient(rgba(11, 11, 10, .72), rgba(11, 11, 10, 0));
+  transition: background-color .3s var(--ease);
+}
+.top.scrolled { background: rgba(11, 11, 10, .82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.brand { display: inline-flex; align-items: baseline; gap: 8px; text-decoration: none; }
+.brand b { font: 800 19px/1 var(--sans); font-stretch: 125%; letter-spacing: .04em; }
+.brand i { font: italic 400 19px/1 var(--serif); color: var(--fg-2); }
+.top nav { display: flex; gap: clamp(16px, 2.6vw, 36px); }
+.top nav a { font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; padding: 8px 0; color: var(--fg-2); transition: color .2s var(--ease); }
+.top nav a:hover, .top nav a:focus-visible { color: var(--fg); }
+
+/* ---------- hero reel ---------- */
+.reel { position: relative; height: 100vh; height: 100svh; min-height: 600px; overflow: hidden; background: #000; }
+.reel video, .reel .still {
+  /* the recordings include each site's own header; crop it off the top so it never meets ours */
+  position: absolute; left: 0; right: 0; bottom: 0; top: -9%; width: 100%; height: 109%; object-fit: cover; object-position: 50% 100%;
+  opacity: 0; transform: scale(1.04); transition: opacity 1s var(--ease), transform 8s linear;
+}
+.reel video.on, .reel .still.on { opacity: 1; transform: scale(1); }
+.reel::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(11, 11, 10, .35) 0%, rgba(11, 11, 10, .05) 30%, rgba(11, 11, 10, .55) 62%, rgba(11, 11, 10, .96) 100%),
+    radial-gradient(120% 90% at 50% 40%, transparent 50%, rgba(0, 0, 0, .55) 100%);
+}
+.reel-copy { position: absolute; left: var(--pad); right: var(--pad); bottom: clamp(24px, 4vh, 44px); z-index: 2; }
+.reel-copy .mono { color: var(--fg-2); margin: 0 0 14px; }
+.wordmark {
+  margin: 0; font-weight: 800; font-stretch: 125%;
+  font-size: clamp(44px, 16vw, 262px); line-height: .8; letter-spacing: -.02em;
+  margin-left: -.04em;
+}
+.reel-row {
+  margin-top: clamp(18px, 2.6vh, 30px); padding-top: 18px; border-top: 1px solid rgba(238, 234, 226, .22);
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto; gap: 16px 32px; align-items: end;
+}
+.reel-row .line { margin: 0; font: italic 400 clamp(22px, 2.4vw, 34px)/1.12 var(--serif); max-width: 28ch; }
+.now { display: grid; gap: 10px; }
+.now-label { display: flex; justify-content: space-between; gap: 12px; font: 500 12px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-2); }
+.now-label a { color: var(--fg); text-decoration: none; }
+.now-label a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.bars button { height: 16px; padding: 0; border: 0; background: none; cursor: pointer; display: flex; align-items: center; }
+.bars button span { display: block; height: 2px; width: 100%; background: rgba(238, 234, 226, .22); overflow: hidden; position: relative; }
+.bars button span::after { content: ""; position: absolute; inset: 0; background: var(--fg); transform-origin: left; transform: scaleX(var(--p, 0)); }
+.reel-ctrl {
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+  border: 1px solid rgba(238, 234, 226, .3); border-radius: 999px; background: rgba(11, 11, 10, .4); color: var(--fg); cursor: pointer;
+  font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.reel-ctrl svg { width: 10px; height: 10px; fill: currentColor; }
+
+/* ---------- intro ---------- */
+.intro {
+  padding: clamp(88px, 12vw, 180px) var(--pad);
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(16px, 2vw, 28px);
+}
+.intro .mono { grid-column: 1 / span 3; color: var(--muted); margin: 10px 0 24px; }
+.intro p.big {
+  grid-column: 4 / -1; margin: 0;
+  font: 400 clamp(28px, 3.6vw, 54px)/1.12 var(--sans); letter-spacing: -.015em; text-wrap: pretty;
+}
+.intro p.big .serif { color: var(--fg-2); }
+.intro p.big .dim { color: var(--muted); }
+
+/* ---------- work ---------- */
+.chapter {
+  --accent: #fff;
+  position: relative; padding: clamp(72px, 9vw, 128px) var(--pad);
+  border-top: 1px solid var(--line);
+  isolation: isolate;
+}
+.chapter::before {
+  content: ""; position: absolute; z-index: -1; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 50% at 78% 12%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%);
+}
+.chapter.rok { --accent: #A9C97B; }
+.chapter.lennys { --accent: #62C27A; }
+.chapter.stagger { --accent: #E6D3B0; }
+.ch-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(16px, 2vw, 28px); align-items: start; }
+.ch-text { grid-column: 1 / span 5; position: sticky; top: 104px; padding-bottom: 24px; }
+.ch-no { display: flex; align-items: center; gap: 14px; color: var(--muted); margin: 0 0 22px; }
+.ch-no::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+.ch-title {
+  margin: 0; font-weight: 800; font-stretch: 112%; text-transform: uppercase;
+  font-size: clamp(40px, 5.6vw, 88px); line-height: .9; letter-spacing: -.02em;
+}
+.ch-tag { margin: 16px 0 0; font: italic 400 clamp(21px, 1.9vw, 27px)/1.2 var(--serif); color: var(--fg-2); max-width: 26ch; }
+.ch-desc { margin: 28px 0 0; color: var(--fg-2); max-width: 46ch; }
+.ch-list { list-style: none; margin: 26px 0 0; padding: 0; counter-reset: b; }
+.ch-list li { counter-increment: b; display: grid; grid-template-columns: 2.6em 1fr; padding: 11px 0; border-top: 1px solid var(--line); font-size: 15.5px; line-height: 1.45; }
+.ch-list li::before { content: counter(b, decimal-leading-zero); font: 500 11px/2 var(--mono); color: var(--muted); }
+.ch-list li:last-child { border-bottom: 1px solid var(--line); }
+.ch-meta { margin: 24px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.ch-meta dt { font: 500 11px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.ch-meta dd { margin: 0; font-size: 14.5px; line-height: 1.45; color: var(--fg-2); }
+.live {
+  margin-top: 30px; display: inline-flex; align-items: center; gap: 12px;
+  height: 50px; padding: 0 22px; border-radius: 999px; text-decoration: none;
+  background: var(--fg); color: var(--bg);
+  font: 600 13px/1 var(--sans); letter-spacing: .02em;
+  transition: background-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.live:hover, .live:focus-visible { background: var(--accent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 22%, transparent); }
+.live span { font-size: 16px; }
+
+.ch-media { grid-column: 6 / -1; display: grid; grid-template-columns: 1fr .42fr; gap: clamp(12px, 1.6vw, 22px); }
+.shot { margin: 0; position: relative; }
+.shot .frame {
+  position: relative; overflow: hidden; border-radius: 10px; background: var(--bg-3);
+  border: 1px solid var(--line);
+}
+.shot.main { grid-column: 1 / -1; }
+.shot.main .frame {
+  aspect-ratio: 16 / 10;
+  box-shadow: 0 40px 120px -50px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.shot.wide .frame { aspect-ratio: 16 / 10; }
+.shot.tall .frame { aspect-ratio: 390 / 844; border-radius: 18px; }
+.shot.full { grid-column: 1 / -1; }
+.shot img, .shot video { width: 100%; height: 100%; object-fit: cover; }
+.shot figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.shot.tall figcaption { display: block; }
+.tick { position: absolute; width: 14px; height: 14px; border-color: var(--accent); border-style: solid; opacity: .9; z-index: 2; pointer-events: none; }
+.tick.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+.tick.tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+.tick.bl { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
+.tick.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+.rec {
+  position: absolute; bottom: 14px; left: 32px; z-index: 2; display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 9px; border-radius: 4px; background: rgba(11, 11, 10, .66); color: var(--fg);
+  font: 500 10.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.rec::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #E0503A; }
+.play {
+  position: absolute; right: 14px; bottom: 14px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(11, 11, 10, .72); color: var(--fg);
+  font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.play svg { width: 10px; height: 10px; fill: currentColor; }
+.shot .frame img { transition: transform .6s var(--ease); }
+.shot:hover .frame img { transform: scale(1.02); }
+
+/* ---------- frames strip ---------- */
+.frames { padding: clamp(72px, 9vw, 128px) 0; border-top: 1px solid var(--line); }
+.frames-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 0 var(--pad) 28px; }
+.frames-head h2 { margin: 0; font-weight: 800; font-stretch: 125%; text-transform: uppercase; font-size: clamp(32px, 4.4vw, 64px); line-height: .9; letter-spacing: -.01em; }
+.frames-head h2 .serif { text-transform: none; font-size: 1.1em; color: var(--fg-2); }
+.strip-ctrl { display: flex; gap: 8px; }
+.strip-ctrl button {
+  width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer;
+  font: 400 18px/1 var(--sans); transition: background-color .2s var(--ease), border-color .2s var(--ease);
+}
+.strip-ctrl button:hover { background: var(--bg-3); border-color: rgba(238, 234, 226, .3); }
+.strip {
+  display: flex; gap: clamp(12px, 1.4vw, 20px); overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 0 var(--pad) 8px; scroll-padding: 0 var(--pad); scrollbar-width: none; list-style: none; margin: 0;
+}
+.strip::-webkit-scrollbar { display: none; }
+.strip li { flex: 0 0 clamp(280px, 38vw, 560px); scroll-snap-align: start; margin: 0; }
+.strip .frame { aspect-ratio: 16 / 10; overflow: hidden; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-3); }
+.strip img { width: 100%; height: 100%; object-fit: cover; }
+.strip p { margin: 10px 0 0; display: flex; justify-content: space-between; gap: 12px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.strip p b { color: var(--fg-2); font-weight: 500; }
+
+/* ---------- process ---------- */
+.process { padding: clamp(88px, 11vw, 160px) var(--pad); border-top: 1px solid var(--line); }
+.process-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(16px, 2vw, 28px); margin-bottom: clamp(40px, 5vw, 72px); }
+.process-head .mono { grid-column: 1 / span 3; color: var(--muted); margin: 10px 0 20px; }
+.process-head h2 { grid-column: 4 / -1; margin: 0; font: 400 clamp(30px, 3.8vw, 56px)/1.08 var(--sans); letter-spacing: -.015em; }
+.process-head h2 .serif { color: var(--fg-2); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+.steps li { border-top: 1px solid var(--line); padding-top: 22px; }
+.steps .num { display: block; font-weight: 300; font-stretch: 125%; font-size: clamp(44px, 4.6vw, 72px); line-height: 1; color: var(--muted); margin-bottom: 26px; letter-spacing: -.02em; }
+.steps h3 { margin: 0 0 8px; font: 700 20px/1.2 var(--sans); font-stretch: 105%; }
+.steps p { margin: 0; color: var(--fg-2); font-size: 15.5px; }
+
+/* ---------- services ---------- */
+.services { padding: 0 var(--pad) clamp(88px, 11vw, 160px); }
+.services h2 { margin: 0; padding-bottom: 20px; border-bottom: 1px solid var(--line); color: var(--muted); display: flex; justify-content: space-between; }
+.svc { list-style: none; margin: 0; padding: 0; }
+.svc li {
+  display: flex; align-items: center; gap: clamp(14px, 2vw, 32px); padding: clamp(8px, 1.2vw, 16px) 0; border-bottom: 1px solid var(--line);
+  font-weight: 800; font-stretch: 118%; text-transform: uppercase; letter-spacing: -.02em;
+  font-size: clamp(30px, 6.2vw, 100px); line-height: 1; color: #807A70;
+  transition: color .25s var(--ease);
+}
+.svc li:hover { color: var(--fg); }
+.svc .n { flex: none; width: 3em; font: 500 12px/1 var(--mono); letter-spacing: .1em; color: var(--muted); }
+
+/* ---------- closing ---------- */
+.closing { position: relative; padding: clamp(100px, 14vw, 210px) var(--pad) clamp(64px, 8vw, 110px); border-top: 1px solid var(--line); overflow: hidden; isolation: isolate; }
+.closing::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(50% 60% at 20% 100%, rgba(232, 192, 122, .12), transparent 70%); }
+.closing .mono { color: var(--muted); margin: 0 0 24px; }
+.closing h2 { margin: 0; font-weight: 800; font-stretch: 125%; text-transform: uppercase; font-size: clamp(48px, 10.4vw, 170px); line-height: .86; letter-spacing: -.025em; }
+.closing h2 .serif { text-transform: none; color: var(--signal); font-size: 1.08em; letter-spacing: -.01em; }
+.closing-row { margin-top: clamp(40px, 5vw, 64px); display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; }
+.closing-row p { margin: 0; max-width: 46ch; color: var(--fg-2); }
+.soon {
+  display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--signal) 60%, transparent); color: var(--signal);
+  font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+}
+.soon::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 14px var(--signal); }
+
+footer { padding: 28px var(--pad) 36px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 16px 32px; font-size: 13.5px; color: var(--muted); }
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: flex-end; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--fg); }
+footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5px; line-height: 1.55; }
+
+/* ---------- reveal ---------- */
+.js [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .75s var(--ease), transform .75s var(--ease); transition-delay: calc(var(--d, 0) * 65ms); }
+.js [data-reveal].in { opacity: 1; transform: none; }
+.js .shot[data-reveal] .frame { clip-path: inset(8% 0 0 0 round 10px); transition: clip-path .9s var(--ease); }
+.js .shot[data-reveal].in .frame { clip-path: inset(0 0 0 0 round 10px); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px) {
+  .ch-text { grid-column: 1 / -1; position: static; padding-bottom: 40px; }
+  .ch-media { grid-column: 1 / -1; }
+  .intro .mono, .intro p.big, .process-head .mono, .process-head h2 { grid-column: 1 / -1; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 40px; }
+  .reel-row { grid-template-columns: 1fr auto; }
+  .reel-row .line { grid-column: 1 / -1; }
+  .reel video, .reel .still { object-position: 62% 100%; }
+}
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .top nav a:nth-child(3) { display: none; }
+  .top nav { gap: 14px; }
+  .reel { min-height: 560px; }
+  .reel-row { grid-template-columns: 1fr; }
+  .reel-ctrl { justify-self: start; }
+  .ch-media { grid-template-columns: 1fr 1fr; }
+  .shot.wide { grid-column: 1 / -1; }
+  .shot.tall { grid-column: 1 / span 1; }
+  .shot.full { grid-column: 1 / -1; }
+  .steps { grid-template-columns: 1fr; }
+  .strip li { flex-basis: 82vw; }
+  .strip-ctrl { display: none; }
+  .svc .n { width: 2.4em; }
+  footer { grid-template-columns: 1fr; }
+  footer .links { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+  .js .shot[data-reveal] .frame { clip-path: none; }
+  .reel video, .reel .still { transform: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<header class="top" id="top-bar">
+  <a class="brand" href="#top" aria-label="Lumera Creative, back to top"><b>LUMERA</b><i>Creative</i></a>
+  <nav aria-label="Main">
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="#services">Services</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="reel" aria-label="Showreel">
+    <video class="on" muted playsinline preload="auto" poster="assets/video/rok-poster.jpg" data-src="assets/video/rok.mp4" data-src-sm="assets/video/rok-sm.mp4" aria-hidden="true"></video>
+    <video muted playsinline preload="none" poster="assets/video/lennys-poster.jpg" data-src="assets/video/lennys.mp4" data-src-sm="assets/video/lennys-sm.mp4" aria-hidden="true"></video>
+    <video muted playsinline preload="none" poster="assets/video/stagger-poster.jpg" data-src="assets/video/stagger.mp4" data-src-sm="assets/video/stagger-sm.mp4" aria-hidden="true"></video>
+
+    <div class="reel-copy">
+      <p class="mono">Creative developers &middot; Selected work 2026</p>
+      <h1 class="wordmark">LUMERA<span class="sr-only"> Creative</span></h1>
+      <div class="reel-row">
+        <p class="line">Websites that unfold as you scroll.</p>
+        <div class="now" aria-live="polite">
+          <div class="now-label"><span id="now-count">01 / 03</span><a id="now-link" href="#rok">rōk coffee and tea &darr;</a></div>
+          <div class="bars" role="group" aria-label="Choose a clip">
+            <button type="button" aria-label="Play clip 1: rōk coffee and tea"><span></span></button>
+            <button type="button" aria-label="Play clip 2: Lenny's Casita"><span></span></button>
+            <button type="button" aria-label="Play clip 3: Stagger Coffee"><span></span></button>
+          </div>
+        </div>
+        <button class="reel-ctrl" id="reel-toggle" type="button"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="intro" aria-label="About">
+    <p class="mono">Lumera Creative</p>
+    <p class="big" data-reveal>We design and build <span class="serif">cinematic,</span> scroll-driven websites. Film that plays as you move, chapters that pin and turn, <span class="dim">and a real, working site underneath.</span></p>
+  </section>
+
+  <div id="work">
+    <!-- 01 rok -->
+    <section class="chapter rok" id="rok" aria-labelledby="rok-title">
+      <div class="ch-grid">
+        <div class="ch-text">
+          <p class="ch-no mono">01 &middot; Concept redesign &middot; 2026</p>
+          <h2 class="ch-title" id="rok-title" data-reveal>rōk coffee and tea</h2>
+          <p class="ch-tag" data-reveal style="--d:1">Ceremonial Uji matcha, four caf&eacute;s across Los Angeles.</p>
+          <p class="ch-desc" data-reveal style="--d:2">A one-page site built around a single pour. Scroll down and matcha fills the cup until it overflows. Scroll back up and it drains away. Below the pour, a pinned story walks through all four caf&eacute;s on a route map, and a 3D view takes the rōk x Fellow travel mug kit apart, piece by piece.</p>
+          <ul class="ch-list" data-reveal style="--d:3">
+            <li>Scroll-scrubbed hero film, with a still version for reduced motion</li>
+            <li>Pinned locations story with a route map drawn from real addresses</li>
+            <li>3D exploded product view, rendered in Blender, in four colors</li>
+            <li>Checked at 21 screen sizes, from a 360px phone to a 2560px monitor</li>
+          </ul>
+          <dl class="ch-meta">
+            <div><dt>Role</dt><dd>Design, development, 3D, motion</dd></div>
+            <div><dt>Built with</dt><dd>HTML, CSS, JavaScript, Blender</dd></div>
+          </dl>
+          <a class="live" href="https://abdusameer.github.io/rok_cafe/" target="_blank" rel="noopener">Visit the live site <span aria-hidden="true">&nearr;</span></a>
+        </div>
+        <div class="ch-media">
+          <figure class="shot main" data-reveal>
+            <div class="frame">
+              <span class="rec">Scroll recording</span>
+              <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
+              <video muted loop playsinline preload="none" poster="assets/video/rok-poster.jpg" data-src="assets/video/rok.mp4" data-src-sm="assets/video/rok-sm.mp4" aria-label="Screen recording: scrolling the rōk homepage fills the cup with matcha until it overflows."></video>
+            </div>
+            <figcaption><span>The pour</span><span>00:07</span></figcaption>
+          </figure>
+          <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/rok-fellow-800.jpg" srcset="assets/img/rok-fellow-800.jpg 800w, assets/img/rok-fellow.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="3D render of the Fellow Carter mug, lids and straw beside its open gift box, with color swatches." loading="lazy"></div><figcaption><span>Fellow kit in 3D</span></figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/rok-mobile.jpg" alt="The rōk homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/rok-locations-800.jpg" srcset="assets/img/rok-locations-800.jpg 800w, assets/img/rok-locations.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Locations section: a list of four cafés, a hand-drawn route map and a storefront photo." loading="lazy"></div><figcaption><span>Four caf&eacute;s, one route map</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 lennys -->
+    <section class="chapter lennys" id="lennys" aria-labelledby="lennys-title">
+      <div class="ch-grid">
+        <div class="ch-text">
+          <p class="ch-no mono">02 &middot; Concept redesign &middot; 2026</p>
+          <h2 class="ch-title" id="lennys-title" data-reveal>Lenny's Casita</h2>
+          <p class="ch-tag" data-reveal style="--d:1">Mexicali street food, glatt kosher, on Pico Boulevard.</p>
+          <p class="ch-desc" data-reveal style="--d:2">A night at the Casita, told in chapters. The opening is a short film that moves with your scroll: dusk on Pico, the bar waking up, steaks off the grill. After that the menu becomes a tour of six plates, and every cocktail repaints the whole page in its own color.</p>
+          <ul class="ch-list" data-reveal style="--d:3">
+            <li>Scroll-driven film hero in five scenes</li>
+            <li>Cocktail chapters that change the page color drink by drink</li>
+            <li>Live &ldquo;open now&rdquo; status from the real opening hours</li>
+            <li>Custom-colored interactive map, with a still image as backup</li>
+          </ul>
+          <dl class="ch-meta">
+            <div><dt>Role</dt><dd>Design, development, motion</dd></div>
+            <div><dt>Built with</dt><dd>GSAP, Lenis, WebGL, OpenFreeMap</dd></div>
+          </dl>
+          <a class="live" href="https://abdusameer.github.io/lennys-casita-redesign/" target="_blank" rel="noopener">Visit the live site <span aria-hidden="true">&nearr;</span></a>
+        </div>
+        <div class="ch-media">
+          <figure class="shot main" data-reveal>
+            <div class="frame">
+              <span class="rec">Scroll recording</span>
+              <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
+              <video muted loop playsinline preload="none" poster="assets/video/lennys-poster.jpg" data-src="assets/video/lennys.mp4" data-src-sm="assets/video/lennys-sm.mp4" aria-label="Screen recording: scrolling the Lenny's Casita homepage plays a short film of a night at the restaurant, scene by scene."></video>
+            </div>
+            <figcaption><span>A night on Pico</span><span>00:08</span></figcaption>
+          </figure>
+          <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/lennys-gimlet-800.jpg" srcset="assets/img/lennys-gimlet-800.jpg 800w, assets/img/lennys-gimlet.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="Cocktail chapter on a purple page: the 616 Gimlet, blue turning to purple, with an orchid." loading="lazy"></div><figcaption><span>Every drink, its own color</span></figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/lennys-mobile.jpg" alt="The Lenny's Casita homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/lennys-shuk-800.jpg" srcset="assets/img/lennys-shuk-800.jpg 800w, assets/img/lennys-shuk.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Shabbat Shuk section on green tile: a wagyu short rib dish beside the headline Shabbat, handled." loading="lazy"></div><figcaption><span>Shabbat, handled</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 stagger -->
+    <section class="chapter stagger" id="stagger" aria-labelledby="stagger-title">
+      <div class="ch-grid">
+        <div class="ch-text">
+          <p class="ch-no mono">03 &middot; Concept redesign &middot; 2026</p>
+          <h2 class="ch-title" id="stagger-title" data-reveal>Stagger Coffee</h2>
+          <p class="ch-tag" data-reveal style="--d:1">Coffee and matcha in Koreatown. Balance the unbalanced.</p>
+          <p class="ch-desc" data-reveal style="--d:2">A calm, editorial site for a caf&eacute; that sells calm. It opens on iced matcha and an oversized headline, then the signature menu turns drink by drink with big numerals. The matcha and coffee stories each get their own chapter, from Uji leaf to whole bean.</p>
+          <ul class="ch-list" data-reveal style="--d:3">
+            <li>Pinned signature menu: five drinks, one scroll</li>
+            <li>Dark matcha ritual chapter, from origin to shop</li>
+            <li>Seven-step coffee story, from bean to bag</li>
+            <li>Shop, press and visit sections with a map</li>
+          </ul>
+          <dl class="ch-meta">
+            <div><dt>Role</dt><dd>Design, development, motion</dd></div>
+            <div><dt>Built with</dt><dd>GSAP, ScrollTrigger, Lenis</dd></div>
+          </dl>
+          <a class="live" href="https://abdusameer.github.io/stagger_rebuild/" target="_blank" rel="noopener">Visit the live site <span aria-hidden="true">&nearr;</span></a>
+        </div>
+        <div class="ch-media">
+          <figure class="shot main" data-reveal>
+            <div class="frame">
+              <span class="rec">Scroll recording</span>
+              <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
+              <video muted loop playsinline preload="none" poster="assets/video/stagger-poster.jpg" data-src="assets/video/stagger.mp4" data-src-sm="assets/video/stagger-sm.mp4" aria-label="Screen recording: scrolling the Stagger Coffee homepage from the headline into the signature menu, one drink at a time."></video>
+            </div>
+            <figcaption><span>Headline to menu</span><span>00:08</span></figcaption>
+          </figure>
+          <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/stagger-ritual-800.jpg" srcset="assets/img/stagger-ritual-800.jpg 800w, assets/img/stagger-ritual.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="Dark chapter titled Your daily ritual starts here, with a Stagger matcha tin." loading="lazy"></div><figcaption><span>The matcha ritual</span></figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/stagger-mobile.jpg" alt="The Stagger Coffee homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/stagger-menu-800.jpg" srcset="assets/img/stagger-menu-800.jpg 800w, assets/img/stagger-menu.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Signature menu: a Double Matcha in a glass beside a large numeral 01." loading="lazy"></div><figcaption><span>The signature menu</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="frames" aria-labelledby="frames-title">
+    <div class="frames-head">
+      <h2 id="frames-title">More <span class="serif">frames</span></h2>
+      <div class="strip-ctrl">
+        <button type="button" data-dir="-1" aria-label="Scroll frames left">&larr;</button>
+        <button type="button" data-dir="1" aria-label="Scroll frames right">&rarr;</button>
+      </div>
+    </div>
+    <ul class="strip" id="strip" tabindex="0" aria-label="Screenshots from the three sites">
+      <li><div class="frame"><img src="assets/img/lennys-film-800.jpg" alt="Lenny's Casita film chapter: Dusk on Pico, the restaurant's patio at night." loading="lazy"></div><p><b>Lenny's Casita</b><span>Dusk on Pico</span></p></li>
+      <li><div class="frame"><img src="assets/img/stagger-stone-800.jpg" alt="Stagger Coffee: spilled stone-ground matcha from a dark tin." loading="lazy"></div><p><b>Stagger</b><span>Stone-ground</span></p></li>
+      <li><div class="frame"><img src="assets/img/rok-pour-800.jpg" alt="rōk: the cup overflowing with matcha on a misty hill." loading="lazy"></div><p><b>rōk</b><span>The overflow</span></p></li>
+      <li><div class="frame"><img src="assets/img/lennys-margarita-800.jpg" alt="Lenny's Casita: Spicy Margarita Balagán on a green page." loading="lazy"></div><p><b>Lenny's Casita</b><span>Spicy margarita</span></p></li>
+      <li><div class="frame"><img src="assets/img/stagger-bean-800.jpg" alt="Stagger Coffee: an extreme close-up of a coffee bean." loading="lazy"></div><p><b>Stagger</b><span>Whole bean</span></p></li>
+      <li><div class="frame"><img src="assets/img/lennys-plates-800.jpg" alt="Lenny's Casita: Six plates off the green tile menu tour." loading="lazy"></div><p><b>Lenny's Casita</b><span>Six plates</span></p></li>
+      <li><div class="frame"><img src="assets/img/stagger-shop-800.jpg" alt="Stagger Coffee shop section: matcha, a tumbler, a T-shirt and a tote bag." loading="lazy"></div><p><b>Stagger</b><span>Shop</span></p></li>
+      <li><div class="frame"><img src="assets/img/lennys-close-800.jpg" alt="Lenny's Casita closing section: Pull up a chair." loading="lazy"></div><p><b>Lenny's Casita</b><span>Pull up a chair</span></p></li>
+    </ul>
+  </section>
+
+  <section class="process" id="process" aria-labelledby="process-title">
+    <div class="process-head">
+      <p class="mono">Process</p>
+      <h2 id="process-title" data-reveal>Every site starts with the one moment people will remember. <span class="serif">The pour. The night out. The balance.</span> Then the page gets built around it.</h2>
+    </div>
+    <ol class="steps">
+      <li data-reveal style="--d:0"><span class="num">01</span><h3>Story first</h3><p>Each site has one idea you can feel: matcha filling a cup, a night on Pico, a caf&eacute; that sells calm. Sections come after.</p></li>
+      <li data-reveal style="--d:1"><span class="num">02</span><h3>Motion with a job</h3><p>Scrolling moves the story forward. If an animation doesn't help, it goes. People who turn on reduced motion get a calm version.</p></li>
+      <li data-reveal style="--d:2"><span class="num">03</span><h3>Every screen</h3><p>Layouts are checked on small phones, wide monitors and short laptop windows, not just one desktop size.</p></li>
+      <li data-reveal style="--d:3"><span class="num">04</span><h3>Easy to own</h3><p>Static sites with no server to look after, hosted on GitHub Pages, with media sized so pages stay quick.</p></li>
+    </ol>
+  </section>
+
+  <section class="services" id="services" aria-labelledby="services-title">
+    <h2 class="mono" id="services-title"><span>What we make</span><span>05</span></h2>
+    <ul class="svc">
+      <li data-reveal><span class="n">01</span>Scroll-driven sites</li>
+      <li data-reveal><span class="n">02</span>Motion &amp; interaction</li>
+      <li data-reveal><span class="n">03</span>Website redesigns</li>
+      <li data-reveal><span class="n">04</span>3D product views</li>
+      <li data-reveal><span class="n">05</span>Front-end builds</li>
+    </ul>
+  </section>
+
+  <section class="closing" id="contact" aria-labelledby="closing-title">
+    <p class="mono">Next reel</p>
+    <h2 id="closing-title">Your place, <span class="serif">next.</span></h2>
+    <div class="closing-row">
+      <!-- CONTACT: replace this pill with a mailto link when you're ready, e.g.
+           <a class="soon" href="mailto:you@example.com">Email Lumera</a> -->
+      <span class="soon">Contact coming soon</span>
+      <p>Until then, the three live sites above are the best way to see how we work.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; 2026 Lumera Creative</span>
+  <nav class="links" aria-label="Live sites">
+    <a href="https://abdusameer.github.io/rok_cafe/" target="_blank" rel="noopener">rōk</a>
+    <a href="https://abdusameer.github.io/lennys-casita-redesign/" target="_blank" rel="noopener">Lenny's Casita</a>
+    <a href="https://abdusameer.github.io/stagger_rebuild/" target="_blank" rel="noopener">Stagger</a>
+  </nav>
+  <p class="note">The projects shown are independent concept redesigns and are not affiliated with or endorsed by rōk coffee and tea, Lenny's Casita or Stagger Coffee. Names, logos and photos belong to their owners.</p>
+</footer>
+
+<script>
+(() => {
+  document.documentElement.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const bar = document.getElementById('top-bar');
+  const onScroll = () => bar.classList.toggle('scrolled', scrollY > innerHeight * .6);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---- showreel: three clips back to back, crossfaded ---- */
+  const reel = document.querySelector('.reel');
+  const clips = [...reel.querySelectorAll('video')];
+  const bars = [...reel.querySelectorAll('.bars button')];
+  const count = document.getElementById('now-count');
+  const link = document.getElementById('now-link');
+  const toggle = document.getElementById('reel-toggle');
+  const meta = [['rok', 'rōk coffee and tea'], ['lennys', "Lenny's Casita"], ['stagger', 'Stagger Coffee']];
+  let cur = 0, playing = !reduce, inView = true, raf = 0;
+  // phones and small windows get the lighter 1024px file; everything else gets the 1600px one
+  const pick = v => (v.dataset.srcSm && (v.clientWidth || innerWidth) * (devicePixelRatio || 1) < 1100) ? v.dataset.srcSm : v.dataset.src;
+  const load = v => { if (!v.getAttribute('src')) { v.src = pick(v); v.load(); } };
+  const setToggle = () => {
+    toggle.innerHTML = playing
+      ? '<svg viewBox="0 0 10 10" aria-hidden="true"><rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/></svg>Pause reel'
+      : '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg>Play reel';
+  };
+  const paint = () => {
+    const v = clips[cur];
+    bars.forEach((b, i) => b.firstElementChild.style.setProperty('--p', i < cur ? 1 : i > cur ? 0 : (v.duration ? v.currentTime / v.duration : 0)));
+    raf = requestAnimationFrame(paint);
+  };
+  const go = i => {
+    const prev = clips[cur];
+    cur = (i + clips.length) % clips.length;
+    const v = clips[cur];
+    load(v);
+    clips.forEach((c, k) => c.classList.toggle('on', k === cur));
+    count.textContent = String(cur + 1).padStart(2, '0') + ' / 03';
+    link.href = '#' + meta[cur][0];
+    link.innerHTML = meta[cur][1] + ' &darr;';
+    v.currentTime = 0;
+    if (playing && inView) v.play().catch(() => {});
+    if (prev !== v) setTimeout(() => prev.pause(), 900);
+    load(clips[(cur + 1) % clips.length]); // warm up the next clip
+  };
+  clips.forEach(v => v.addEventListener('ended', () => go(cur + 1)));
+  bars.forEach((b, i) => b.addEventListener('click', () => go(i)));
+  toggle.addEventListener('click', () => {
+    playing = !playing; setToggle();
+    const v = clips[cur]; load(v);
+    playing ? v.play().catch(() => {}) : v.pause();
+  });
+  new IntersectionObserver(([e]) => {
+    inView = e.isIntersecting;
+    const v = clips[cur];
+    if (inView && playing) v.play().catch(() => {}); else v.pause();
+    cancelAnimationFrame(raf); if (inView) paint();
+  }).observe(reel);
+  setToggle();
+  load(clips[0]);
+  if (playing) clips[0].play().catch(() => { playing = false; setToggle(); });
+
+  /* ---- reveal ---- */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: .12 });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+  /* ---- project recordings: load near view, play only while visible ---- */
+  const vids = [...document.querySelectorAll('.chapter video[data-src]')];
+  const addPlay = v => {
+    const b = document.createElement('button');
+    b.className = 'play'; b.type = 'button';
+    const set = on => { b.innerHTML = on ? '<svg viewBox="0 0 10 10" aria-hidden="true"><rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/></svg>Pause' : '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg>Play recording'; };
+    set(false);
+    b.addEventListener('click', () => { load(v); if (v.paused) { v.play(); set(true); } else { v.pause(); set(false); } });
+    v.addEventListener('pause', () => set(false));
+    v.parentElement.appendChild(b);
+  };
+  const near = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { load(e.target); near.unobserve(e.target); } }), { rootMargin: '400px 0px' });
+  const vis = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!reduce) e.target.play().catch(() => {}); } else e.target.pause(); }), { threshold: .3 });
+  vids.forEach(v => { if (reduce) addPlay(v); else near.observe(v); vis.observe(v); });
+
+  /* ---- frames strip arrows ---- */
+  const strip = document.getElementById('strip');
+  document.querySelectorAll('.strip-ctrl button').forEach(b => b.addEventListener('click', () => {
+    strip.scrollBy({ left: Number(b.dataset.dir) * strip.clientWidth * .8, behavior: reduce ? 'auto' : 'smooth' });
+  }));
+})();
+</script>
+</body>
+</html>
