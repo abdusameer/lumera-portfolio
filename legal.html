@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal &amp; credits | Lumera Creative</title>
+<meta name="description" content="Ownership, credits, privacy and terms for the Lumera Creative portfolio.">
+<meta name="theme-color" content="#0B0B0A">
+<meta name="color-scheme" content="dark">
+<meta name="author" content="Lumera Creative">
+<meta name="copyright" content="© 2026 Lumera Creative. All rights reserved.">
+<link rel="canonical" href="https://abdusameer.github.io/lumera-portfolio/legal.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230B0B0A%22/%3E%3Ctext x=%2232%22 y=%2245%22 font-family=%22Arial Black,Arial,sans-serif%22 font-weight=%22900%22 font-size=%2236%22 text-anchor=%22middle%22 fill=%22%23EEEAE2%22%3EL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0B0A;
+  --bg-3: #1B1A18;
+  --fg: #EEEAE2;
+  --fg-2: #BDB7AC;
+  --muted: #8C867B;
+  --line: rgba(238, 234, 226, .12);
+  --gold: #DDB266;
+  --pad: clamp(20px, 4vw, 56px);
+  --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 17px/1.65 var(--sans); -webkit-font-smoothing: antialiased; }
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: rgba(238, 234, 226, .35); }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; border-radius: 2px; }
+::selection { background: var(--fg); color: var(--bg); }
+.mono { font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+
+.top { display: flex; align-items: center; justify-content: space-between; padding: 20px var(--pad); border-bottom: 1px solid var(--line); }
+.brand { display: inline-flex; align-items: baseline; gap: 8px; text-decoration: none; padding: 10px 0; }
+.brand b { font: 800 19px/1 var(--sans); font-stretch: 125%; letter-spacing: .04em; }
+.brand i { font: italic 400 19px/1 var(--serif); color: var(--fg-2); }
+.back { text-decoration: none; color: var(--fg-2); padding: 12px 0; }
+.back:hover { color: var(--fg); }
+
+main { padding: clamp(56px, 9vw, 120px) var(--pad) clamp(64px, 9vw, 120px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(16px, 2vw, 28px); }
+.head { grid-column: 1 / -1; margin-bottom: clamp(40px, 6vw, 80px); }
+.head .mono { color: var(--muted); margin: 0 0 18px; }
+h1 { margin: 0; font-weight: 800; font-stretch: 125%; text-transform: uppercase; font-size: clamp(40px, 7.4vw, 112px); line-height: .88; letter-spacing: -.02em; }
+h1 .serif { font: italic 400 1.02em/1 var(--serif); text-transform: none; letter-spacing: -.01em; color: var(--gold); }
+.lede { margin: 26px 0 0; max-width: 52ch; font: italic 400 clamp(21px, 2vw, 27px)/1.3 var(--serif); color: var(--fg-2); }
+
+.toc { grid-column: 1 / span 3; align-self: start; position: sticky; top: 32px; }
+.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.toc li { counter-increment: s; border-top: 1px solid var(--line); }
+.toc li:last-child { border-bottom: 1px solid var(--line); }
+.toc a { display: grid; grid-template-columns: 2.4em 1fr; padding: 11px 0; text-decoration: none; color: var(--fg-2); font-size: 14.5px; }
+.toc a::before { content: counter(s, decimal-leading-zero); font: 500 11px/2 var(--mono); color: var(--muted); }
+.toc a:hover { color: var(--fg); }
+
+.body { grid-column: 5 / span 8; max-width: 70ch; }
+section { padding: 0 0 clamp(40px, 5vw, 64px); scroll-margin-top: 24px; }
+section + section { border-top: 1px solid var(--line); padding-top: clamp(32px, 4vw, 48px); }
+h2 { margin: 0 0 16px; display: flex; gap: 14px; align-items: baseline; font: 700 clamp(22px, 2.2vw, 28px)/1.2 var(--sans); font-stretch: 105%; }
+h2 span { font: 500 12px/1 var(--mono); letter-spacing: .1em; color: var(--muted); }
+p, li { color: var(--fg-2); }
+p { margin: 0 0 14px; }
+strong { color: var(--fg); font-weight: 600; }
+.list { margin: 0 0 14px; padding-left: 1.1em; }
+.list li { margin: 6px 0; }
+.notice { margin: 20px 0 0; padding: 18px 20px; border: 1px solid rgba(221, 178, 102, .35); border-radius: 10px; background: rgba(221, 178, 102, .05); color: var(--fg); }
+.notice .mono { display: block; color: var(--gold); margin-bottom: 6px; }
+
+footer { padding: 28px var(--pad) 36px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; font-size: 13.5px; color: var(--muted); }
+footer a { text-decoration: none; padding: 8px 0; }
+footer a:hover { color: var(--fg); }
+
+@media (max-width: 900px) {
+  .toc { grid-column: 1 / -1; position: static; margin-bottom: 48px; }
+  .body { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .top { padding-top: 10px; padding-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./" aria-label="Lumera Creative, back to the portfolio"><b>LUMERA</b><i>Creative</i></a>
+  <a class="back mono" href="./">&larr; Back to work</a>
+</header>
+
+<main>
+  <div class="head">
+    <p class="mono">Last updated September 28, 2026</p>
+    <h1>Legal &amp; <span class="serif">credits</span></h1>
+    <p class="lede">What we made is ours. The brands we redesigned belong to their owners. Here is the plain-language version of both.</p>
+  </div>
+
+  <nav class="toc" aria-label="On this page">
+    <ol>
+      <li><a href="#ours">Our work belongs to us</a></li>
+      <li><a href="#use">Using our work</a></li>
+      <li><a href="#theirs">What belongs to others</a></li>
+      <li><a href="#requests">If something here is yours</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#terms">No warranty</a></li>
+    </ol>
+  </nav>
+
+  <div class="body">
+    <section id="ours" aria-labelledby="ours-h">
+      <h2 id="ours-h"><span>01</span>Our work belongs to us</h2>
+      <p>Lumera Creative owns this website and the original work shown on it, including:</p>
+      <ul class="list">
+        <li>the designs, layouts, typography choices and art direction of each project</li>
+        <li>the code that builds them, and the code of this site</li>
+        <li>the copy we wrote, the motion and interaction design</li>
+        <li>our 3D models and renders</li>
+        <li>the screen recordings and screenshots of our concept sites</li>
+      </ul>
+      <p class="notice"><span class="mono">Copyright</span>&copy; 2026 Lumera Creative. All rights reserved.</p>
+    </section>
+
+    <section id="use" aria-labelledby="use-h">
+      <h2 id="use-h"><span>02</span>Using our work</h2>
+      <p>You're welcome to browse this site and share links to it. Please don't copy, republish, adapt, sell, or otherwise reuse our designs, code, recordings or copy, in whole or in part, and don't use them to train machine-learning models, <strong>without our written permission</strong>.</p>
+      <p>The source for this site is public on GitHub so it can be hosted there. Public doesn't mean free to use: it's covered by the same all-rights-reserved notice, repeated in the repository's LICENSE file.</p>
+    </section>
+
+    <section id="theirs" aria-labelledby="theirs-h">
+      <h2 id="theirs-h"><span>03</span>What belongs to others</h2>
+      <p>The four projects are <strong>independent concept redesigns</strong> of real businesses: rōk coffee and tea, Lenny's Casita, Stagger Coffee and Motiq. We made them on our own initiative. They are not the official websites of those businesses, and we are not affiliated with, sponsored by or endorsed by any of them.</p>
+      <p>Their business names, logos and trademarks belong to them. Some photography, video and menu content inside the projects comes from the businesses' own published material and belongs to its owners; it appears only to show our design work in context. Our ownership covers what we created, not their brands or their photos.</p>
+      <p>Menus, prices, hours and addresses shown in the projects may be out of date. For current details, please check with the businesses directly.</p>
+    </section>
+
+    <section id="requests" aria-labelledby="requests-h">
+      <h2 id="requests-h"><span>04</span>If something here is yours</h2>
+      <p>If you own material that appears in our work and would like it credited differently, replaced or removed, tell us and we'll act on it promptly.</p>
+      <!-- LEGAL CONTACT: replace the GitHub link below with an email address when one is ready -->
+      <p>Until our contact details are published, you can reach us by opening an issue at <a href="https://github.com/abdusameer/lumera-portfolio/issues" target="_blank" rel="noopener">github.com/abdusameer/lumera-portfolio/issues</a>.</p>
+    </section>
+
+    <section id="privacy" aria-labelledby="privacy-h">
+      <h2 id="privacy-h"><span>05</span>Privacy</h2>
+      <p>This site doesn't use cookies, analytics or tracking, has no forms, and doesn't collect personal information.</p>
+      <p>It's hosted on GitHub Pages and loads fonts from Google Fonts and a scrolling library from jsDelivr. Like any web service, those providers may log basic technical data, such as your IP address, when your browser requests files from them; their own privacy policies apply. The concept sites we link to are separate websites with their own behavior.</p>
+    </section>
+
+    <section id="terms" aria-labelledby="terms-h">
+      <h2 id="terms-h"><span>06</span>No warranty</h2>
+      <p>This site and the concept sites it links to are provided as-is, for portfolio purposes, without warranties of any kind. To the extent the law allows, Lumera Creative isn't liable for any loss arising from using them or relying on information shown in them. We may update this page from time to time; the date at the top shows the latest version.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <span>&copy; 2026 Lumera Creative. All rights reserved.</span>
+  <a href="./">&larr; Back to the portfolio</a>
+</footer>
+</body>
+</html>

@@ -38,3 +38,7 @@ Then open http://localhost:8000.
 ## Adding contact details
 
 Search `index.html` for `CONTACT:`. Swap the "Contact coming soon" badge for a mailto link.
+
+## License
+
+© 2026 Lumera Creative. All rights reserved. This repository is public so it can be hosted on GitHub Pages; that does not grant any right to copy or reuse it. See [LICENSE](LICENSE) and the site's [Legal & credits](https://abdusameer.github.io/lumera-portfolio/legal.html) page. Business names, logos and third-party photography shown in the projects belong to their owners.
