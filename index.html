@@ -190,11 +190,11 @@ a { color: inherit; }
   box-shadow: 0 40px 120px -50px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 .shot.wide .frame { aspect-ratio: 16 / 10; }
-.shot.tall .frame { aspect-ratio: 390 / 844; border-radius: 18px; }
+.shot.tall .frame { aspect-ratio: 390 / 844; border-radius: 22px; box-shadow: 0 0 0 5px var(--bg-3), 0 0 0 6px var(--line), 0 30px 70px -34px color-mix(in srgb, var(--accent) 60%, transparent); }
 .shot.full { grid-column: 1 / -1; }
 .shot img, .shot video { width: 100%; height: 100%; object-fit: cover; }
 .shot figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.shot.tall figcaption { display: block; }
+.shot.tall figcaption { margin-top: 16px; }
 .tick { position: absolute; width: 14px; height: 14px; border-color: var(--accent); border-style: solid; opacity: .9; z-index: 2; pointer-events: none; }
 .tick.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
 .tick.tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
@@ -285,6 +285,31 @@ footer a { text-decoration: none; }
 footer a:hover { color: var(--fg); }
 footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5px; line-height: 1.55; }
 
+/* ---------- gold light (mouse and trackpad only) ---------- */
+.glow { position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 1.1s var(--ease-io); }
+.glow.on { opacity: 1; }
+.glow-halo, .glow-core { position: absolute; left: 0; top: 0; will-change: transform; }
+.glow-halo::before, .glow-core::before { content: ""; position: absolute; border-radius: 50%; transition: transform 1.1s var(--ease-out), opacity 1.1s var(--ease-out); }
+/* wide champagne halo, trails slowly */
+.glow-halo::before {
+  width: 860px; height: 860px; left: -430px; top: -430px;
+  background: radial-gradient(closest-side, rgba(222, 178, 98, .055), rgba(212, 164, 84, .028) 34%, rgba(150, 100, 38, .011) 62%, rgba(150, 100, 38, 0));
+}
+/* small warm core, follows closely */
+.glow-core::before {
+  width: 240px; height: 240px; left: -120px; top: -120px; opacity: .9;
+  background: radial-gradient(closest-side, rgba(252, 230, 184, .09), rgba(230, 188, 112, .035) 48%, rgba(230, 188, 112, 0));
+}
+.glow.lift .glow-core::before { transform: scale(1.4); opacity: 1; }
+.glow.lift .glow-halo::before { transform: scale(1.1); }
+/* big type catches the light like gold foil */
+.has-glow [data-catch] {
+  --lx: -9999px; --ly: -9999px;
+  background: radial-gradient(var(--cr, 260px) circle at var(--lx) var(--ly), #F7E0A8 0%, #DDB266 34%, #B98A45 52%, var(--fg) 78%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.has-glow .wordmark[data-catch] { --cr: 420px; }
+
 /* ---------- reveal ---------- */
 .js [data-reveal] { opacity: 0; transform: translate3d(0, 34px, 0); transition: opacity 1.2s var(--ease-out), transform 1.4s var(--ease-out); transition-delay: calc(var(--d, 0) * 90ms); }
 .js [data-reveal].in { opacity: 1; transform: none; }
@@ -319,6 +344,38 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
   footer { grid-template-columns: 1fr; }
   footer .links { justify-content: flex-start; }
 }
+/* phones: title first, then the site running on a phone, then the story, then the desktop view */
+@media (max-width: 720px) {
+  .ch-grid { display: flex; flex-direction: column; }
+  .ch-text, .ch-media { display: contents; }
+  .ch-no { order: 1; } .ch-title { order: 2; } .ch-tag { order: 3; }
+  .shot.tall { order: 4; align-self: center; width: min(72vw, 300px); margin: 40px 0 12px; }
+  .ch-desc { order: 5; } .ch-list { order: 6; } .ch-meta { order: 7; }
+  .live { order: 8; align-self: flex-start; }
+  .shot.main { order: 9; margin-top: 48px; }
+  .shot.wide { order: 10; margin-top: 18px; }
+  .shot.full { order: 11; margin-top: 18px; }
+  .shot figcaption, .strip p, .ch-meta dt { font-size: 12px; }
+  .reel video.is-m { object-position: 50% 100%; }
+  /* phone recordings carry their own captions low on screen; a deeper fade keeps ours the only text there */
+  .reel.is-portrait::after { background: linear-gradient(180deg, rgba(11, 11, 10, .35) 0%, rgba(11, 11, 10, 0) 20%, rgba(11, 11, 10, .4) 40%, rgba(11, 11, 10, .95) 57%, rgba(11, 11, 10, .98) 100%); }
+}
+/* touch screens: comfortable tap targets */
+@media (pointer: coarse) {
+  .top { padding-top: 10px; padding-bottom: 10px; }
+  .brand { padding: 12px 0; }
+  .top nav a { padding: 15px 2px; }
+  .bars button { height: 36px; }
+  .now-label a { padding: 12px 0; margin: -12px 0; }
+  footer .links a { padding: 11px 0; }
+}
+/* phones get the gold too: it sweeps across the big titles as they scroll past */
+.has-sheen [data-catch] {
+  --lx: -9999px; --ly: -9999px;
+  background: radial-gradient(var(--cr, 190px) circle at var(--lx) var(--ly), #F7E0A8 0%, #DDB266 34%, #B98A45 52%, var(--fg) 78%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.has-sheen .wordmark[data-catch] { --cr: 240px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
@@ -330,6 +387,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
 </head>
 <body>
 <a class="skip" href="#work">Skip to work</a>
+<div class="glow" id="glow" aria-hidden="true"><div class="glow-halo"></div><div class="glow-core"></div></div>
 
 <header class="top" id="top-bar">
   <a class="brand" href="#top" aria-label="Lumera Creative, back to top"><b>LUMERA</b><i>Creative</i></a>
@@ -343,15 +401,15 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
 <main id="top">
   <section class="reel" aria-label="Showreel">
     <div class="reel-media" id="reel-media">
-    <video class="on" muted playsinline preload="auto" poster="assets/video/rok-poster.jpg" data-src="assets/video/rok.mp4" data-src-sm="assets/video/rok-sm.mp4" aria-hidden="true"></video>
-    <video muted playsinline preload="none" poster="assets/video/lennys-poster.jpg" data-src="assets/video/lennys.mp4" data-src-sm="assets/video/lennys-sm.mp4" data-start="4.9" aria-hidden="true"></video>
-    <video muted playsinline preload="none" poster="assets/video/stagger-poster.jpg" data-src="assets/video/stagger.mp4" data-src-sm="assets/video/stagger-sm.mp4" aria-hidden="true"></video>
-    <video muted playsinline preload="none" poster="assets/video/motiq-poster.jpg" data-src="assets/video/motiq.mp4" data-src-sm="assets/video/motiq-sm.mp4" data-start="5.1" aria-hidden="true"></video>
+    <video class="on" muted playsinline preload="auto" poster="assets/video/rok-poster.jpg" data-src="assets/video/rok.mp4" data-src-sm="assets/video/rok-sm.mp4" data-src-m="assets/video/rok-m.mp4" data-poster-m="assets/video/rok-m-poster.jpg" aria-hidden="true"></video>
+    <video muted playsinline preload="none" poster="assets/video/lennys-poster.jpg" data-src="assets/video/lennys.mp4" data-src-sm="assets/video/lennys-sm.mp4" data-start="4.9" data-src-m="assets/video/lennys-m.mp4" data-start-m="4.7" data-poster-m="assets/video/lennys-m-poster.jpg" aria-hidden="true"></video>
+    <video muted playsinline preload="none" poster="assets/video/stagger-poster.jpg" data-src="assets/video/stagger.mp4" data-src-sm="assets/video/stagger-sm.mp4" data-src-m="assets/video/stagger-m.mp4" data-poster-m="assets/video/stagger-m-poster.jpg" aria-hidden="true"></video>
+    <video muted playsinline preload="none" poster="assets/video/motiq-poster.jpg" data-src="assets/video/motiq.mp4" data-src-sm="assets/video/motiq-sm.mp4" data-start="5.1" data-src-m="assets/video/motiq-m.mp4" data-start-m="4.7" data-poster-m="assets/video/motiq-m-poster.jpg" aria-hidden="true"></video>
     </div>
 
     <div class="reel-copy">
       <p class="mono">Creative developers &middot; Selected work 2026</p>
-      <h1 class="wordmark">LUMERA<span class="sr-only"> Creative</span></h1>
+      <h1 class="wordmark" data-catch>LUMERA<span class="sr-only"> Creative</span></h1>
       <div class="reel-row">
         <p class="line">Websites that unfold as you scroll.</p>
         <div class="now" aria-live="polite">
@@ -379,7 +437,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
       <div class="ch-grid">
         <div class="ch-text">
           <p class="ch-no mono">01 &middot; Concept redesign &middot; 2026</p>
-          <h2 class="ch-title" id="rok-title" data-reveal>rōk coffee and tea</h2>
+          <h2 class="ch-title" id="rok-title" data-reveal data-catch>rōk coffee and tea</h2>
           <p class="ch-tag" data-reveal style="--d:1">Ceremonial Uji matcha, four caf&eacute;s across Los Angeles.</p>
           <p class="ch-desc" data-reveal style="--d:2">A one-page site built around a single pour. Scroll down and matcha fills the cup until it overflows. Scroll back up and it drains away. Below the pour, a pinned story walks through all four caf&eacute;s on a route map, and a 3D view takes the rōk x Fellow travel mug kit apart, piece by piece.</p>
           <ul class="ch-list" data-reveal style="--d:3">
@@ -404,7 +462,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
             <figcaption><span>The pour</span><span>00:07</span></figcaption>
           </figure>
           <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/rok-fellow-800.jpg" srcset="assets/img/rok-fellow-800.jpg 800w, assets/img/rok-fellow.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="3D render of the Fellow Carter mug, lids and straw beside its open gift box, with color swatches." loading="lazy"></div><figcaption><span>Fellow kit in 3D</span></figcaption></figure>
-          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/rok-mobile.jpg" alt="The rōk homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><video muted loop playsinline preload="none" poster="assets/video/rok-m-poster.jpg" data-src="assets/video/rok-m.mp4" aria-label="Screen recording on a phone: the rōk pour, from an empty cup to overflowing."></video></div><figcaption><span>Phone</span><span>00:07</span></figcaption></figure>
           <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/rok-locations-800.jpg" srcset="assets/img/rok-locations-800.jpg 800w, assets/img/rok-locations.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Locations section: a list of four cafés, a hand-drawn route map and a storefront photo." loading="lazy"></div><figcaption><span>Four caf&eacute;s, one route map</span></figcaption></figure>
         </div>
       </div>
@@ -415,7 +473,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
       <div class="ch-grid">
         <div class="ch-text">
           <p class="ch-no mono">02 &middot; Concept redesign &middot; 2026</p>
-          <h2 class="ch-title" id="lennys-title" data-reveal>Lenny's Casita</h2>
+          <h2 class="ch-title" id="lennys-title" data-reveal data-catch>Lenny's Casita</h2>
           <p class="ch-tag" data-reveal style="--d:1">Mexicali street food, glatt kosher, on Pico Boulevard.</p>
           <p class="ch-desc" data-reveal style="--d:2">A night at the Casita, told in chapters. The opening is a short film that moves with your scroll: dusk on Pico, the bar waking up, steaks off the grill. After that the menu becomes a tour of six plates, and every cocktail repaints the whole page in its own color.</p>
           <ul class="ch-list" data-reveal style="--d:3">
@@ -440,7 +498,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
             <figcaption><span>Tequila &amp; mezcal</span><span>00:11</span></figcaption>
           </figure>
           <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/lennys-film-800.jpg" srcset="assets/img/lennys-film-800.jpg 800w, assets/img/lennys-film.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="Film hero chapter: Dusk on Pico, the restaurant's patio lit up at night, with scene thumbnails below." loading="lazy"></div><figcaption><span>The film hero</span></figcaption></figure>
-          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/lennys-mobile.jpg" alt="The Lenny's Casita homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><video muted loop playsinline preload="none" poster="assets/video/lennys-m-poster.jpg" data-src="assets/video/lennys-m.mp4" aria-label="Screen recording on a phone: Lenny's Casita Tequila and Mezcal section, six cocktails in their own colors."></video></div><figcaption><span>Phone</span><span>00:09</span></figcaption></figure>
           <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/lennys-shuk-800.jpg" srcset="assets/img/lennys-shuk-800.jpg 800w, assets/img/lennys-shuk.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Shabbat Shuk section on green tile: a wagyu short rib dish beside the headline Shabbat, handled." loading="lazy"></div><figcaption><span>Shabbat, handled</span></figcaption></figure>
         </div>
       </div>
@@ -451,7 +509,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
       <div class="ch-grid">
         <div class="ch-text">
           <p class="ch-no mono">03 &middot; Concept redesign &middot; 2026</p>
-          <h2 class="ch-title" id="stagger-title" data-reveal>Stagger Coffee</h2>
+          <h2 class="ch-title" id="stagger-title" data-reveal data-catch>Stagger Coffee</h2>
           <p class="ch-tag" data-reveal style="--d:1">Coffee and matcha in Koreatown. Balance the unbalanced.</p>
           <p class="ch-desc" data-reveal style="--d:2">A calm, editorial site for a caf&eacute; that sells calm. It opens on iced matcha and an oversized headline, then the signature menu turns drink by drink with big numerals. The matcha and coffee stories each get their own chapter, from Uji leaf to whole bean.</p>
           <ul class="ch-list" data-reveal style="--d:3">
@@ -476,7 +534,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
             <figcaption><span>Headline to menu</span><span>00:08</span></figcaption>
           </figure>
           <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/stagger-ritual-800.jpg" srcset="assets/img/stagger-ritual-800.jpg 800w, assets/img/stagger-ritual.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="Dark chapter titled Your daily ritual starts here, with a Stagger matcha tin." loading="lazy"></div><figcaption><span>The matcha ritual</span></figcaption></figure>
-          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/stagger-mobile.jpg" alt="The Stagger Coffee homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><video muted loop playsinline preload="none" poster="assets/video/stagger-m-poster.jpg" data-src="assets/video/stagger-m.mp4" aria-label="Screen recording on a phone: Stagger Coffee from the headline into the signature menu."></video></div><figcaption><span>Phone</span><span>00:07</span></figcaption></figure>
           <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/stagger-menu-800.jpg" srcset="assets/img/stagger-menu-800.jpg 800w, assets/img/stagger-menu.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Signature menu: a Double Matcha in a glass beside a large numeral 01." loading="lazy"></div><figcaption><span>The signature menu</span></figcaption></figure>
         </div>
       </div>
@@ -487,7 +545,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
       <div class="ch-grid">
         <div class="ch-text">
           <p class="ch-no mono">04 &middot; Concept redesign &middot; 2026</p>
-          <h2 class="ch-title" id="motiq-title" data-reveal>Motiq</h2>
+          <h2 class="ch-title" id="motiq-title" data-reveal data-catch>Motiq</h2>
           <p class="ch-tag" data-reveal style="--d:1">Coffee, matcha and brunch, upstairs on Olympic in Koreatown.</p>
           <p class="ch-desc" data-reveal style="--d:2">A warm, dark site for a caf&eacute; that is also a full kitchen. It opens on a matcha pour behind &ldquo;Whisked. Pulled. Poured.&rdquo;, then the signature cream tops turn one at a time with big numerals. The espresso gets documented the way a roastery would, and the brunch and pasta menus play out plate by plate.</p>
           <ul class="ch-list" data-reveal style="--d:3">
@@ -512,7 +570,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
             <figcaption><span>Pour to cream top</span><span>00:11</span></figcaption>
           </figure>
           <figure class="shot wide" data-reveal><div class="frame"><img src="assets/img/motiq-bright-800.jpg" srcset="assets/img/motiq-bright-800.jpg 800w, assets/img/motiq-bright.jpg 1600w" sizes="(max-width: 1080px) 70vw, 36vw" alt="Espresso chapter: the Bright bean profile with tasting notes, origin and roast beside a glass of espresso." loading="lazy"></div><figcaption><span>Two beans, documented</span></figcaption></figure>
-          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><img src="assets/img/motiq-mobile.jpg" alt="The Motiq homepage on a phone." loading="lazy"></div><figcaption>Phone</figcaption></figure>
+          <figure class="shot tall" data-reveal style="--d:1"><div class="frame"><video muted loop playsinline preload="none" poster="assets/video/motiq-m-poster.jpg" data-src="assets/video/motiq-m.mp4" aria-label="Screen recording on a phone: Motiq from the matcha pour hero into the cream tops."></video></div><figcaption><span>Phone</span><span>00:09</span></figcaption></figure>
           <figure class="shot full" data-reveal><div class="frame" style="aspect-ratio:16/10"><img src="assets/img/motiq-kitchen-800.jpg" srcset="assets/img/motiq-kitchen-800.jpg 800w, assets/img/motiq-kitchen.jpg 1600w" sizes="(max-width: 1080px) 100vw, 55vw" alt="Kitchen chapter: a breakfast burrito with chips and salsa beside a large numeral 01." loading="lazy"></div><figcaption><span>Not a pastry case</span></figcaption></figure>
         </div>
       </div>
@@ -521,7 +579,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
 
   <section class="frames" aria-labelledby="frames-title">
     <div class="frames-head">
-      <h2 id="frames-title">More <span class="serif">frames</span></h2>
+      <h2 id="frames-title" data-catch>More <span class="serif">frames</span></h2>
       <div class="strip-ctrl">
         <button type="button" data-dir="-1" aria-label="Scroll frames left">&larr;</button>
         <button type="button" data-dir="1" aria-label="Scroll frames right">&rarr;</button>
@@ -564,7 +622,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
 
   <section class="closing" id="contact" aria-labelledby="closing-title">
     <p class="mono">Next reel</p>
-    <h2 id="closing-title">Your place, <span class="serif">next.</span></h2>
+    <h2 id="closing-title" data-catch>Your place, <span class="serif">next.</span></h2>
     <div class="closing-row">
       <!-- CONTACT: replace this pill with a mailto link when you're ready, e.g.
            <a class="soon" href="mailto:you@example.com">Email Lumera</a> -->
@@ -635,10 +693,12 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
   const meta = [['rok', 'rōk coffee and tea'], ['lennys', "Lenny's Casita"], ['stagger', 'Stagger Coffee'], ['motiq', 'Motiq']];
   let cur = 0, playing = !reduce, inView = true, raf = 0;
   // phones and small windows get the lighter 1024px file; everything else gets the 1600px one
-  const pick = v => (v.dataset.srcSm && (v.clientWidth || innerWidth) * (devicePixelRatio || 1) < 1100) ? v.dataset.srcSm : v.dataset.src;
+  // portrait screens play the phone-size recordings in the showreel (no cropping of a wide video)
+  const portrait = innerWidth / innerHeight < .8;
+  const pick = v => (portrait && v.dataset.srcM) ? v.dataset.srcM : (v.dataset.srcSm && (v.clientWidth || innerWidth) * (devicePixelRatio || 1) < 1100) ? v.dataset.srcSm : v.dataset.src;
   const load = v => { if (!v.getAttribute('src')) { v.src = pick(v); v.load(); } };
   // in the showreel, type-heavy clips start a few seconds in, where the photography takes over (data-start)
-  const startOf = v => Number(v.dataset.start || 0);
+  const startOf = v => Number((portrait && v.dataset.srcM ? v.dataset.startM : v.dataset.start) || 0);
   const seekStart = v => { const go = () => { v.currentTime = startOf(v); }; v.readyState >= 1 ? go() : v.addEventListener('loadedmetadata', go, { once: true }); };
   const setToggle = () => {
     toggle.innerHTML = playing
@@ -679,6 +739,7 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
     if (inView && playing) v.play().catch(() => {}); else v.pause();
     cancelAnimationFrame(raf); if (inView) paint();
   }).observe(reel);
+  if (portrait) { reel.classList.add('is-portrait'); clips.forEach(v => { if (v.dataset.posterM) { v.poster = v.dataset.posterM; v.classList.add('is-m'); } }); }
   setToggle();
   load(clips[0]);
   load(clips[1]); seekStart(clips[1]);
@@ -717,6 +778,69 @@ footer .note { grid-column: 1 / -1; max-width: 80ch; margin: 0; font-size: 12.5p
     v.addEventListener('play', () => { if (!id) id = requestAnimationFrame(step); });
   };
   if (!reduce) vids.forEach(softLoop);
+
+  /* ---- gold light: follows a mouse or trackpad pointer; off for touch and reduced motion ---- */
+  if (!reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.documentElement.classList.add('has-glow');
+    const glow = document.getElementById('glow');
+    const halo = glow.querySelector('.glow-halo'), core = glow.querySelector('.glow-core');
+    let tx = innerWidth / 2, ty = innerHeight * .4, hx = tx, hy = ty, cx = tx, cy = ty;
+    let running = false, dirty = false, last = 0;
+    // only titles on screen get their light position updated
+    const lit = new Set();
+    const cio = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? lit.add(e.target) : lit.delete(e.target)));
+    document.querySelectorAll('[data-catch]').forEach(el => cio.observe(el));
+    const frame = now => {
+      const dt = last ? Math.min(4, (now - last) / 16.667) : 1; last = now;
+      // frame-rate independent easing: the halo drifts, the core stays close
+      const kh = 1 - Math.pow(1 - .07, dt), kc = 1 - Math.pow(1 - .19, dt);
+      hx += (tx - hx) * kh; hy += (ty - hy) * kh;
+      cx += (tx - cx) * kc; cy += (ty - cy) * kc;
+      halo.style.transform = `translate3d(${hx.toFixed(1)}px, ${hy.toFixed(1)}px, 0)`;
+      core.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+      lit.forEach(el => { const r = el.getBoundingClientRect(); el.style.setProperty('--lx', (cx - r.left).toFixed(1) + 'px'); el.style.setProperty('--ly', (cy - r.top).toFixed(1) + 'px'); });
+      const moving = Math.abs(tx - hx) + Math.abs(ty - hy) > .4;
+      if (moving || dirty) { dirty = false; requestAnimationFrame(frame); } else { running = false; last = 0; }
+    };
+    const kick = () => { if (!running) { running = true; requestAnimationFrame(frame); } };
+    addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      tx = e.clientX; ty = e.clientY;
+      if (!glow.classList.contains('on')) { hx = cx = tx; hy = cy = ty; glow.classList.add('on'); }
+      kick();
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => glow.classList.remove('on'));
+    addEventListener('blur', () => glow.classList.remove('on'));
+    // content scrolls under a still pointer: keep the gold on the titles in place
+    const onScrollLight = () => { dirty = true; kick(); };
+    if (lenis) lenis.on('scroll', onScrollLight); else addEventListener('scroll', onScrollLight, { passive: true });
+    // the light swells a little over things you can click
+    document.addEventListener('pointerover', e => glow.classList.toggle('lift', !!e.target.closest('a, button, .shot, .strip li')));
+  }
+
+  /* ---- touch screens: the gold sheen travels across each big title as it scrolls through the screen ---- */
+  if (!reduce && !document.documentElement.classList.contains('has-glow')) {
+    document.documentElement.classList.add('has-sheen');
+    const shown = new Set();
+    const sio = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? shown.add(e.target) : shown.delete(e.target)));
+    document.querySelectorAll('[data-catch]').forEach(el => sio.observe(el));
+    let queued = false;
+    const sweep = () => {
+      queued = false;
+      const vh = innerHeight;
+      shown.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const cr = parseFloat(getComputedStyle(el).getPropertyValue('--cr')) || 190;
+        const t = Math.min(1.15, Math.max(-.15, (vh * .92 - r.top) / (vh * .75)));   // 0 as it enters low, 1 near the top
+        el.style.setProperty('--lx', (t * (r.width + cr * 2) - cr).toFixed(1) + 'px');
+        el.style.setProperty('--ly', (r.height * .55).toFixed(1) + 'px');
+      });
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(sweep); } };
+    addEventListener('scroll', queue, { passive: true });
+    if (lenis) lenis.on('scroll', queue);
+    setTimeout(queue, 300);
+  }
 
   /* ---- frames strip arrows ---- */
   const strip = document.getElementById('strip');
