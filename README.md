@@ -11,14 +11,15 @@ Live at https://abdusameer.github.io/lumera-portfolio/
 | rōk coffee and tea | https://abdusameer.github.io/rok_cafe/ |
 | Lenny's Casita | https://abdusameer.github.io/lennys-casita-redesign/ |
 | Stagger Coffee | https://abdusameer.github.io/stagger_rebuild/ |
+| Motiq | https://designz-ah.github.io/motiq-la/ |
 
-All three are independent concept redesigns and are not affiliated with the businesses.
+All four are independent concept redesigns and are not affiliated with the businesses.
 
 ## How it's built
 
 One `index.html` with inline CSS and JavaScript. No framework, no build step. Fonts come from Google Fonts.
 
-- `assets/video/`: 8-second scroll recordings of each site (H.264, muted, no audio) plus poster frames. The hero showreel plays them back to back.
+- `assets/video/`: 7 to 11 second scroll recordings of each site (60fps) (H.264, muted, no audio) plus poster frames. The hero showreel plays them back to back.
 - `assets/img/`: screenshots of each site at 1600px and 800px wide, plus phone screenshots.
 - `assets/og.jpg`: the image shown when the link is shared.
 
