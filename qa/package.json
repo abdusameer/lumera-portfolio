@@ -1,0 +1,13 @@
+{
+  "name": "lumera-portfolio-qa",
+  "private": true,
+  "type": "module",
+  "description": "Local checks for the Lumera Creative portfolio. Serves the site under /lumera-portfolio/ like GitHub Pages and drives it in headless Chrome.",
+  "scripts": {
+    "serve": "node serve.mjs",
+    "check": "node check.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}
