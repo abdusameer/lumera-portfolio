@@ -1,0 +1,80 @@
+# Implementation log
+
+## Phase 0 — Baseline and truth (2026-09-29)
+
+- Branch `redesign/adaptive-frame` created from `main` @ 16cda3d (clean tree).
+- Repository inspected: static HTML, no instructions file, no package manager or tests. Legal page, LICENSE and 60fps recordings already in place.
+- Baseline screenshots: `qa/baseline/` (current site and BB's Bakery at 1440×900 and 390×844). The reference site was screenshotted for study only; those images stay out of the repository.
+- Projects verified from their repos/sites and classified (see plan). All five are Concept Studies. About Time excluded by the owner.
+- Contact verified: `lumera@lumeracreative.com`, domain MX on Google Workspace.
+- BB's Bakery facts taken from its `PHASE-1-REPORT.md`: React 19, Vite, TypeScript, GSAP/ScrollTrigger, Lenis, raw WebGL shader; sketch → photo menu; pencil croissant guide; all product imagery is labeled concept imagery.
+- BB's sketch/shaded/photo assets confirmed pixel-registered (usable for a truthful sketch-to-photo demonstration).
+- Recording BB's Bakery (desktop + phone) with the existing slow-motion pipeline.
+- `REFERENCE_NOTES.md` and `IMPLEMENTATION_PLAN.md` written.
+
+## Media upgrade (2026-09-29)
+
+- Found that every recording had been captured at CSS-pixel size (1280×800 desktop, 390×844 phone) and upscaled. Rebuilt the recorder: desktop now records a 1600×1000 viewport (native frames), phones use real 2× screenshots (780×1688) in a slower time-warp. Phone clips drive the scroll position directly (wheel input is dropped by the sites' smooth scrolling under heavy capture).
+- Re-recorded Lenny's, Stagger, Motiq (desktop + phone) and BB's Bakery (phone); all land on exact scroll ranges.
+- New `rok-scrub.mp4`: the rōk pour cropped to the cup (780×1050), 30fps, keyframe every 6 frames so scroll can seek it. 1.4 MB.
+- Posters are WebP and load lazily. Lenny's page colors re-sampled from the new recordings into `assets/js/lennys-colors.js`.
+- Self-hosted Archivo + Geist (OFL) and Lenis (MIT); no third-party requests remain.
+
+## Phases 1–4 — System and build (2026-09-29)
+
+- `index.html`, `assets/css/lumera.css`, `assets/js/lumera.js` rebuilt around one travelling frame (`#af`) and `[data-frame]` targets.
+- Headlines fit their frame by adjusting Archivo's width axis per line (no wrapping); hero and contact grids pinned to `minmax(0, 1fr)` after the contact headline overflowed at first render.
+- Five project compositions: CROP (rōk, scroll-scrubbed pour + progress meter), VIEWPORT (Lenny's, section color follows the drink on screen), FACTS (Stagger, facts framed in front of the media), MASK (Motiq, 21:9 reveal), BOUNDARY (BB's, photograph inside the frame, pencil sketch outside, from the study's own registered assets).
+- Approach: frame flattens to a line under the statement, then gains sides step by step to a closed gold box. Capability index: frame outlines the index; a hovered/focused row borrows it. Contact: closed gold field.
+- Frame timing fixes after rendered review: tall targets count as reached when their top is 42% down the screen; when scrolling stops mid-transition the frame settles onto the target with more visible area (continuous, reversible, never jumps). Landing on any project via the index now shows its finished form.
+- Legal page restyled to the new system; rights contact is now the email; privacy text updated (no third-party requests).
+
+### Originality check 1 — hero and first project
+
+- Hero: a typographic statement inside a hand-measured, deliberately misregistered frame with a live size readout. No carousel, no 3D, no floor grid, no corner-label chrome. Not recognizably borrowed from the reference.
+- First project (rōk): split editorial column + tall scrubbed crop with a progress meter, tied to rōk's own mechanic. No resemblance to the reference's panel gallery. Pass.
+
+## Phase 5 — Phones and tablets as their own direction (2026-09-29)
+
+- Below 1024 px there is no travelling overlay. Each target keeps its own corner brackets, drawn in as it enters view; phones add a vertical edge line down the left gutter.
+- Phones play the portrait recordings (780×1688) in phone-shaped plates. rōk's scroll scrub and Lenny's color follow work with touch.
+- Phone hero sized to its content (no empty screen under the actions). Headlines fit the frame at every width tested, 360 px and up; phones held sideways cap the headline by the small-viewport height.
+- Menu dialog: focus moves in and is trapped; Escape and Close return focus to the Menu button; links close it and land below the header.
+
+## Phase 6 — Accessibility and performance (2026-09-29)
+
+- Fonts trimmed with fontTools to what the site uses (Archivo 700–800 with the full width axis, Geist 400–600, Latin-1 plus the punctuation and ō in use): 221 KB → 67 KB. Mobile LCP 2.9 s → 2.1 s.
+- Contrast checked for every text and background pair in use, including every page color Lenny's section can take (lowest: secondary text on the brightest green, 4.56:1). The focus outline switches from gold to ink on the cream sections, where gold measured 1.87:1.
+- Accessible names now contain the visible text: the "01–05" link, and the logo link on desktop (its two words were joined without a space).
+- Headline fitting no longer moves the page while fonts load. On phones the CSS size equals the fitted size (0.179 × the frame's inner width), and the script only fits once the result is final: display face loaded, or the fallback already showing. Simulated slow font: CLS 0 up to a 1.1 s delay; 0.025 past the 1.4 s fallback, when the headline is refitted to the real face.
+- Without JavaScript: recordings show art-directed stills (`<noscript>`), the header is solid, display type takes a narrower width and may wrap, and the Menu and Copy buttons are hidden (the header keeps "Start a project"). BB's window defaults to the reduced-motion state, half sketch and half photograph.
+
+## Phase 7 — Audits and pruning (2026-09-29)
+
+AI-design-slop audit (evidence-based, removal-first). Fixed:
+
+| Priority | Finding | Fix |
+|---|---|---|
+| P2 | Labels restating nearby text: contact eyebrow "Start a project", crop readout repeating its caption, "Next" on the project dividers | Removed the eyebrow; readouts now "Crop" and "01 / 05" … "05 / 05" |
+| P2 | "Not yet published" repeated on 9 capability rows | One "No published examples yet." note under each of the two groups |
+| P3 | Two gold "Start a project" buttons in the first view | Header copy hidden until the page moves; active state gold |
+| P3 | 11 px fact labels | 12 px |
+| P3 | Contact address and Copy button sat 66 px left of the button above (a reserved status slot) | Status moved under the row; the row is flush right |
+
+Originality check 2 (completed site, against `REFERENCE_NOTES.md`): no shared layout, navigation, type treatment, transitions, cursor behavior, assets or wording with the reference. The page reads as an editorial document with one measuring frame, not a gallery. Pass.
+
+Pruning: 42 files the new site doesn't use (38 tracked: old stills, JPEG posters and the old rōk recordings; 4 untracked: an unused BB's desktop recording and its posters) moved to the git-ignored `_drafts/assets/`; 2 unused BB's shaded images deleted. `assets/` is now 37 files, 21 MB. `assets/og.jpg` regenerated from the new hero (1200×630, 64 KB). LICENSE now names BB's Bakery among the third parties.
+
+## Phase 8 — Production verification (2026-09-29)
+
+- Served as GitHub Pages serves it: `qa/serve.mjs` at `/lumera-portfolio/`, with `.nojekyll` already present, so files ship unprocessed.
+- `qa/check.mjs`: 8 viewports plus interaction, reduced-motion, no-JavaScript and legal-page runs. 0 problems.
+- Lighthouse 12 (performance / accessibility / best practices / SEO): mobile 99 / 100 / 100 / 100 in all three runs (LCP 2.1 s, CLS 0, TBT 0 ms, 177 KB transferred); desktop 100 / 100 / 100 / 100 (LCP 0.5 s, CLS 0). Legal page 100 on all four, mobile and desktop.
+- Final screenshots in `qa/screenshots/`; full results in `QA_REPORT.md`.
+- Nothing pushed or merged. `main` and the live site are untouched.
+
+## Deviations from the plan
+
+- Both trimmed fonts are preloaded (67 KB together), not only the display face: the hero's label, supporting line and buttons are set in Geist and are part of the first view.
+- Under 1024 px every project uses static corner frames (the plan said "simpler reveals" for Motiq and BB's). BB's window still follows the scroll on phones; rōk's scrub and Lenny's color follow run there too.
+- A capability row borrows the frame on hover and keyboard focus. Tap was not built as a separate behavior; touch screens under 1024 px get the static index.

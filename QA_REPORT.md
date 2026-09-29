@@ -1,0 +1,156 @@
+# QA report — Lumera Creative portfolio rebuild
+
+- **Date:** 2026-09-29
+- **Branch:** `redesign/adaptive-frame` (local; not pushed or merged)
+- **How it was served:** `qa/serve.mjs`, at `http://localhost:4321/lumera-portfolio/`. This matches the GitHub Pages path, and `.nojekyll` is present, so files ship as written.
+- **Tools:** headless Google Chrome through puppeteer-core 23 (`qa/check.mjs`), and Lighthouse 12.
+
+## Summary
+
+| Check | Result |
+|---|---|
+| Rendered QA: 8 viewports, plus interaction, reduced-motion, no-JavaScript and legal-page runs | 0 problems |
+| Console errors or warnings, failed requests, HTTP errors | None on any run |
+| Lighthouse, mobile (3 runs) | 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.1 s, CLS 0, TBT 0 ms |
+| Lighthouse, desktop (2 runs) | 100 on all four; LCP 0.5 s, CLS 0 |
+| Legal page, mobile and desktop | 100 on all four |
+| Deployment | Ready; waiting on the owner's approval to merge into `main` and push |
+
+## Viewport matrix
+
+Every viewport loaded the full page, took a screenshot of each section and ran the same static audit. The screenshots are in `qa/screenshots/` (desktop, tablet and phone for every section, plus landscape and no-JavaScript views).
+
+| Viewport | Frame mode | Horizontal overflow | Overflowing elements | One h1 | Heading skips | Images without alt | Broken images | Unlabeled videos | Dead in-page links | Targets under 24 px |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1440×900 | Moving frame | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 1280×800 | Moving frame | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 1024×768 | Moving frame | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 768×1024 (touch) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 430×932 (touch, 3×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 390×844 (touch, 3×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 360×800 (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+| 844×390 landscape (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
+
+At 1024 px and up, the frame took the expected role at every section: Open (hero), 01 / 05 (divider), Crop (rōk), Viewport (Lenny's), Facts (Stagger), Mask (Motiq), Boundary (BB's), Problem (approach line), Index (capabilities) and Field (contact).
+
+An extra width sweep at 480, 520, 600, 700, 820, 960, 1023, 1180, 1366, 1600 and 1920 px found no horizontal overflow. The fitted headlines stayed inside their frames at every width.
+
+## Interactions
+
+These ran at 1440×900 unless noted.
+
+| Behavior | Result |
+|---|---|
+| Header links (Work, Approach, Capabilities, Start a project) | Each lands its section at the bottom edge of the 72 px header (71 px from the top). Focus moves to the section and the URL hash updates. |
+| rōk scroll scrub | Video time 0.28 s → 2.46 s → 5.09 s while scrolling down; back to 2.48 s when scrolling up. The progress meter follows (5% → 46% → 96% → 46%). |
+| Lenny's color follow | While the recording plays, the section color moves from the title card (`rgb(11, 14, 11)`) through the drinks, e.g. `rgb(47, 75, 21)`, `rgb(67, 43, 93)`, `rgb(93, 37, 18)` and `rgb(75, 21, 25)`. The matching drink in the list is highlighted. |
+| BB's sketch-to-photo window | Grows with scroll from 10% to 49% to 88% of the artwork's width. |
+| Capability rows | A hovered or focused row borrows the frame (readout "Row · Websites", 382 × 57). |
+| Copy button | Shows "Copied" under the address. The layout doesn't move, and the address row stays flush with the button above it. |
+| Email links | All four go to `lumera@lumeracreative.com`. The contact button adds the subject "New project". |
+| Keyboard | Tab order: skip link, logo, Work, Approach, Capabilities, View selected work, Start a project, then the first project. Every stop shows a visible focus outline. On the cream sections the outline is ink. |
+| Reload partway down the page | The frame resumes on the right target (Viewport, at Lenny's). |
+| Resize wide → narrow → wide | Switches moving frame → static frames → moving frame, with no overflow. |
+| Menu (390×844) | Opens with focus on the first link and the page behind inert. Focus stays inside the menu. Escape closes it and returns focus to the Menu button. A link closes it and lands its section under the header. |
+| Reduced motion (1440×900 and 390×844) | Moving frame hidden and nothing plays by itself. The four looping recordings get Play buttons and rōk shows a still. Every static frame is drawn. |
+| No JavaScript (1440×900 and 390×844) | Headline visible and inside its frame, with no overflow. Every recording is replaced by a still that fills its box (portrait stills on phones). The header is solid, and no control that needs the script (Menu, Copy, Play) is shown. |
+| Legal page (1440×900 and 390×844) | No overflow, one h1, no heading skips, 12 links, no small targets. |
+
+## Lighthouse 12
+
+Scores are performance / accessibility / best practices / SEO.
+
+| Page | Mode | Runs | Scores | FCP | LCP | TBT | CLS | Transferred |
+|---|---|---|---|---|---|---|---|---|
+| Home | Mobile (default throttling) | 3 | 99 / 100 / 100 / 100 in each run | 1.6 s | 2.1 s | 0 ms | 0 | 177 KB |
+| Home | Desktop | 2 | 100 / 100 / 100 / 100 | 0.4 s | 0.5 s | 0 ms | 0 | 177 KB |
+| Legal | Mobile | 1 | 100 / 100 / 100 / 100 | 0.9 s | 1.7 s | 0 ms | 0 | 107 KB |
+| Legal | Desktop | 1 | 100 / 100 / 100 / 100 | 0.2 s | 0.4 s | 0 ms | 0 | 107 KB |
+
+The only remaining Lighthouse suggestions are text compression, minification and render-blocking CSS:
+
+- **Compression:** the local test server doesn't compress, but GitHub Pages serves gzip.
+- **Minification:** there is no build step by design. Gzipped, the files are small:
+
+  | File | Size (gzip) |
+  |---|---|
+  | HTML | 7 KB |
+  | CSS | 8 KB |
+  | JS | 10 KB |
+  | Lenis | 5 KB |
+
+- **Render-blocking CSS:** the one stylesheet is needed for the first paint.
+- **Recordings:** none load until they near the screen.
+
+### Layout stability while fonts load
+
+The headline is fitted to its frame by script. To make sure this never moves the page, the display font (Archivo) was delayed on purpose. Values are CLS, counting every shift.
+
+| Viewport | Font delay | CLS |
+|---|---|---|
+| 390×844 | none, 0.6 s, 1.1 s | 0 |
+| 390×844 | 2.5 s (past the 1.4 s fallback) | 0.025 |
+| 360×800 | 0.9 s | 0.0001 |
+| 844×390 | 0.9 s | 0.0002 |
+| 1440×900 | 0.9 s | 0 |
+
+If the font takes longer than 1.4 s, the headline is shown in a fallback face. When Archivo arrives it is refitted, which causes the one small shift above. That is still well inside the "good" range, under 0.1.
+
+## Contrast (WCAG 2.2 AA)
+
+| Pair | Ratio |
+|---|---|
+| Ivory text on warm black | 16.03:1 |
+| Secondary text on warm black | 9.08:1 |
+| Muted text (numbers, notes) on warm black | 5.49:1 |
+| Gold on warm black / warm black on gold (buttons) | 9.05:1 |
+| Ink text on Stagger's cream | 15.32:1 |
+| Secondary text on Stagger's cream / BB's paper | 6.18:1 / 5.77:1 |
+| Secondary text on Lenny's brightest page color (worst case of all 221 sampled colors) | 4.56:1 |
+| Focus outline: ink on cream, which replaced gold at 1.87:1 | 15.32:1 |
+
+Muted text is never placed on Lenny's changing colors.
+
+## Audits
+
+### AI-design-slop audit
+
+This audit was evidence-based and removal-first. All five findings were fixed:
+
+| Priority | Finding | Fix |
+|---|---|---|
+| P2 | Labels restating nearby text: the contact eyebrow, the crop readout repeating its caption, and "Next" on the project dividers | Removed the eyebrow. The readouts now say "Crop" and "01 / 05" through "05 / 05". |
+| P2 | "Not yet published" repeated on 9 capability rows | One note under each of the two groups |
+| P3 | Two gold "Start a project" buttons in the first view | The header's button appears once the page moves. |
+| P3 | 11 px fact labels | 12 px |
+| P3 | Contact address sat 66 px left of the button above it | Fixed, as noted under Interactions |
+
+### Originality check
+
+The completed site was compared against the reference notes. It shares no layout, navigation, type treatment, transitions, cursor behavior, assets or wording with the studied reference. Pass.
+
+### Truthfulness
+
+- All five projects are labeled Concept Study, 2026. The footer and the legal page state that they are independent redesigns, not affiliated with or endorsed by the businesses.
+- The facts were checked against each study's own repository or site.
+- No testimonials, clients, metrics or awards are shown.
+- The capability groups without published examples say so.
+- BB's Bakery's AI-generated imagery carries a "Concept images" label wherever it appears.
+
+## Known gaps
+
+1. **No real-device testing.** Every run used headless Chrome with device emulation. The site hasn't been checked on a physical iPhone or Android phone, or in Safari or Firefox. A short pass on a real iPhone in Safari is the most valuable next check.
+2. **Stagger Coffee credits.** The source of the photography inside that study isn't verified, so no credit line is shown for it. The site-wide notice covers third-party material.
+3. **Motiq hosting.** The live study is hosted on a different GitHub account (designz-ah).
+4. **Capabilities.** Applied AI and automation and Custom systems have no published examples yet, and are labeled that way.
+5. **Third-party media.** Lenny's Casita and Motiq media belong to those businesses and are credited to them. rōk's drink imagery and BB's product imagery are AI-generated and disclosed as such.
+6. **Minification.** CSS and JavaScript are served as written, with no build step. GitHub Pages compresses them.
+7. **Public files.** The planning notes and the `qa/` folder are public in the repository, like everything else in it. GitHub Pages serves them as plain files.
+
+## Deployment readiness
+
+The site is ready to deploy. Nothing in the hosting setup changes: same repository, `main` branch, root folder, relative paths and `.nojekyll`. The canonical and share-image URLs already point at `https://abdusameer.github.io/lumera-portfolio/`.
+
+With the owner's approval, deploying means merging `redesign/adaptive-frame` into `main` and pushing. GitHub Pages then republishes on its own.
+
+To roll back, revert the merge commit on `main`. The current live version is `16cda3d`.

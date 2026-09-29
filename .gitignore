@@ -1,3 +1,5 @@
 .DS_Store
 _drafts/
 .claude/
+qa/node_modules/
+qa/results/
