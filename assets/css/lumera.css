@@ -256,20 +256,34 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .bbs-window { position: absolute; left: var(--wl, 50%); top: var(--wt, 6%); width: var(--ww, 44%); height: var(--wh, 88%); pointer-events: none; }
 .tag { display: inline-block; margin-right: 8px; padding: 4px 7px; border: 1px solid currentColor; font: 500 10px/1 var(--text); letter-spacing: .14em; text-transform: uppercase; color: var(--fg); vertical-align: 1px; }
 
-/* the whole site on a laptop and a phone, at equal heights: the phone column is .2888 of the laptop's
-   (1000/1600 × 780/1688), so both recordings fill their boxes without cropping */
+/* the whole site on a laptop and a phone, at equal heights. The phone is drawn as an iPhone: a dark body
+   whose bezel is 3.5% of the screen's width, so the device is 1.07 × 2.2341 and its column is .2993 of the
+   laptop's (both 0.625 of the laptop's width tall). The recordings keep their exact 16:10 and 780:1688. */
 .proj--rok .site, .proj--bbs .site { margin-top: clamp(56px, 7vw, 110px); }
-.site-screens { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2888fr); column-gap: var(--g); align-items: start; }
-.site--phone-left .site-screens { grid-template-columns: minmax(0, .2888fr) minmax(0, 1fr); }
+.site-screens { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2993fr); column-gap: var(--g); align-items: start; }
+.site--phone-left .site-screens { grid-template-columns: minmax(0, .2993fr) minmax(0, 1fr); }
 .site--phone-left .site-phone { order: -1; }
-.site-desk, .site-phone { position: relative; overflow: hidden; background: #000; }
-.site-desk { aspect-ratio: 16 / 10; }
-.site-phone { aspect-ratio: 780 / 1688; }
-[data-tone="light"] :is(.site-desk, .site-phone) { background: #E6DFD3; }
+.site-desk { position: relative; overflow: hidden; aspect-ratio: 16 / 10; background: #000; }
+[data-tone="light"] .site-desk { background: #E6DFD3; }
+.site-phone {
+  position: relative; aspect-ratio: 1.07 / 2.2341; padding: 3.271%;
+  border-radius: 16.36% / 7.83%;                         /* the screen's corner radius plus the bezel */
+  background: #1B1B1D;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 0 0 1.5px #4A4A4F, 0 18px 40px -18px rgba(0, 0, 0, .55);   /* the metal edge */
+}
+.phone-screen { position: relative; overflow: hidden; aspect-ratio: 780 / 1688; border-radius: 14% / 6.47%; background: #000; }
+/* the Dynamic Island, over the top of the screen */
+.phone-screen::before { content: ""; position: absolute; left: 50%; top: 1.2%; z-index: 5; width: 26%; height: 3.7%; border-radius: 999px; background: #000; transform: translateX(-50%); pointer-events: none; }   /* a touch narrower than life, so it clears the sites' headers */
+/* side buttons: action and volume on the left, power on the right */
+.site-phone::before, .site-phone::after { content: ""; position: absolute; width: 3px; background-repeat: no-repeat; }
+.site-phone::before { left: -3px; top: 16%; height: 27%; border-radius: 2px 0 0 2px;
+  background-image: linear-gradient(#2E2E31 0 0), linear-gradient(#2E2E31 0 0), linear-gradient(#2E2E31 0 0);
+  background-size: 100% 13%, 100% 27%, 100% 27%; background-position: 0 0, 0 45%, 0 100%; }
+.site-phone::after { right: -3px; top: 25%; height: 12%; border-radius: 0 2px 2px 0; background: #2E2E31; }
 
 /* scroll it yourself: the live site inside a screen, laid out at a real laptop or phone width and scaled to fit */
-.site-live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2888fr); column-gap: var(--g); margin-top: 12px; }
-.site--phone-left .site-live { grid-template-columns: minmax(0, .2888fr) minmax(0, 1fr); }
+.site-live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2993fr); column-gap: var(--g); margin-top: 12px; }
+.site--phone-left .site-live { grid-template-columns: minmax(0, .2993fr) minmax(0, 1fr); }
 .site--phone-left .site-live [data-live="phone"] { order: -1; }
 .live-btn { justify-self: start; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border: 1px solid var(--rule-2); background: none; color: var(--fg); font: 500 13px/1 var(--text); cursor: pointer; transition: border-color .3s var(--ease); }
 .live-btn:hover, .live-btn[aria-expanded="true"] { border-color: var(--fg); }

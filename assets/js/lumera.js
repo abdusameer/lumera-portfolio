@@ -459,10 +459,10 @@
   /* ------------------------------------------------------------------ scroll it yourself: the live site inside a screen
      The site is laid out at a real laptop (1280 wide) or phone (390 wide) viewport and scaled to the screen.
      Only one runs at a time, and only where the screen is big enough to read. */
-  const LIVE = { desk: { base: 1280, min: 700, word: 'laptop' }, phone: { base: 390, min: 240, word: 'phone' } };
+  const LIVE = { desk: { base: 1280, min: 700, word: 'laptop' }, phone: { base: 390, min: 230, word: 'phone' } };
   let live = null;
   const liveBtns = $$('.live-btn');
-  const screenOf = b => $(b.dataset.live === 'desk' ? '.site-desk' : '.site-phone', b.closest('.site'));
+  const screenOf = b => $(b.dataset.live === 'desk' ? '.site-desk' : '.phone-screen', b.closest('.site'));
   const nameBtn = (b, on) => {
     const word = LIVE[b.dataset.live].word, text = on ? 'Back to the recording' : 'Scroll it yourself';
     $('.live-label', b).textContent = text;

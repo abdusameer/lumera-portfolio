@@ -13,7 +13,7 @@
 | Whole-site walkthroughs | 10 recordings (5 sites × laptop and phone), exact 60 fps, 78 MB in total, each loaded only as its project nears the screen |
 | Scroll it yourself (the live site inside a screen) | Loads and fills the screen at a real laptop (1280) or phone (390) width, scrolls independently of the page, and closes back to the recording |
 | Console errors or warnings, failed requests, HTTP errors | None on any run |
-| Lighthouse, mobile (3 runs) | 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.1 s, CLS 0, TBT 0 ms |
+| Lighthouse, mobile (3 runs) | 98–99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.1–2.3 s, CLS 0, TBT 0–20 ms |
 | Lighthouse, desktop (2 runs) | 100 on all four; LCP 0.5 s, CLS 0–0.002 |
 | Legal page, mobile and desktop | 100 on all four |
 | Deployment | Ready; waiting on the owner's approval to merge into `main` and push |
@@ -68,7 +68,7 @@ Scores are performance / accessibility / best practices / SEO.
 
 | Page | Mode | Runs | Scores | FCP | LCP | TBT | CLS | Transferred |
 |---|---|---|---|---|---|---|---|---|
-| Home | Mobile (default throttling) | 3 | 99 / 100 / 100 / 100 in each run | 1.1–1.5 s | 2.1–2.3 s | 0 ms | 0 | 196 KB |
+| Home | Mobile (default throttling) | 3 | 98–99 / 100 / 100 / 100 | 1.1–1.6 s | 2.1–2.3 s | 0–20 ms | 0 | 196 KB |
 | Home | Desktop | 2 | 100 / 100 / 100 / 100 | 0.3–0.4 s | 0.5 s | 0 ms | 0–0.002 | 196 KB |
 | Legal | Mobile | 1 | 100 / 100 / 100 / 100 | 0.9 s | 1.7 s | 0 ms | 0 | 109 KB |
 | Legal | Desktop | 1 | 100 / 100 / 100 / 100 | 0.2 s | 0.4 s | 0 ms | 0 | 107 KB |
@@ -104,7 +104,7 @@ If the font takes longer than 1.4 s, the headline is shown in a fallback face. W
 
 ## Whole-site walkthroughs
 
-Each project shows its whole site, scrolled from top to bottom, on a laptop (1600×1000) and a phone (390×844 at 2×). They were recorded in slow motion and resampled to exactly 60 fps. The capture rate is the number of frames captured per second of page time; above 60, every output frame is its own capture.
+Each project shows its whole site, scrolled from top to bottom, on a laptop (1600×1000) and a phone (390×844 at 2×). The phone sits in an iPhone-style frame drawn in CSS: bezel, rounded screen, Dynamic Island and side buttons, with no product artwork, and the recording keeps its exact proportions. They were recorded in slow motion and resampled to exactly 60 fps. The capture rate is the number of frames captured per second of page time; above 60, every output frame is its own capture.
 
 | Project | Laptop | Small laptop copy (1024×640) | Phone | Capture rate (laptop / phone) |
 |---|---|---|---|---|

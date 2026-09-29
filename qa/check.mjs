@@ -293,7 +293,7 @@ async function frameState(page) {
     const N = report.interactions['noJS-' + vp.name] = await page.evaluate(() => {
       const shown = el => !!el && getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().width > 0;
       const h1 = document.querySelector('h1');
-      const media = [...document.querySelectorAll('.crop, .site-desk, .site-phone')].map(box => {
+      const media = [...document.querySelectorAll('.crop, .site-desk, .phone-screen')].map(box => {
         const img = box.querySelector('img'); const b = box.getBoundingClientRect(), r = img ? img.getBoundingClientRect() : null;
         return { box: box.className, still: !!img && img.complete && img.naturalWidth > 0, fills: !!r && Math.abs(r.width - b.width) < 2 && Math.abs(r.height - b.height) < 2, src: img ? img.currentSrc.split('/').pop() : null };
       });
@@ -332,14 +332,14 @@ async function frameState(page) {
     await page.waitForSelector(`${sel} .is-loaded`, { timeout: 30000 }).catch(() => {});
     await sleep(1500);
     L.open = await page.evaluate((s, k) => {
-      const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.site-phone'}`), f = box.querySelector('iframe');
+      const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.phone-screen'}`), f = box.querySelector('iframe');
       if (!f) return { iframe: false };
       const b = box.getBoundingClientRect(), r = f.getBoundingClientRect();
       return { iframe: true, loaded: box.classList.contains('is-loaded'), src: f.src, layoutWidth: parseFloat(f.style.width), fits: Math.abs(r.width - b.width) < 2 && Math.abs(r.height - b.height) < 2, videoHidden: getComputedStyle(box.querySelector('video')).visibility === 'hidden', label: document.querySelector(`${s} .live-btn[data-live="${k}"]`).getAttribute('aria-label') };
     }, sel, kind);
     await page.screenshot({ path: path.join(OUT, `live-${vp.name}.jpg`), type: 'jpeg', quality: 72 });
     await page.click(`${sel} .live-btn[data-live="${kind}"]`); await sleep(600);
-    L.closed = await page.evaluate((s, k) => { const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.site-phone'}`); return { iframe: !!box.querySelector('iframe'), videoVisible: getComputedStyle(box.querySelector('video')).visibility === 'visible' }; }, sel, kind);
+    L.closed = await page.evaluate((s, k) => { const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.phone-screen'}`); return { iframe: !!box.querySelector('iframe'), videoVisible: getComputedStyle(box.querySelector('video')).visibility === 'visible' }; }, sel, kind);
     const where = 'live ' + vp.name;
     if (!L.open.iframe || !L.open.loaded) problem(where, 'live site did not load in the screen: ' + JSON.stringify(L.open));
     else if (!L.open.fits || !L.open.videoHidden) problem(where, 'live site does not fill its screen: ' + JSON.stringify(L.open));

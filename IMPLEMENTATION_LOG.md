@@ -102,3 +102,9 @@ The owner found the walkthroughs too fast, Lenny's especially ("I can't even see
 - The privacy section of the legal page now says what a live study loads, and that nothing loads until the visitor chooses it.
 - QA: live mode is checked on a laptop (Lenny's) and a phone (rōk), confirming it loads, fills the screen, restores the video, and isn't offered on phone-sized laptop screens. 0 problems. Lighthouse is unchanged: mobile 99 / 100 / 100 / 100 and desktop 100 across the board.
 
+## iPhone frame (2026-09-29, owner request)
+
+- The phone recordings (and the live phone sites) now sit in an iPhone-style device drawn in CSS: a dark body with a metal edge, a bezel 3.5% of the screen's width, rounded screen corners, a Dynamic Island and side buttons. It uses no images and no product artwork. The island is slightly narrower than life (26% of the screen) so it clears the sites' headers.
+- The screen keeps the recording's exact 780:1688, and the phone column widened from .2888 to .2993 of the laptop's, so the device body still matches the laptop's height. Live mode, no-JS stills and the Play buttons mount inside the new `.phone-screen`.
+- QA: 0 problems. Lighthouse: desktop 100 across the board; mobile 98–99 over warm runs, with LCP 2.1–2.3 s and CLS 0.
+
