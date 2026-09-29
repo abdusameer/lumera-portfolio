@@ -426,10 +426,19 @@
     posterIO.unobserve(v);
   }), { rootMargin: '1200px 0px' });
   const nearIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { loadVideo(e.target); nearIO.unobserve(e.target); } }), { rootMargin: '500px 0px' });
+  // each walkthrough rests on the site's first screen before it scrolls, every time it starts from the top
+  const HOLD = 2200;
+  const canPlay = v => v._inView && !v.closest('.is-live');
+  const startWalk = v => {
+    clearTimeout(v._hold);
+    if (v.currentTime > 0.05) { v.play().catch(() => {}); return; }
+    v._hold = setTimeout(() => { if (canPlay(v)) v.play().catch(() => {}); }, HOLD);
+  };
   const playIO = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target;
-    if (e.isIntersecting) { loadVideo(v); if (!reduce) v.play().catch(() => {}); }
-    else v.pause();
+    v._inView = e.isIntersecting;
+    if (e.isIntersecting) { loadVideo(v); if (!reduce && canPlay(v)) startWalk(v); }
+    else { clearTimeout(v._hold); v.pause(); }
   }), { threshold: 0.3 });
   const addPlayButton = v => {
     const b = doc.createElement('button');
@@ -441,10 +450,74 @@
     v.parentElement.appendChild(b);
   };
   videos.forEach(v => {
+    v.addEventListener('ended', () => { v.currentTime = 0; if (!reduce && canPlay(v)) startWalk(v); });
     posterIO.observe(v);
     if (reduce) { addPlayButton(v); playIO.observe(v); return; }
     nearIO.observe(v); playIO.observe(v);
   });
+
+  /* ------------------------------------------------------------------ scroll it yourself: the live site inside a screen
+     The site is laid out at a real laptop (1280 wide) or phone (390 wide) viewport and scaled to the screen.
+     Only one runs at a time, and only where the screen is big enough to read. */
+  const LIVE = { desk: { base: 1280, min: 700, word: 'laptop' }, phone: { base: 390, min: 240, word: 'phone' } };
+  let live = null;
+  const liveBtns = $$('.live-btn');
+  const screenOf = b => $(b.dataset.live === 'desk' ? '.site-desk' : '.site-phone', b.closest('.site'));
+  const nameBtn = (b, on) => {
+    const word = LIVE[b.dataset.live].word, text = on ? 'Back to the recording' : 'Scroll it yourself';
+    $('.live-label', b).textContent = text;
+    b.setAttribute('aria-label', `${text}, on a ${word}`);
+    b.setAttribute('aria-expanded', on ? 'true' : 'false');
+  };
+  const fitLive = () => {
+    if (!live) return;
+    const w = live.box.clientWidth, h = live.box.clientHeight;
+    const bw = Math.max(LIVE[live.kind].base, w), bh = Math.round(bw * h / w);
+    Object.assign(live.frame.style, { width: bw + 'px', height: bh + 'px', transform: `scale(${(w / bw).toFixed(5)})` });
+  };
+  const liveRO = 'ResizeObserver' in window ? new ResizeObserver(fitLive) : null;
+  const closeLive = () => {
+    if (!live) return;
+    const L = live; live = null;
+    if (liveRO) liveRO.unobserve(L.box);
+    L.frame.remove();
+    L.box.classList.remove('is-live', 'is-loaded');
+    nameBtn(L.btn, false);
+    const v = $('video', L.box);
+    if (v && !reduce && canPlay(v)) startWalk(v);
+  };
+  const openLive = b => {
+    closeLive();
+    const box = screenOf(b), kind = b.dataset.live;
+    const frame = doc.createElement('iframe');
+    frame.className = 'live-frame';
+    frame.title = `The live ${b.dataset.name} site, on a ${LIVE[kind].word}. Scroll it here.`;
+    // the study can't navigate the portfolio away; its links open in new tabs or inside the screen
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+    frame.setAttribute('allow', 'autoplay; fullscreen');
+    frame.referrerPolicy = 'no-referrer';
+    frame.addEventListener('load', () => box.classList.add('is-loaded'), { once: true });
+    frame.src = b.dataset.src;
+    const v = $('video', box);
+    if (v) { clearTimeout(v._hold); v.pause(); }
+    box.classList.add('is-live');
+    box.appendChild(frame);
+    live = { box, kind, frame, btn: b };
+    fitLive();
+    if (liveRO) liveRO.observe(box);
+    nameBtn(b, true);
+  };
+  // offer it only where the screen is big enough to read the site
+  const liveFit = () => {
+    liveBtns.forEach(b => { b.hidden = screenOf(b).clientWidth < LIVE[b.dataset.live].min; });
+    $$('.site-live').forEach(row => { row.hidden = $$('.live-btn', row).every(b => b.hidden); });
+    if (live && live.btn.hidden) closeLive();
+  };
+  liveBtns.forEach(b => {
+    nameBtn(b, false);
+    b.addEventListener('click', () => (live && live.btn === b ? closeLive() : openLive(b)));
+  });
+  liveFit();
 
   /* ------------------------------------------------------------------ rōk: scroll scrubs the pour inside the crop */
   const scrub = $('.scrub-video');
@@ -581,7 +654,7 @@
   /* ------------------------------------------------------------------ layout changes */
   function measureAll() { setMode(); measureTargets(); }
   let rt = 0;
-  const onResize = () => { clearTimeout(rt); rt = setTimeout(() => { fitIfReady(); measureAll(); if (lenis) lenis.resize(); }, 120); };
+  const onResize = () => { clearTimeout(rt); rt = setTimeout(() => { fitIfReady(); measureAll(); liveFit(); if (lenis) lenis.resize(); }, 120); };
   addEventListener('resize', onResize);
   addEventListener('orientationchange', onResize);
   if ('ResizeObserver' in window) {

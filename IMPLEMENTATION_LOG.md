@@ -90,3 +90,15 @@ The owner asked for every project to show its whole website on both a laptop and
 - The 17 short clips they replace moved to `_drafts/assets/video-clips-2026-09-29/`.- Lengths: 23–34 s per site, and about 55 s for Lenny's (two pages). All walkthroughs together are 77 MB, and each loads only as its project nears the screen. Every capture ran above 60 frames per second of page time (87–132).
 - After the change: `qa/check.mjs` found 0 problems. New checks cover the Site roles, the cocktail-list timing, a Play button per walkthrough under reduced motion, and a still in all 11 screens without JavaScript. The mid-page reload check now waits for load, because the walkthroughs keep the network busy. Lighthouse is unchanged: mobile 99 / 100 / 100 / 100 (LCP 2.1 s, CLS 0) and desktop 100 across the board, with 187 KB on first load.
 
+## Scroll it yourself (2026-09-29, owner request)
+
+The owner found the walkthroughs too fast, Lenny's especially ("I can't even see the hero page"), and chose to let visitors scroll each site themselves.
+
+- Each laptop and phone screen has a **Scroll it yourself** button. It loads the real live study inside that screen, laid out at a real laptop (1280 px) or phone (390 px) width and scaled to fit. The visitor scrolls it at their own pace, with every animation and menu working. **Back to the recording** removes it and resumes the video. Only one screen is live at a time. A button appears only where its screen is big enough to read (laptop screens from 700 px, phone screens from 240 px), so phones offer the phone version. The frame is sandboxed without top navigation, so a study can't navigate the portfolio away.
+- Below 1024 px the pair stacks (the laptop full width, then the phone), so tablet screens are big enough to watch or scroll.
+- Stagger's facts box now follows the pair instead of overlapping it, so it no longer covers the buttons.
+- Every walkthrough rests 2.2 s on the site's first screen, on first play and on each loop (handled in the script; the files are unchanged).
+- Lenny's was re-recorded with its scroll film slowed: 13 s on the laptop (was 8.3) and 8 s on the phone (was 4.9). Its colors and cocktail timings were resampled.
+- The privacy section of the legal page now says what a live study loads, and that nothing loads until the visitor chooses it.
+- QA: live mode is checked on a laptop (Lenny's) and a phone (rōk), confirming it loads, fills the screen, restores the video, and isn't offered on phone-sized laptop screens. 0 problems. Lighthouse is unchanged: mobile 99 / 100 / 100 / 100 and desktop 100 across the board.
+

@@ -18,17 +18,17 @@ All five are independent redesigns of real Los Angeles businesses, made on our o
 
 ## The idea: one frame that changes its job
 
-A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. In the projects it becomes a crop (rōk), a viewport (Lenny's), a container for the facts (Stagger), a mask (Motiq) and the boundary between sketch and photograph (BB's). Every project also shows its whole site, scrolled from top to bottom, on a laptop and a phone side by side. Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
+A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. In the projects it becomes a crop (rōk), a viewport (Lenny's), a container for the facts (Stagger), a mask (Motiq) and the boundary between sketch and photograph (BB's). Every project also shows its whole site, scrolled from top to bottom, on a laptop and a phone side by side. Each recording rests on the site's first screen before it scrolls, and **Scroll it yourself** loads the live site inside either screen, so visitors can scroll it at their own pace. Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
 
 On phones and tablets (under 1024 px), with reduced motion, and without JavaScript, the moving frame is replaced by static corner frames on each section.
 
 ## How it's built
 
-Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requested from third parties.
+Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requested from third parties until a visitor opens a live study with Scroll it yourself.
 
 - `index.html`, `legal.html`: the two pages.
 - `assets/css/lumera.css`: the whole design system and every layout.
-- `assets/js/lumera.js`: the travelling frame, headline fitting, lazy video, rōk's scroll scrub, Lenny's color follow, BB's sketch-to-photo window, the menu and the copy button. One animation loop.
+- `assets/js/lumera.js`: the travelling frame, headline fitting, lazy video, rōk's scroll scrub, Lenny's color follow, BB's sketch-to-photo window, the Scroll it yourself live screens, the menu and the copy button. One animation loop.
 - `assets/js/lennys-colors.js`: Lenny's page colors, sampled from its walkthroughs and darkened where needed to keep text contrast (generated).
 - `assets/vendor/lenis.min.js`: Lenis 1.3.4 smooth scrolling (MIT, license alongside).
 - `assets/fonts/`: Archivo and Geist (SIL OFL, licenses alongside), trimmed to the characters and axes the site uses. Headlines fit their frame by adjusting Archivo's width axis line by line instead of wrapping.

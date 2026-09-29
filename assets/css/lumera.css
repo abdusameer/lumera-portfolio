@@ -233,8 +233,7 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .stagger-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); }
 .stagger-top { grid-column: 1 / span 8; margin-bottom: clamp(32px, 4vw, 60px); }
 .stagger-grid .site { grid-column: 1 / -1; grid-row: 2; }
-.stagger-grid .site figcaption { margin-left: auto; text-align: right; }   /* the facts step in front, on the left */
-.stagger-facts { grid-column: 1 / span 6; grid-row: 3; z-index: 2; margin-top: calc(-1 * clamp(48px, 5vw, 80px)); padding: clamp(24px, 2.4vw, 40px); background: var(--bg); }
+.stagger-facts { grid-column: 1 / span 7; grid-row: 3; margin-top: clamp(28px, 3.4vw, 52px); padding: clamp(24px, 2.4vw, 40px); background: var(--bg); }
 .stagger-facts .facts { margin-top: 0; }
 
 /* 04 Motiq — the frame opens as a mask */
@@ -267,6 +266,17 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .site-desk { aspect-ratio: 16 / 10; }
 .site-phone { aspect-ratio: 780 / 1688; }
 [data-tone="light"] :is(.site-desk, .site-phone) { background: #E6DFD3; }
+
+/* scroll it yourself: the live site inside a screen, laid out at a real laptop or phone width and scaled to fit */
+.site-live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2888fr); column-gap: var(--g); margin-top: 12px; }
+.site--phone-left .site-live { grid-template-columns: minmax(0, .2888fr) minmax(0, 1fr); }
+.site--phone-left .site-live [data-live="phone"] { order: -1; }
+.live-btn { justify-self: start; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border: 1px solid var(--rule-2); background: none; color: var(--fg); font: 500 13px/1 var(--text); cursor: pointer; transition: border-color .3s var(--ease); }
+.live-btn:hover, .live-btn[aria-expanded="true"] { border-color: var(--fg); }
+.live-btn[hidden] { display: none; }
+.live-frame { position: absolute; left: 0; top: 0; z-index: 3; border: 0; background: #fff; transform-origin: 0 0; }
+.is-live > video, .is-live > .play { visibility: hidden; }
+.is-live:not(.is-loaded)::after { content: "Loading the live site…"; position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; font: 500 12px/1 var(--text); letter-spacing: .08em; color: #EEE8DD; background: #0D0C0A; pointer-events: none; }
 
 /* ---------- 03 approach ---------- */
 .approach { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); padding: clamp(104px, 13vw, 210px) var(--m) clamp(88px, 10vw, 160px); }
@@ -332,9 +342,15 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .rok-media { margin: 40px 0 8px; }
   .lennys-head > div, .lennys-q { grid-column: 1 / -1; }
   .facts--row, .proj--motiq .facts--row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  /* the pair stacks: the laptop full width, then the phone at phone size, its buttons right below */
+  .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 18px; justify-items: center; }
+  .site-desk { width: 100%; }
+  .site-phone, .site--phone-left .site-phone { order: 0; width: min(76%, 320px); }
+  .site-live, .site--phone-left .site-live { grid-template-columns: minmax(0, 1fr); row-gap: 10px; justify-items: center; }
+  .site--phone-left .site-live [data-live="phone"] { order: 0; }
+  .live-btn { justify-self: center; }
   .drinks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 16px; }
   .stagger-top, .stagger-grid .site, .stagger-facts { grid-column: 1 / -1; grid-row: auto; }
-  .stagger-grid .site figcaption { margin-left: 0; text-align: left; }
   .stagger-facts { margin: 28px 0 0; padding: 26px 0 0; background: none; }
   .motiq-head .proj-title, .motiq-head > div { grid-column: 1 / -1; }
   .bbs-stage, .bbs-grid .proj-head, .bbs-grid .proj-body { grid-column: 1 / -1; grid-row: auto; }
@@ -367,10 +383,6 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .drinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crop { width: min(88%, 380px); }
   .rok-media figcaption { width: min(88%, 380px); }
-  /* both screens stacked: the phone first, at phone size; the laptop below, full width */
-  .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 18px; justify-items: center; }
-  .site-phone { order: -1; width: min(76%, 320px); }
-  .site-desk { width: 100%; }
   .motiq-head .proj-title { font-size: clamp(72px, 24vw, 120px); }
   .steps li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 8px; }
   .steps li p { grid-column: 2; }
@@ -436,7 +448,7 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
    Nothing fits the display type to its frame, so it takes a narrower width and may wrap. */
 html:not(.js) video { display: none; }
 html:not(.js) .bar { background: rgba(13, 12, 10, .94); border-bottom-color: var(--rule); }
-html:not(.js) .copy { display: none; }
+html:not(.js) .copy, html:not(.js) .site-live { display: none; }
 html:not(.js) .fit-line { width: auto; white-space: normal; font-stretch: 84%; }
 @media (max-width: 1023px) {
   html:not(.js) .menu-btn { display: none; }

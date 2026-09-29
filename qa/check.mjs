@@ -317,6 +317,37 @@ async function frameState(page) {
     await page.close();
   }
 
+  /* ---------- scroll it yourself: the live site inside a screen ---------- */
+  // (its own pages: the embedded studies load third-party players and tiles, whose console output isn't ours to judge)
+  for (const [vp, sel, kind] of [[VIEWPORTS[0], '#lennys .site', 'desk'], [VIEWPORTS[5], '#rok-site', 'phone']]) {
+    const page = await browser.newPage();
+    await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: vp.dpr || 1, isMobile: !!vp.touch, hasTouch: !!vp.touch });
+    await page.goto(BASE, { waitUntil: 'networkidle0' });
+    await sleep(800);
+    const L = report.interactions['live-' + vp.name] = {};
+    L.buttons = await page.evaluate(() => [...document.querySelectorAll('.live-btn')].map(b => `${b.closest('.proj').id}/${b.dataset.live}:${b.hidden ? 'hidden' : 'shown'}`));
+    await page.evaluate(s => { const e = document.querySelector(s); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 90); }, sel);
+    await sleep(1400);
+    await page.click(`${sel} .live-btn[data-live="${kind}"]`);
+    await page.waitForSelector(`${sel} .is-loaded`, { timeout: 30000 }).catch(() => {});
+    await sleep(1500);
+    L.open = await page.evaluate((s, k) => {
+      const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.site-phone'}`), f = box.querySelector('iframe');
+      if (!f) return { iframe: false };
+      const b = box.getBoundingClientRect(), r = f.getBoundingClientRect();
+      return { iframe: true, loaded: box.classList.contains('is-loaded'), src: f.src, layoutWidth: parseFloat(f.style.width), fits: Math.abs(r.width - b.width) < 2 && Math.abs(r.height - b.height) < 2, videoHidden: getComputedStyle(box.querySelector('video')).visibility === 'hidden', label: document.querySelector(`${s} .live-btn[data-live="${k}"]`).getAttribute('aria-label') };
+    }, sel, kind);
+    await page.screenshot({ path: path.join(OUT, `live-${vp.name}.jpg`), type: 'jpeg', quality: 72 });
+    await page.click(`${sel} .live-btn[data-live="${kind}"]`); await sleep(600);
+    L.closed = await page.evaluate((s, k) => { const box = document.querySelector(`${s} ${k === 'desk' ? '.site-desk' : '.site-phone'}`); return { iframe: !!box.querySelector('iframe'), videoVisible: getComputedStyle(box.querySelector('video')).visibility === 'visible' }; }, sel, kind);
+    const where = 'live ' + vp.name;
+    if (!L.open.iframe || !L.open.loaded) problem(where, 'live site did not load in the screen: ' + JSON.stringify(L.open));
+    else if (!L.open.fits || !L.open.videoHidden) problem(where, 'live site does not fill its screen: ' + JSON.stringify(L.open));
+    if (L.closed.iframe || !L.closed.videoVisible) problem(where, 'Back to the recording did not restore the video: ' + JSON.stringify(L.closed));
+    if (vp.width < 760 && L.buttons.some(b => /desk:shown/.test(b))) problem(where, 'laptop live mode offered on a phone');
+    await page.close();
+  }
+
   /* ---------- legal page ---------- */
   for (const vp of [VIEWPORTS[0], VIEWPORTS[5]]) {
     const { page, log } = await newPage(browser, vp);
