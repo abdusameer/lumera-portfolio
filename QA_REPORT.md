@@ -10,9 +10,10 @@
 | Check | Result |
 |---|---|
 | Rendered QA: 8 viewports, plus interaction, reduced-motion, no-JavaScript and legal-page runs | 0 problems |
+| Whole-site walkthroughs | 10 recordings (5 sites × laptop and phone), exact 60 fps, 77 MB in total, each loaded only as its project nears the screen |
 | Console errors or warnings, failed requests, HTTP errors | None on any run |
 | Lighthouse, mobile (3 runs) | 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.1 s, CLS 0, TBT 0 ms |
-| Lighthouse, desktop (2 runs) | 100 on all four; LCP 0.5 s, CLS 0 |
+| Lighthouse, desktop (2 runs) | 100 on all four; LCP 0.5 s, CLS 0–0.002 |
 | Legal page, mobile and desktop | 100 on all four |
 | Deployment | Ready; waiting on the owner's approval to merge into `main` and push |
 
@@ -31,7 +32,7 @@ Every viewport loaded the full page, took a screenshot of each section and ran t
 | 360×800 (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
 | 844×390 landscape (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
 
-At 1024 px and up, the frame took the expected role at every section: Open (hero), 01 / 05 (divider), Crop (rōk), Viewport (Lenny's), Facts (Stagger), Mask (Motiq), Boundary (BB's), Problem (approach line), Index (capabilities) and Field (contact).
+At 1024 px and up, the frame took the expected role at every section: Open (hero), 01 / 05 (divider), Crop (rōk's pour), Site (rōk's laptop-and-phone pair), Viewport (Lenny's pair), 03 / 05 at the top of Stagger (its facts box sits below the pair), Mask (Motiq's pair), Boundary (BB's artwork), Site (BB's pair), Problem (approach line), Index (capabilities) and Field (contact).
 
 An extra width sweep at 480, 520, 600, 700, 820, 960, 1023, 1180, 1366, 1600 and 1920 px found no horizontal overflow. The fitted headlines stayed inside their frames at every width.
 
@@ -43,7 +44,8 @@ These ran at 1440×900 unless noted.
 |---|---|
 | Header links (Work, Approach, Capabilities, Start a project) | Each lands its section at the bottom edge of the 72 px header (71 px from the top). Focus moves to the section and the URL hash updates. |
 | rōk scroll scrub | Video time 0.28 s → 2.46 s → 5.09 s while scrolling down; back to 2.48 s when scrolling up. The progress meter follows (5% → 46% → 96% → 46%). |
-| Lenny's color follow | While the recording plays, the section color moves from the title card (`rgb(11, 14, 11)`) through the drinks, e.g. `rgb(47, 75, 21)`, `rgb(67, 43, 93)`, `rgb(93, 37, 18)` and `rgb(75, 21, 25)`. The matching drink in the list is highlighted. |
+| Lenny's color follow | While the laptop walkthrough plays, the section takes the color of the page on screen, darkened where needed to keep text contrast (e.g. `rgb(10, 12, 10)` on the scroll film, `rgb(9, 32, 20)` in the green chapters). |
+| Lenny's cocktail list | Lights during the cocktail chapter only: the first drink at 23.8 s into the laptop walkthrough, and nothing while the food menu plays. |
 | BB's sketch-to-photo window | Grows with scroll from 10% to 49% to 88% of the artwork's width. |
 | Capability rows | A hovered or focused row borrows the frame (readout "Row · Websites", 382 × 57). |
 | Copy button | Shows "Copied" under the address. The layout doesn't move, and the address row stays flush with the button above it. |
@@ -52,8 +54,8 @@ These ran at 1440×900 unless noted.
 | Reload partway down the page | The frame resumes on the right target (Viewport, at Lenny's). |
 | Resize wide → narrow → wide | Switches moving frame → static frames → moving frame, with no overflow. |
 | Menu (390×844) | Opens with focus on the first link and the page behind inert. Focus stays inside the menu. Escape closes it and returns focus to the Menu button. A link closes it and lands its section under the header. |
-| Reduced motion (1440×900 and 390×844) | Moving frame hidden and nothing plays by itself. The four looping recordings get Play buttons and rōk shows a still. Every static frame is drawn. |
-| No JavaScript (1440×900 and 390×844) | Headline visible and inside its frame, with no overflow. Every recording is replaced by a still that fills its box (portrait stills on phones). The header is solid, and no control that needs the script (Menu, Copy, Play) is shown. |
+| Reduced motion (1440×900 and 390×844) | Moving frame hidden and nothing plays by itself. All ten walkthroughs (a laptop and a phone per project) get Play buttons, and rōk's pour shows a still. Every static frame is drawn. |
+| No JavaScript (1440×900 and 390×844) | Headline visible and inside its frame, with no overflow. All 11 screens (rōk's pour and every laptop and phone walkthrough) show a still that fills its box. The header is solid, and no control that needs the script (Menu, Copy, Play) is shown. |
 | Legal page (1440×900 and 390×844) | No overflow, one h1, no heading skips, 12 links, no small targets. |
 
 ## Lighthouse 12
@@ -62,8 +64,8 @@ Scores are performance / accessibility / best practices / SEO.
 
 | Page | Mode | Runs | Scores | FCP | LCP | TBT | CLS | Transferred |
 |---|---|---|---|---|---|---|---|---|
-| Home | Mobile (default throttling) | 3 | 99 / 100 / 100 / 100 in each run | 1.6 s | 2.1 s | 0 ms | 0 | 177 KB |
-| Home | Desktop | 2 | 100 / 100 / 100 / 100 | 0.4 s | 0.5 s | 0 ms | 0 | 177 KB |
+| Home | Mobile (default throttling) | 3 | 99 / 100 / 100 / 100 in each run | 1.1–1.6 s | 2.1 s | 0 ms | 0 | 187 KB |
+| Home | Desktop | 2 | 100 / 100 / 100 / 100 | 0.3–0.4 s | 0.5 s | 0 ms | 0–0.002 | 187 KB |
 | Legal | Mobile | 1 | 100 / 100 / 100 / 100 | 0.9 s | 1.7 s | 0 ms | 0 | 107 KB |
 | Legal | Desktop | 1 | 100 / 100 / 100 / 100 | 0.2 s | 0.4 s | 0 ms | 0 | 107 KB |
 
@@ -80,7 +82,7 @@ The only remaining Lighthouse suggestions are text compression, minification and
   | Lenis | 5 KB |
 
 - **Render-blocking CSS:** the one stylesheet is needed for the first paint.
-- **Recordings:** none load until they near the screen.
+- **Recordings:** none load until they near the screen, so the walkthroughs don't change the first load.
 
 ### Layout stability while fonts load
 
@@ -96,6 +98,20 @@ The headline is fitted to its frame by script. To make sure this never moves the
 
 If the font takes longer than 1.4 s, the headline is shown in a fallback face. When Archivo arrives it is refitted, which causes the one small shift above. That is still well inside the "good" range, under 0.1.
 
+## Whole-site walkthroughs
+
+Each project shows its whole site, scrolled from top to bottom, on a laptop (1600×1000) and a phone (390×844 at 2×). They were recorded in slow motion and resampled to exactly 60 fps. The capture rate is the number of frames captured per second of page time; above 60, every output frame is its own capture.
+
+| Project | Laptop | Small laptop copy (1024×640) | Phone | Capture rate (laptop / phone) |
+|---|---|---|---|---|
+| rōk coffee and tea | 28.9 s, 4.1 MB | 2.2 MB | 30.0 s, 4.2 MB | 125 / 132 fps |
+| Lenny's Casita (home page, then the food menu page) | 55.6 s, 11.7 MB | 7.2 MB | 54.5 s, 11.7 MB | 114 and 87 / 128 and 132 fps |
+| Stagger Coffee | 28.3 s, 5.1 MB | 2.8 MB | 28.8 s, 4.4 MB | 131 / 128 fps |
+| Motiq | 33.8 s, 5.5 MB | 3.2 MB | 31.6 s, 4.6 MB | 128 / 127 fps |
+| BB's Bakery | 23.2 s, 4.1 MB | 2.0 MB | 22.9 s, 3.1 MB | 118 / 130 fps |
+
+Every walkthrough ends exactly at the bottom of its page. A frame-by-frame scan found no jumps; the flagged moments are the sites' own transitions, such as Lenny's instant color change per cocktail or Stagger's coffee bean zooming open.
+
 ## Contrast (WCAG 2.2 AA)
 
 | Pair | Ratio |
@@ -106,7 +122,7 @@ If the font takes longer than 1.4 s, the headline is shown in a fallback face. W
 | Gold on warm black / warm black on gold (buttons) | 9.05:1 |
 | Ink text on Stagger's cream | 15.32:1 |
 | Secondary text on Stagger's cream / BB's paper | 6.18:1 / 5.77:1 |
-| Secondary text on Lenny's brightest page color (worst case of all 221 sampled colors) | 4.56:1 |
+| Secondary text on Lenny's lightest page color (worst case of all 1,101 sampled colors, after darkening) | 4.55:1 |
 | Focus outline: ink on cream, which replaced gold at 1.87:1 | 15.32:1 |
 
 Muted text is never placed on Lenny's changing colors.
@@ -146,6 +162,7 @@ The completed site was compared against the reference notes. It shares no layout
 5. **Third-party media.** Lenny's Casita and Motiq media belong to those businesses and are credited to them. rōk's drink imagery and BB's product imagery are AI-generated and disclosed as such.
 6. **Minification.** CSS and JavaScript are served as written, with no build step. GitHub Pages compresses them.
 7. **Public files.** The planning notes and the `qa/` folder are public in the repository, like everything else in it. GitHub Pages serves them as plain files.
+8. **Data weight.** Someone who watches every walkthrough downloads about 60 MB on a high-resolution laptop screen, or about 47 MB on a phone (the small laptop copies plus the phone recordings). Lenny's pair is the largest, about 23 MB on a laptop, because it covers two long pages. Nothing loads until a project nears the screen.
 
 ## Deployment readiness
 

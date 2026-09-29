@@ -153,7 +153,7 @@ html:not(.af-on) [data-frame="field"]::after { --c: var(--gold); --k: 44px; }
 html:not(.af-on) [data-frame="line"] { border-bottom: 1px solid var(--fg-2); }
 html:not(.af-on) .bbs-window { outline: 1px solid var(--fg); outline-offset: 0; }
 /* the frame names its role, small, where there's room */
-html:not(.af-on) :is([data-frame="crop"], [data-frame="viewport"], [data-frame="mask"], [data-frame="facts"], [data-frame="index"], [data-frame="field"])::before {
+html:not(.af-on) :is([data-frame="crop"], [data-frame="viewport"], [data-frame="mask"], [data-frame="facts"], [data-frame="site"], [data-frame="index"], [data-frame="field"])::before {
   content: attr(data-frame-label); position: absolute; left: 0; bottom: 100%; margin-bottom: 8px; z-index: 3;
   font: 500 10px/1 var(--text); letter-spacing: .14em; text-transform: uppercase; color: var(--fg-2);
 }
@@ -216,13 +216,12 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .scrub-meter i { position: absolute; inset: 0; background: var(--acc); transform-origin: 50% 0; transform: scaleY(var(--p, 0)); }
 .rok-media figcaption { margin-inline: auto; width: min(100%, calc(80vh * 780 / 1050)); }
 
-/* 02 Lenny's — viewport; the section color follows the drink on screen */
+/* 02 Lenny's — viewport onto both screens; the section takes the color of the page on screen */
 .proj--lennys { --bg: #0B0E0B; }
 .lennys-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); row-gap: 24px; align-items: end; margin-bottom: clamp(32px, 4vw, 60px); }
 .lennys-head > div { grid-column: 1 / span 7; }
 .lennys-q { grid-column: 9 / span 4; font-size: clamp(19px, 1.6vw, 24px); line-height: 1.3; }
 .lennys-q .label { display: block; margin-bottom: 10px; color: var(--fg-2); }
-.viewport { aspect-ratio: 16 / 10; background: #000; overflow: hidden; }
 .drinks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: var(--g); margin-top: 28px; padding: 0; list-style: none; font-size: 13px; line-height: 1.3; color: var(--fg-2); }
 .drinks li { display: flex; gap: 10px; align-items: flex-start; padding-top: 12px; border-top: 1px solid var(--line); transition: color .4s var(--ease), border-color .4s var(--ease); }
 .drinks li::before { content: ""; flex: none; width: 11px; height: 11px; margin-top: 2px; background: var(--c); box-shadow: 0 0 0 1px rgba(238, 232, 221, .55); }
@@ -233,19 +232,16 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .proj--stagger { --bg: #F3EEE6; --acc: #897946; }
 .stagger-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); }
 .stagger-top { grid-column: 1 / span 8; margin-bottom: clamp(32px, 4vw, 60px); }
-.stagger-media { grid-column: 1 / span 8; grid-row: 2; }
-.plate { aspect-ratio: 16 / 10; overflow: hidden; background: #E6DFD3; }
-.stagger-facts { grid-column: 8 / span 5; grid-row: 2; align-self: end; z-index: 2; margin-bottom: -56px; padding: clamp(24px, 2.4vw, 40px); background: var(--bg); }
+.stagger-grid .site { grid-column: 1 / -1; grid-row: 2; }
+.stagger-grid .site figcaption { margin-left: auto; text-align: right; }   /* the facts step in front, on the left */
+.stagger-facts { grid-column: 1 / span 6; grid-row: 3; z-index: 2; margin-top: calc(-1 * clamp(48px, 5vw, 80px)); padding: clamp(24px, 2.4vw, 40px); background: var(--bg); }
 .stagger-facts .facts { margin-top: 0; }
-.proj--stagger { padding-bottom: calc(clamp(72px, 9vw, 150px) + 56px); }
 
 /* 04 Motiq — the frame opens as a mask */
 .proj--motiq { --bg: #1C1914; --acc: #AC9881; }
 .motiq-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); row-gap: 24px; align-items: end; margin-bottom: clamp(28px, 3.4vw, 52px); }
 .motiq-head .proj-title { grid-column: 1 / span 7; font-size: clamp(72px, 13vw, 220px); line-height: .8; }
 .motiq-head > div { grid-column: 8 / span 5; padding-bottom: 8px; }
-.mask { aspect-ratio: 21 / 9; background: #000; overflow: hidden; }
-.mask .media-video { object-position: 50% 42%; }
 .proj--motiq .facts--row { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(40px, 5vw, 72px); }
 
 /* 05 BB's Bakery — the frame is the boundary between sketch and photograph */
@@ -260,8 +256,17 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .bbs-photo { position: absolute; inset: 0; clip-path: inset(var(--it, 6%) var(--ir, 6%) var(--ib, 6%) var(--il, 50%)); }
 .bbs-window { position: absolute; left: var(--wl, 50%); top: var(--wt, 6%); width: var(--ww, 44%); height: var(--wh, 88%); pointer-events: none; }
 .tag { display: inline-block; margin-right: 8px; padding: 4px 7px; border: 1px solid currentColor; font: 500 10px/1 var(--text); letter-spacing: .14em; text-transform: uppercase; color: var(--fg); vertical-align: 1px; }
-.bbs-rec { width: min(62%, 300px); margin-top: 36px; }
-.plate--phone { aspect-ratio: 780 / 1688; background: #E3DACB; }
+
+/* the whole site on a laptop and a phone, at equal heights: the phone column is .2888 of the laptop's
+   (1000/1600 × 780/1688), so both recordings fill their boxes without cropping */
+.proj--rok .site, .proj--bbs .site { margin-top: clamp(56px, 7vw, 110px); }
+.site-screens { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2888fr); column-gap: var(--g); align-items: start; }
+.site--phone-left .site-screens { grid-template-columns: minmax(0, .2888fr) minmax(0, 1fr); }
+.site--phone-left .site-phone { order: -1; }
+.site-desk, .site-phone { position: relative; overflow: hidden; background: #000; }
+.site-desk { aspect-ratio: 16 / 10; }
+.site-phone { aspect-ratio: 780 / 1688; }
+[data-tone="light"] :is(.site-desk, .site-phone) { background: #E6DFD3; }
 
 /* ---------- 03 approach ---------- */
 .approach { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); padding: clamp(104px, 13vw, 210px) var(--m) clamp(88px, 10vw, 160px); }
@@ -328,9 +333,9 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .lennys-head > div, .lennys-q { grid-column: 1 / -1; }
   .facts--row, .proj--motiq .facts--row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
   .drinks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 16px; }
-  .stagger-top, .stagger-media, .stagger-facts { grid-column: 1 / -1; grid-row: auto; }
+  .stagger-top, .stagger-grid .site, .stagger-facts { grid-column: 1 / -1; grid-row: auto; }
+  .stagger-grid .site figcaption { margin-left: 0; text-align: left; }
   .stagger-facts { margin: 28px 0 0; padding: 26px 0 0; background: none; }
-  .proj--stagger { padding-bottom: clamp(72px, 9vw, 150px); }
   .motiq-head .proj-title, .motiq-head > div { grid-column: 1 / -1; }
   .bbs-stage, .bbs-grid .proj-head, .bbs-grid .proj-body { grid-column: 1 / -1; grid-row: auto; }
   .bbs-stage { margin-top: 36px; }
@@ -362,10 +367,11 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .drinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crop { width: min(88%, 380px); }
   .rok-media figcaption { width: min(88%, 380px); }
-  .viewport, .plate:not(.plate--phone), .mask { aspect-ratio: 780 / 1688; width: min(84%, 390px); margin-inline: auto; }
-  .lennys-media figcaption, .stagger-media figcaption, .motiq-media figcaption { width: min(84%, 390px); margin-inline: auto; }
+  /* both screens stacked: the phone first, at phone size; the laptop below, full width */
+  .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 18px; justify-items: center; }
+  .site-phone { order: -1; width: min(76%, 320px); }
+  .site-desk { width: 100%; }
   .motiq-head .proj-title { font-size: clamp(72px, 24vw, 120px); }
-  .bbs-rec { width: min(70%, 280px); }
   .steps li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 8px; }
   .steps li p { grid-column: 2; }
   .approach-title { font-size: clamp(30px, 8.6vw, 44px); }
@@ -429,7 +435,6 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
    Recordings, the menu and the copy button need the script, so stills and plain links stand in.
    Nothing fits the display type to its frame, so it takes a narrower width and may wrap. */
 html:not(.js) video { display: none; }
-.still { display: block; width: 100%; height: 100%; }
 html:not(.js) .bar { background: rgba(13, 12, 10, .94); border-bottom-color: var(--rule); }
 html:not(.js) .copy { display: none; }
 html:not(.js) .fit-line { width: auto; white-space: normal; font-stretch: 84%; }

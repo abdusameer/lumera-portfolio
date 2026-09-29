@@ -192,6 +192,7 @@
     viewport: { gap: 12, mis: 0, op: [1, 1, 1, 1], gold: 0,   a: .9 },
     facts:    { gap: 0,  mis: 0, op: [1, 1, 1, 1], gold: 0,   a: .85 },
     mask:     { gap: 12, mis: 0, op: [1, 1, 1, 1], gold: 0,   a: .9 },
+    site:     { gap: 12, mis: 0, op: [1, 1, 1, 1], gold: 0,   a: .9 },
     boundary: { gap: 0,  mis: 0, op: [1, 1, 1, 1], gold: 0,   a: 1 },
     line:     { gap: 0,  mis: 0, op: [0, 0, 1, 0], gold: 0,   a: .85 },
     step1:    { gap: 0,  mis: 0, op: [0, 0, 1, 0], gold: 0,   a: .85 },
@@ -471,14 +472,15 @@
     }
   }
 
-  /* ------------------------------------------------------------------ Lenny's: the section takes the color of the drink on screen */
-  // 10 samples per second of each recording's page color (sampled from the frames themselves)
+  /* ------------------------------------------------------------------ Lenny's: the section takes the color of the page on screen */
+  // 10 samples per second of each recording's page color (sampled from the frames, darkened to keep text contrast);
+  // the laptop recording leads on wide screens, the phone recording on phones
   const LENNYS = window.LUMERA_LENNYS_COLORS || null;
-  const lennys = $('#lennys'), lv = lennys && $('video[data-colors="lennys"]', lennys);
+  const lennys = $('#lennys'), lv = lennys && $(`video[data-colors="${phoneLayout ? 'm' : 'd'}"]`, lennys);
   if (lennys && lv && LENNYS && !reduce) {
     const seq = (phoneLayout ? LENNYS.m : LENNYS.d).match(/.{6}/g).map(h => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
+    const drinkSeq = (phoneLayout ? LENNYS.mDrink : LENNYS.dDrink) || '';   // which cocktail is on screen, per sample
     const drinks = $$('.drinks li', lennys);
-    const palette = drinks.map(li => { const h = li.style.getPropertyValue('--c').trim().slice(1); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; });
     let col = seq[0].slice(), shownKey = '', on = -1, playing = false;
     lv.addEventListener('playing', () => { playing = true; });
     lv.addEventListener('pause', () => { playing = false; });
@@ -490,11 +492,9 @@
       col = col.map((v, c) => lerp(v, target[c], dtK(0.2, dt)));
       const key = col.map(v => Math.round(v)).join(',');
       if (key !== shownKey) { lennys.style.backgroundColor = `rgb(${key})`; lennys.style.setProperty('--bg', `rgb(${key})`); shownKey = key; }
-      // which drink is on screen (nearest palette color; the dark title card matches none)
-      let best = -1, bestD = 1e9;
-      palette.forEach((p, k) => { const dd = (p[0] - target[0]) ** 2 + (p[1] - target[1]) ** 2 + (p[2] - target[2]) ** 2; if (dd < bestD) { bestD = dd; best = k; } });
-      const lum = target[0] + target[1] + target[2];
-      if (lum < 60 || bestD > 900) best = -1;
+      // which cocktail is on screen (decided from the recording's own page colors when it was sampled)
+      const ch = drinkSeq[Math.min(i, drinkSeq.length - 1)];
+      const best = ch && ch !== '-' ? +ch : -1;
       if (best !== on) { drinks.forEach((li, k) => li.classList.toggle('is-on', k === best)); on = best; }
     });
   }

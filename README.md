@@ -18,7 +18,7 @@ All five are independent redesigns of real Los Angeles businesses, made on our o
 
 ## The idea: one frame that changes its job
 
-A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. In the projects it becomes a crop (rōk), a viewport (Lenny's), a container for the facts (Stagger), a mask (Motiq) and the boundary between sketch and photograph (BB's). Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
+A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. In the projects it becomes a crop (rōk), a viewport (Lenny's), a container for the facts (Stagger), a mask (Motiq) and the boundary between sketch and photograph (BB's). Every project also shows its whole site, scrolled from top to bottom, on a laptop and a phone side by side. Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
 
 On phones and tablets (under 1024 px), with reduced motion, and without JavaScript, the moving frame is replaced by static corner frames on each section.
 
@@ -29,10 +29,10 @@ Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requ
 - `index.html`, `legal.html`: the two pages.
 - `assets/css/lumera.css`: the whole design system and every layout.
 - `assets/js/lumera.js`: the travelling frame, headline fitting, lazy video, rōk's scroll scrub, Lenny's color follow, BB's sketch-to-photo window, the menu and the copy button. One animation loop.
-- `assets/js/lennys-colors.js`: Lenny's page colors, sampled from the recordings (generated).
+- `assets/js/lennys-colors.js`: Lenny's page colors, sampled from its walkthroughs and darkened where needed to keep text contrast (generated).
 - `assets/vendor/lenis.min.js`: Lenis 1.3.4 smooth scrolling (MIT, license alongside).
 - `assets/fonts/`: Archivo and Geist (SIL OFL, licenses alongside), trimmed to the characters and axes the site uses. Headlines fit their frame by adjusting Archivo's width axis line by line instead of wrapping.
-- `assets/video/`: scroll recordings of each study at 60 fps: `<name>.mp4` desktop (1600×1000), `<name>-sm.mp4` a lighter desktop copy for small screens, `<name>-m.mp4` phones (780×1688). `rok-scrub.mp4` is cropped to the cup and keyframed every 6 frames so scrolling can seek it. WebP posters.
+- `assets/video/`: a whole-site walkthrough of each study at 60 fps, recorded top to bottom (Lenny's includes its food menu page): `<name>-site.mp4` on a laptop (1600×1000), `<name>-site-sm.mp4` a lighter laptop copy for small screens, `<name>-site-m.mp4` on a phone (780×1688). `rok-scrub.mp4` is rōk's pour, cropped to the cup and keyframed every 6 frames so scrolling can seek it. WebP posters.
 - `assets/img/bbs/`: the BB's loaf as a pencil sketch and as a photograph, from the study (concept images).
 - `assets/og.jpg`, `assets/favicon.svg`: share image and icon.
 

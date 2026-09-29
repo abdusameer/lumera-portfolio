@@ -78,3 +78,15 @@ Pruning: 42 files the new site doesn't use (38 tracked: old stills, JPEG posters
 - Both trimmed fonts are preloaded (67 KB together), not only the display face: the hero's label, supporting line and buttons are set in Geist and are part of the first view.
 - Under 1024 px every project uses static corner frames (the plan said "simpler reveals" for Motiq and BB's). BB's window still follows the scroll on phones; rōk's scrub and Lenny's color follow run there too.
 - A capability row borrows the frame on hover and keyboard focus. Tap was not built as a separate behavior; touch screens under 1024 px get the static index.
+
+## Whole-site walkthroughs (2026-09-29, owner request)
+
+The owner asked for every project to show its whole website on both a laptop and a phone, e.g. Lenny's hero through its food menu, instead of one short clip each.
+
+- Recorded ten new walkthroughs (five sites × laptop and phone), top to bottom, with the slow-motion recorder resampled to exactly 60 fps. The scroll follows a smooth path through every section: slower through pinned, animated chapters and quicker through plain content, at rest only at the start and the end. Lenny's continues from its home page into the full food menu page with a half-second crossfade.
+- Recorder fixes along the way: a slow-motion phone pass outlasted a single browser protocol call (the drive now runs in the page and is polled); a screencast sends no frames while the screen is still, so the final hold on each footer is padded back from the logged end time; Lenny's menu page is heavy to draw, so it is captured in slower motion to keep 60 fps.
+- Each project now has a laptop-and-phone pair at equal heights (the phone column is .2888 of the laptop's, so neither recording is cropped). On phones the pair stacks, phone first. The frame roles carry over: Lenny's viewport and Motiq's mask open onto both screens, Stagger's facts step in front of the pair, and rōk and BB's gain a "Site" role for their pairs, after the crop and the boundary.
+- Lenny's section still takes the color of the page on screen, now across the whole site. Colors are sampled from the walkthroughs and darkened where needed so secondary text keeps 4.5:1. The cocktail list lights from precomputed timings (raw page colors, cocktail chapter only), so the darkened menu page can't light a drink by accident.
+- The 17 short clips they replace moved to `_drafts/assets/video-clips-2026-09-29/`.- Lengths: 23–34 s per site, and about 55 s for Lenny's (two pages). All walkthroughs together are 77 MB, and each loads only as its project nears the screen. Every capture ran above 60 frames per second of page time (87–132).
+- After the change: `qa/check.mjs` found 0 problems. New checks cover the Site roles, the cocktail-list timing, a Play button per walkthrough under reduced motion, and a still in all 11 screens without JavaScript. The mid-page reload check now waits for load, because the walkthroughs keep the network busy. Lighthouse is unchanged: mobile 99 / 100 / 100 / 100 (LCP 2.1 s, CLS 0) and desktop 100 across the board, with 187 KB on first load.
+

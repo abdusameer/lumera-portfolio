@@ -106,7 +106,7 @@ async function frameState(page) {
     res.first = await auditStatic(page);
     const shot = async name => { const f = `${vp.name}-${name}.jpg`; await page.screenshot({ path: path.join(OUT, f), type: 'jpeg', quality: 72 }); res.shots.push(f); };
     await shot('00-hero');
-    const ids = ['work', 'rok', 'lennys', 'stagger', 'motiq', 'bbs', 'approach', 'capabilities', 'contact'];
+    const ids = ['work', 'rok', 'rok-site', 'lennys', 'stagger', 'motiq', 'bbs', 'bbs-site', 'approach', 'capabilities', 'contact'];
     res.sections = {};
     for (const id of ids) {
       const y = await page.evaluate(id => { const el = document.getElementById(id); return el.getBoundingClientRect().top + window.scrollY - 60; }, id);
@@ -162,12 +162,20 @@ async function frameState(page) {
     I.scrub.back = await scrubAt(rokY - 200);
     if (!(I.scrub.mid.t > I.scrub.before.t && I.scrub.late.t > I.scrub.mid.t && Math.abs(I.scrub.back.t - I.scrub.mid.t) < 0.4)) problem('rōk scrub', 'does not track scroll forward and back: ' + JSON.stringify(I.scrub));
     // Lenny's color follows the recording
-    const lenY = await page.evaluate(() => { const v = document.querySelector('.viewport'); return v.getBoundingClientRect().top + window.scrollY - 120; });
+    const lenY = await page.evaluate(() => { const v = document.querySelector('#lennys .site-screens'); return v.getBoundingClientRect().top + window.scrollY - 120; });
     await scrollToY(page, lenY, 400);
     const colors = [];
-    for (let k = 0; k < 6; k++) { await sleep(1500); colors.push(await page.evaluate(() => ({ t: +document.querySelector('.viewport video').currentTime.toFixed(1), bg: getComputedStyle(document.getElementById('lennys')).backgroundColor, on: [...document.querySelectorAll('.drinks li')].findIndex(li => li.classList.contains('is-on')) }))); }
+    for (let k = 0; k < 6; k++) { await sleep(1500); colors.push(await page.evaluate(() => ({ t: +document.querySelector('#lennys video[data-colors="d"]').currentTime.toFixed(1), bg: getComputedStyle(document.getElementById('lennys')).backgroundColor, on: [...document.querySelectorAll('.drinks li')].findIndex(li => li.classList.contains('is-on')) }))); }
     I.lennys = colors;
     if (new Set(colors.map(c => c.bg)).size < 2) problem("Lenny's", 'section color never changed while the recording played');
+    // the cocktail list lights during the cocktail chapter only (precomputed timings), never on the food menu
+    I.lennysDrinks = await page.evaluate(async () => {
+      const v = document.querySelector('#lennys video[data-colors="d"]'), seq = window.LUMERA_LENNYS_COLORS.dDrink;
+      const at = async t => { v.currentTime = t; await new Promise(r => setTimeout(r, 900)); return [...document.querySelectorAll('.drinks li')].findIndex(li => li.classList.contains('is-on')); };
+      const first = seq.indexOf('0');
+      return { firstDrinkAt: first / 10, onFirst: await at(first / 10 + 0.3), onMenu: await at(Math.min(v.duration - 2, seq.length / 10 - 8)) };
+    });
+    if (I.lennysDrinks.onFirst !== 0 || I.lennysDrinks.onMenu !== -1) problem("Lenny's", 'cocktail list lights at the wrong time: ' + JSON.stringify(I.lennysDrinks));
     // BB's boundary grows with scroll
     const bbY = await page.evaluate(() => { const a = document.getElementById('bbs-art'); return a.getBoundingClientRect().top + window.scrollY; });
     const win = async y => { await scrollToY(page, y, 1500); return page.evaluate(() => getComputedStyle(document.getElementById('bbs-art')).getPropertyValue('--ww').trim()); };
@@ -198,7 +206,8 @@ async function frameState(page) {
     // refresh mid-page keeps a sane frame
     await page.evaluate(() => { const el = document.getElementById('lennys'); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY + 200); });
     await sleep(800);
-    await page.reload({ waitUntil: 'networkidle0' }); await sleep(1600);
+    // mid-page the walkthroughs keep streaming, so the network never goes quiet: wait for load instead
+    await page.reload({ waitUntil: 'load' }); await sleep(2000);
     I.reloadMid = { y: await page.evaluate(() => Math.round(window.scrollY)), frame: await frameState(page) };
     // resize without reload: 1440 → 900 → 1440
     await page.setViewport({ width: 900, height: 900 }); await sleep(1200);
@@ -261,6 +270,8 @@ async function frameState(page) {
     R.allBracketsDrawn = await page.evaluate(() => [...document.querySelectorAll('[data-frame]')].every(el => el.classList.contains('in')));
     if (!R.overlayHidden) problem('reduced motion', 'moving frame still shown');
     if (R.autoplaying) problem('reduced motion', 'recordings autoplay');
+    const loops = await page.evaluate(() => document.querySelectorAll('video.media-video').length);
+    if (R.playButtons !== loops) problem('reduced motion', `${R.playButtons} Play buttons for ${loops} recordings`);
     if (log.console.length || log.pageErrors.length) problem('reduced ' + vp.name, [...log.console, ...log.pageErrors].slice(0, 3).join(' | '));
     await page.close();
   }
@@ -282,7 +293,7 @@ async function frameState(page) {
     const N = report.interactions['noJS-' + vp.name] = await page.evaluate(() => {
       const shown = el => !!el && getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().width > 0;
       const h1 = document.querySelector('h1');
-      const media = [...document.querySelectorAll('.crop, .viewport, .plate, .mask')].map(box => {
+      const media = [...document.querySelectorAll('.crop, .site-desk, .site-phone')].map(box => {
         const img = box.querySelector('img'); const b = box.getBoundingClientRect(), r = img ? img.getBoundingClientRect() : null;
         return { box: box.className, still: !!img && img.complete && img.naturalWidth > 0, fills: !!r && Math.abs(r.width - b.width) < 2 && Math.abs(r.height - b.height) < 2, src: img ? img.currentSrc.split('/').pop() : null };
       });
