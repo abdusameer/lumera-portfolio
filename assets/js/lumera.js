@@ -7,7 +7,6 @@
   root.classList.add('js');
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const PHONE = 760, WIDE = 1024;
   const phoneLayout = innerWidth < PHONE;                    // media sources are chosen once, at load
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -134,8 +133,10 @@
     Array.from(host.children).forEach(c => { if (c !== el) h -= c.getBoundingClientRect().height; });
     const own = getComputedStyle(el);
     h -= parseFloat(own.paddingTop) + parseFloat(own.marginTop);
-    return h;
+    return h - extraH(el);
   };
+  // height of anything in a fitted block besides its lines (the hero's tagline)
+  const extraH = el => Array.from(el.children).filter(c => !c.classList.contains('fit-line')).reduce((a, c) => { const cs = getComputedStyle(c); return a + c.getBoundingClientRect().height + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom); }, 0);
   const fitOne = el => {
     const lines = $$('.fit-line', el);
     const W = el.clientWidth;
@@ -151,9 +152,9 @@
     const h = host && parseFloat(getComputedStyle(host).minHeight) > 0 ? availH(el) : 0;
     if (h > 0) size = Math.min(size, h / (lines.length * 0.86));
     // never taller than the screen can show next to the label and actions (phones held sideways)
-    const vhCap = (svh() - headerH() - 150) / (lines.length * 0.86);
+    const vhCap = (svh() - headerH() - 150 - extraH(el)) / (lines.length * 0.86);
     if (vhCap > 30) size = Math.min(size, vhCap);
-    size = clamp(size, 30, 280);
+    size = clamp(size, 30, 380);   // a one-word statement (the hero wordmark) can grow tall; width still decides
     el.style.fontSize = size.toFixed(2) + 'px';
     const f = size / 100;
     lines.forEach((l, k) => {
@@ -530,7 +531,9 @@
       let ready = false, shown = 0, seeking = false, want = 0, near = false;
       scrub.addEventListener('loadeddata', () => { ready = true; markDirty(); });
       scrub.addEventListener('seeked', () => { seeking = false; });
-      new IntersectionObserver(([e]) => { near = e.isIntersecting; if (near) { if (!scrub.poster) scrub.poster = scrub.dataset.poster; loadVideo(scrub); } }, { rootMargin: '700px 0px' }).observe(crop);
+      // the still arrives well ahead; the clip itself (about 2 MB) only once the pour is close, so it never rides the first load
+      new IntersectionObserver(([e], o) => { if (e.isIntersecting) { if (!scrub.poster) scrub.poster = scrub.dataset.poster; o.disconnect(); } }, { rootMargin: '1200px 0px' }).observe(crop);
+      new IntersectionObserver(([e]) => { near = e.isIntersecting; if (near) loadVideo(scrub); }, { rootMargin: '300px 0px' }).observe(crop);
       tasks.add((dt, moved) => {
         if (!near) return;
         const r = crop.getBoundingClientRect(), vh = innerHeight;
@@ -605,36 +608,27 @@
     }
   }
 
-  /* ------------------------------------------------------------------ gold catch-light on the big statements */
+  /* ------------------------------------------------------------------ gold moving through the big statements as you scroll */
   const catchers = $$('[data-catch]');
   if (!reduce && catchers.length) {
     const shownC = new Set();
     const cio = new IntersectionObserver(es => es.forEach(e => (e.isIntersecting ? shownC.add(e.target) : shownC.delete(e.target))));
     catchers.forEach(el => cio.observe(el));
-    if (fine) {
-      root.classList.add('has-glow');
-      let px = -9999, py = -9999, lx = px, ly = py, active = false;
-      addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return; px = e.clientX; py = e.clientY; if (!active) { lx = px; ly = py; active = true; } }, { passive: true });
-      doc.documentElement.addEventListener('pointerleave', () => { active = false; px = py = -9999; });
-      tasks.add((dt, moved) => {
-        if (!active && lx < -9000) return;
-        lx = active ? lerp(lx, px, dtK(0.22, dt)) : px; ly = active ? lerp(ly, py, dtK(0.22, dt)) : py;
-        shownC.forEach(el => { const r = el.getBoundingClientRect(); el.style.setProperty('--lx', (lx - r.left).toFixed(1) + 'px'); el.style.setProperty('--ly', (ly - r.top).toFixed(1) + 'px'); });
+    root.classList.add('has-sheen');
+    tasks.add((dt, moved) => {
+      if (!moved && !dirty) return;
+      const vh = innerHeight;
+      shownC.forEach(el => {
+        const r = el.getBoundingClientRect();
+        // statements further down sweep as they rise through the screen; the hero sweeps as you scroll away from it
+        const t = el.closest('.intro') ? clamp(sy / Math.max(1, r.height * 1.6), 0, 1.15) - 0.15
+                                       : clamp((vh * 0.92 - r.top) / (vh * 0.8), -0.15, 1.15);
+        const cr = Math.max(220, r.height * 0.9);
+        el.style.setProperty('--cr', cr.toFixed(0) + 'px');
+        el.style.setProperty('--lx', (t * (r.width + cr * 2) - cr).toFixed(1) + 'px');
+        el.style.setProperty('--ly', (r.height * 0.5).toFixed(1) + 'px');
       });
-    } else {
-      root.classList.add('has-sheen');
-      tasks.add((dt, moved) => {
-        if (!moved && !dirty) return;
-        const vh = innerHeight;
-        shownC.forEach(el => {
-          const r = el.getBoundingClientRect();
-          const t = clamp((vh * 0.92 - r.top) / (vh * 0.8), -0.15, 1.15);
-          el.style.setProperty('--cr', '220px');
-          el.style.setProperty('--lx', (t * (r.width + 440) - 220).toFixed(1) + 'px');
-          el.style.setProperty('--ly', (r.height * 0.5).toFixed(1) + 'px');
-        });
-      });
-    }
+    });
   }
 
   /* ------------------------------------------------------------------ copy the email address */

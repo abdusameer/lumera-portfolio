@@ -106,7 +106,7 @@ async function frameState(page) {
     res.first = await auditStatic(page);
     const shot = async name => { const f = `${vp.name}-${name}.jpg`; await page.screenshot({ path: path.join(OUT, f), type: 'jpeg', quality: 72 }); res.shots.push(f); };
     await shot('00-hero');
-    const ids = ['work', 'rok', 'rok-site', 'lennys', 'stagger', 'motiq', 'bbs', 'bbs-site', 'approach', 'capabilities', 'contact'];
+    const ids = ['work', 'rok', 'rok-site', 'lennys', 'bbs', 'bbs-site', 'approach', 'capabilities', 'contact'];
     res.sections = {};
     for (const id of ids) {
       const y = await page.evaluate(id => { const el = document.getElementById(id); return el.getBoundingClientRect().top + window.scrollY - 60; }, id);
@@ -268,6 +268,9 @@ async function frameState(page) {
     let k = 0;
     for (let y = 0; y < H; y += vp.height * 1.6) { await scrollToY(page, y, 350); if (k < 12) await page.screenshot({ path: path.join(OUT, `reduced-${vp.name}-${String(k++).padStart(2, '0')}.jpg`), type: 'jpeg', quality: 65 }); }
     R.allBracketsDrawn = await page.evaluate(() => [...document.querySelectorAll('[data-frame]')].every(el => el.classList.contains('in')));
+    // the headline fit must work without transitions too (it measures its own size changes)
+    R.heroFill = await page.evaluate(() => { const h = document.querySelector('.intro h1'), l = h.querySelector('.fit-line'); return +(l.getBoundingClientRect().width / h.clientWidth).toFixed(3); });
+    if (R.heroFill < 0.97) problem('reduced motion', `hero wordmark fills only ${Math.round(R.heroFill * 100)}% of its frame`);
     if (!R.overlayHidden) problem('reduced motion', 'moving frame still shown');
     if (R.autoplaying) problem('reduced motion', 'recordings autoplay');
     const loops = await page.evaluate(() => document.querySelectorAll('video.media-video').length);
@@ -282,7 +285,7 @@ async function frameState(page) {
     await page.setJavaScriptEnabled(false);
     await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: vp.dpr || 1, isMobile: !!vp.touch, hasTouch: !!vp.touch });
     await page.goto(BASE, { waitUntil: 'networkidle0' });
-    const ids = ['rok', 'lennys', 'stagger', 'motiq', 'bbs'];
+    const ids = ['rok', 'lennys', 'bbs'];
     for (const id of ids) {
       await page.evaluate(id => document.getElementById(id).scrollIntoView(), id);
       await sleep(250);
