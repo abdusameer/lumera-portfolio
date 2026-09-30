@@ -1,4 +1,4 @@
-// Rendered-browser QA for the Lumera Creative portfolio.
+// Rendered-browser QA for the Lumera Creative portfolio (light edition).
 // Serves the repo under /lumera-portfolio/ (like GitHub Pages) and drives it with headless Chrome.
 // Usage: node check.mjs            (writes qa/results/report.json and screenshots)
 import puppeteer from 'puppeteer-core';
@@ -47,6 +47,12 @@ async function scrollToY(page, y, settle = 900) {
   await page.evaluate(y => { window.scrollTo(0, y); }, y);
   await sleep(settle);
 }
+// step toward a position so scroll-linked pieces see real progress
+async function stepTo(page, y, steps = 6, settle = 1100) {
+  const cur = await page.evaluate(() => window.scrollY);
+  for (let k = 1; k <= steps; k++) await scrollToY(page, cur + (y - cur) * k / steps, 80);
+  await sleep(settle);
+}
 
 async function auditStatic(page) {
   return page.evaluate(() => {
@@ -54,10 +60,10 @@ async function auditStatic(page) {
     const de = document.documentElement;
     out.hscroll = de.scrollWidth > window.innerWidth + 1;
     out.overflowers = [...document.querySelectorAll('body *')].filter(el => {
-      if (el.closest('.af, .menu, .sprite')) return false;
+      if (el.closest('.menu, .sprite, .loader, .stage, .caps-stage')) return false;   // the pinned stages clip their own panels
       const cs = getComputedStyle(el); if (cs.position === 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false;
       const r = el.getBoundingClientRect(); return r.width > 0 && (r.right > window.innerWidth + 1 || r.left < -1);
-    }).slice(0, 8).map(el => `${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0]}`);
+    }).slice(0, 8).map(el => `${el.tagName.toLowerCase()}.${String(el.className.baseVal ?? el.className).split(' ')[0]}`);
     out.h1 = document.querySelectorAll('h1').length;
     const hs = [...document.querySelectorAll('h1,h2,h3,h4')].map(h => +h.tagName[1]);
     out.headingSkips = hs.filter((l, i) => i > 0 && l > hs[i - 1] + 1).length;
@@ -67,12 +73,12 @@ async function auditStatic(page) {
     out.deadHash = [...document.querySelectorAll('a[href^="#"]')].filter(a => a.getAttribute('href') === '#' || (a.getAttribute('href') !== '#top' && !document.querySelector(a.getAttribute('href')))).map(a => a.getAttribute('href'));
     out.links = [...document.querySelectorAll('a[href]')].length;
     const small = [];
-    document.querySelectorAll('a[href], button').forEach(el => {
+    document.querySelectorAll('a[href], button, summary').forEach(el => {
       const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || el.closest('.menu[hidden]')) return;
       const r = el.getBoundingClientRect(); if (!r.width) return;
       if (el.closest('.skip')) return;
       // inline text links inside running copy are exempt (WCAG 2.5.8 inline exception)
-      if (el.closest('p, dd, li') && !el.matches('.btn, .copy, .cap-refs a, .work-index a, .foot-links a, .contact-mail a, .menu-mail a')) return;
+      if (el.closest('p, dd') && !el.matches('.pill, .copy, .round, .contact-mail a')) return;
       if (r.height < 24 || r.width < 24) small.push(`${Math.round(r.width)}x${Math.round(r.height)} ${el.textContent.trim().slice(0, 24)}`);
     });
     out.targetsUnder24 = small;
@@ -81,15 +87,13 @@ async function auditStatic(page) {
   });
 }
 
-async function frameState(page) {
-  return page.evaluate(() => {
-    const af = document.getElementById('af');
-    const on = document.documentElement.classList.contains('af-on');
-    const role = af.querySelector('.af-role').textContent, dim = af.querySelector('.af-dim').textContent;
-    const t = document.querySelector('.af-t').getBoundingClientRect();
-    return { on, role, dim, top: { x: Math.round(t.left), y: Math.round(t.top), w: Math.round(t.width) } };
-  });
-}
+// where each strip panel is, in px, and the column's state
+const stripState = page => page.evaluate(() => ({
+  wide: document.documentElement.classList.contains('wide'),
+  panels: [...document.querySelectorAll('[data-panel]')].map(p => { const r = p.getBoundingClientRect(); return { x: Math.round(r.left), w: Math.round(r.width) }; }),
+  stream: document.querySelector('.stream').classList.contains('on'),
+  pastHero: document.documentElement.classList.contains('past-hero'),
+}));
 
 (async () => {
   // reuse a server that is already serving this repo on the port (e.g. the preview), otherwise start one
@@ -102,24 +106,22 @@ async function frameState(page) {
     const { page, log } = await newPage(browser, vp);
     const res = { shots: [] };
     await page.goto(BASE, { waitUntil: 'networkidle0', timeout: 60000 });
-    await sleep(1600);
+    await sleep(3400);   // the opening runs about 2.8 s
     res.first = await auditStatic(page);
     const shot = async name => { const f = `${vp.name}-${name}.jpg`; await page.screenshot({ path: path.join(OUT, f), type: 'jpeg', quality: 72 }); res.shots.push(f); };
     await shot('00-hero');
-    const ids = ['work', 'rok', 'rok-site', 'lennys', 'bbs', 'bbs-site', 'approach', 'capabilities', 'contact'];
-    res.sections = {};
+    const ids = ['rok', 'rok-site', 'lennys', 'bbs', 'bbs-site', 'approach', 'capabilities', 'contact'];
     for (const id of ids) {
-      const y = await page.evaluate(id => { const el = document.getElementById(id); return el.getBoundingClientRect().top + window.scrollY - 60; }, id);
-      // step toward the target so scroll-linked pieces see real progress
-      const cur = await page.evaluate(() => window.scrollY);
-      for (let k = 1; k <= 6; k++) await scrollToY(page, cur + (y - cur) * k / 6, 90);
-      await sleep(1100);
-      res.sections[id] = await frameState(page);
+      const y = await page.evaluate(id => { const el = document.getElementById(id); return el.getBoundingClientRect().top + window.scrollY; }, id);
+      await stepTo(page, y);
       await shot(`${String(ids.indexOf(id) + 1).padStart(2, '0')}-${id}`);
     }
-    // back up through the page (reversal)
-    await scrollToY(page, 0, 1200);
-    res.backToTop = await frameState(page);
+    await stepTo(page, await page.evaluate(() => document.documentElement.scrollHeight - innerHeight));
+    await shot('09-end');
+    // the close: every letter of the footer's LUMERA has risen by the end of the page
+    res.footLetters = await page.evaluate(() => [...document.querySelectorAll('.foot-mark svg')].map(s => { const r = s.getBoundingClientRect(), m = s.closest('.foot-mark').getBoundingClientRect(); return Math.round(r.bottom - m.bottom); }));
+    if (res.footLetters.some(d => Math.abs(d) > 2)) problem(vp.name, 'footer letters have not risen at the end of the page: ' + res.footLetters.join(','));
+    await scrollToY(page, 0, 1400);
     res.last = await auditStatic(page);
     res.log = log;
     report.viewports[vp.name] = res;
@@ -139,21 +141,93 @@ async function frameState(page) {
     await page.close();
   }
 
-  /* ---------- desktop interactions ---------- */
+  /* ---------- the opening ---------- */
+  for (const vp of [VIEWPORTS[0], VIEWPORTS[5]]) {
+    const { page, log } = await newPage(browser, vp);
+    await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+    await sleep(350);
+    const during = await page.evaluate(() => ({ loader: getComputedStyle(document.getElementById('loader')).display !== 'none', run: document.documentElement.classList.contains('intro-run') }));
+    await sleep(3600);
+    const after = await page.evaluate(() => ({
+      loader: getComputedStyle(document.getElementById('loader')).display !== 'none',
+      letters: [...document.querySelectorAll('.hero-mark svg')].map(s => getComputedStyle(s).clipPath),
+      heroText: getComputedStyle(document.querySelector('.hero-tag')).transform,
+    }));
+    report.interactions['opening-' + vp.name] = { during, after };
+    if (!during.loader || !during.run) problem('opening ' + vp.name, 'the loader did not show: ' + JSON.stringify(during));
+    if (after.loader) problem('opening ' + vp.name, 'the loader is still up after 4 s');
+    if (after.letters.some(c => c !== 'none')) problem('opening ' + vp.name, 'hero letters still clipped: ' + after.letters.join(' | '));
+    if (after.heroText !== 'none') problem('opening ' + vp.name, 'hero text did not settle: ' + after.heroText);
+    if (log.console.length || log.pageErrors.length) problem('opening ' + vp.name, [...log.console, ...log.pageErrors].slice(0, 3).join(' | '));
+    await page.close();
+  }
+
+  /* ---------- desktop: the strip, the capabilities, the header, links and the rest ---------- */
   {
     const vp = VIEWPORTS[0];
     const { page, log } = await newPage(browser, vp);
     await page.goto(BASE, { waitUntil: 'networkidle0' });
-    await sleep(1500);
+    await sleep(3400);
     const I = report.interactions.desktop = {};
-    // nav links land on their section
-    I.nav = [];
-    for (const href of ['#work', '#approach', '#capabilities', '#contact']) {
-      await page.click(`.nav a[href="${href}"]`);
-      await sleep(1900);
-      I.nav.push(await page.evaluate(h => { const el = document.querySelector(h); const r = el.getBoundingClientRect(); return { href: h, top: Math.round(r.top), focused: document.activeElement === el, hash: location.hash }; }, href));
+    const VW = vp.width, VH = vp.height;
+    // the strip: at rest the hero is half the width and the projects wait at the edge; each opens in turn
+    I.strip = { rest: await stripState(page) };
+    const r = I.strip.rest;
+    if (!r.wide) problem('strip', 'wide mode is off at 1440×900');
+    if (Math.abs(r.panels[0].w - VW * 0.5) > 2 || r.panels[1].x < VW * 0.45 || r.panels[4].x < VW * 0.9) problem('strip', 'rest layout: ' + JSON.stringify(r.panels));
+    if (r.pastHero) problem('strip', 'header controls shown over the hero');
+    const holdY = VH * 0.3;
+    for (const i of [1, 2, 3]) {
+      await stepTo(page, holdY + i * VH, 8, 1400);
+      const s = await stripState(page);
+      I.strip['open' + i] = s;
+      const p = s.panels[i];
+      if (Math.abs(p.x) > 3 || Math.abs(p.w - VW * 0.62) > 3) problem('strip', `project ${i} is not open at the left edge: ` + JSON.stringify(p));
+      if (!s.pastHero) problem('strip', 'logo and menu did not arrive after the hero');
     }
-    I.nav.forEach(n => { if (Math.abs(n.top - 72) > 6) problem('desktop nav', `${n.href} landed at ${n.top}px (header is 72px)`); });
+    // the last project closes into a column, the list fills the rest, and the stream starts
+    await stepTo(page, holdY + 3 * VH + 0.8 * VH + 20, 6, 1400);
+    I.strip.column = await stripState(page);
+    const c = I.strip.column;
+    if (Math.abs(c.panels[3].w - VW * 0.26) > 3 || Math.abs(c.panels[4].x - VW * 0.26) > 3 || Math.abs(c.panels[4].w - VW * 0.74) > 3 || !c.stream) problem('strip', 'column layout: ' + JSON.stringify(c));
+    I.listRisen = await page.evaluate(() => document.querySelector('.list-h').classList.contains('in'));
+    if (!I.listRisen) problem('strip', 'the work list heading did not rise');
+    // hero nav: Approach and Capabilities land at their tops; Work opens the work list
+    await scrollToY(page, 0, 1200);
+    I.nav = [];
+    for (const href of ['#approach', '#capabilities', '#work']) {
+      await page.evaluate(() => window.scrollTo(0, 0)); await sleep(700);
+      await page.click(`.hero-nav a[href="${href}"]`);
+      await sleep(2200);
+      I.nav.push(await page.evaluate(h => { const el = document.querySelector(h); const r = el.getBoundingClientRect(); return { href: h, top: Math.round(r.top), left: Math.round(r.left), focused: document.activeElement === el, hash: location.hash }; }, href));
+    }
+    I.nav.forEach(n => {
+      if (n.href === '#work') { if (Math.abs(n.left - VW * 0.26) > 4) problem('desktop nav', 'Work did not open the work list: ' + JSON.stringify(n)); }
+      else if (Math.abs(n.top) > 6) problem('desktop nav', `${n.href} landed at ${n.top}px`);
+      if (!n.focused) problem('desktop nav', `${n.href} did not take focus`);
+    });
+    // keyboard: focusing a project's arrow opens that project
+    await scrollToY(page, 0, 900);
+    await page.focus('[data-panel]:nth-child(3) .round');
+    await sleep(1600);
+    I.focusPanel = await stripState(page);
+    if (Math.abs(I.focusPanel.panels[2].x) > 4) problem('strip', "focusing Lenny's arrow did not open its panel: " + JSON.stringify(I.focusPanel.panels[2]));
+    // capabilities: each panel pushes in over the last, and the nav follows
+    const capTop = await page.evaluate(() => document.getElementById('capabilities').offsetTop);
+    I.caps = [];
+    for (const k of [0, 1, 2]) {
+      await stepTo(page, capTop + (0.25 + k) * VH + 10, 6, 1300);
+      I.caps.push(await page.evaluate(() => ({ x: [...document.querySelectorAll('.cap')].map(p => Math.round(p.getBoundingClientRect().left)), on: [...document.querySelectorAll('.cap-nav span')].findIndex(s => s.classList.contains('on')) })));
+    }
+    I.caps.forEach((s, k) => {
+      if (Math.abs(s.x[k]) > 3 || s.on !== k) problem('capabilities', `panel ${k + 1} not in place: ` + JSON.stringify(s));
+      if (k < 2 && !(s.x[k + 1] > VW * 0.85 && s.x[k + 1] < VW)) problem('capabilities', `the next panel does not wait at the edge: ` + JSON.stringify(s));
+    });
+    // the logo turns light over the dark sections
+    const apTop = await page.evaluate(() => document.getElementById('approach').offsetTop);
+    await stepTo(page, apTop + 200, 4, 900);
+    I.logoOnDark = await page.evaluate(() => getComputedStyle(document.querySelector('.top .logo')).color);
+    if (I.logoOnDark !== 'rgb(238, 234, 227)') problem('header', 'logo is not light over the approach: ' + I.logoOnDark);
     // rōk scrub follows scroll forward and back
     const rokY = await page.evaluate(() => { const c = document.querySelector('.crop'); return c.getBoundingClientRect().top + window.scrollY; });
     const scrubAt = async y => { await scrollToY(page, y, 1600); return page.evaluate(() => { const v = document.querySelector('.scrub-video'); return { t: +v.currentTime.toFixed(2), p: +getComputedStyle(document.querySelector('.scrub-meter')).getPropertyValue('--p') }; }); };
@@ -165,10 +239,9 @@ async function frameState(page) {
     const lenY = await page.evaluate(() => { const v = document.querySelector('#lennys .site-screens'); return v.getBoundingClientRect().top + window.scrollY - 120; });
     await scrollToY(page, lenY, 400);
     const colors = [];
-    for (let k = 0; k < 6; k++) { await sleep(1500); colors.push(await page.evaluate(() => ({ t: +document.querySelector('#lennys video[data-colors="d"]').currentTime.toFixed(1), bg: getComputedStyle(document.getElementById('lennys')).backgroundColor, on: [...document.querySelectorAll('.drinks li')].findIndex(li => li.classList.contains('is-on')) }))); }
+    for (let k = 0; k < 6; k++) { await sleep(1500); colors.push(await page.evaluate(() => ({ t: +document.querySelector('#lennys video[data-colors="d"]').currentTime.toFixed(1), bg: getComputedStyle(document.getElementById('lennys')).backgroundColor }))); }
     I.lennys = colors;
     if (new Set(colors.map(c => c.bg)).size < 2) problem("Lenny's", 'section color never changed while the recording played');
-    // the cocktail list lights during the cocktail chapter only (precomputed timings), never on the food menu
     I.lennysDrinks = await page.evaluate(async () => {
       const v = document.querySelector('#lennys video[data-colors="d"]'), seq = window.LUMERA_LENNYS_COLORS.dDrink;
       const at = async t => { v.currentTime = t; await new Promise(r => setTimeout(r, 900)); return [...document.querySelectorAll('.drinks li')].findIndex(li => li.classList.contains('is-on')); };
@@ -176,18 +249,33 @@ async function frameState(page) {
       return { firstDrinkAt: first / 10, onFirst: await at(first / 10 + 0.3), onMenu: await at(Math.min(v.duration - 2, seq.length / 10 - 8)) };
     });
     if (I.lennysDrinks.onFirst !== 0 || I.lennysDrinks.onMenu !== -1) problem("Lenny's", 'cocktail list lights at the wrong time: ' + JSON.stringify(I.lennysDrinks));
-    // BB's boundary grows with scroll
+    // BB's window grows with scroll
     const bbY = await page.evaluate(() => { const a = document.getElementById('bbs-art'); return a.getBoundingClientRect().top + window.scrollY; });
     const win = async y => { await scrollToY(page, y, 1500); return page.evaluate(() => getComputedStyle(document.getElementById('bbs-art')).getPropertyValue('--ww').trim()); };
     I.bbs = { early: await win(bbY - 800), later: await win(bbY - 150), end: await win(bbY + 300) };
-    if (!(parseFloat(I.bbs.later) > parseFloat(I.bbs.early) && parseFloat(I.bbs.end) >= parseFloat(I.bbs.later))) problem("BB's", 'boundary does not grow with scroll: ' + JSON.stringify(I.bbs));
-    // capability row borrows the frame
-    await page.evaluate(() => document.getElementById('capabilities').scrollIntoView());
-    await sleep(1400);
-    const row = await page.$('.cap-row');
-    await row.hover(); await sleep(900);
-    I.capHover = await frameState(page);
-    if (!/^Row/.test(I.capHover.role)) problem('capabilities', 'hovered row did not take the frame: ' + I.capHover.role);
+    if (!(parseFloat(I.bbs.later) > parseFloat(I.bbs.early) && parseFloat(I.bbs.end) >= parseFloat(I.bbs.later))) problem("BB's", 'window does not grow with scroll: ' + JSON.stringify(I.bbs));
+    // folds: closed by default, open by click and by keyboard; the credits stay outside them
+    I.folds = await page.evaluate(() => [...document.querySelectorAll('.build')].map(d => ({ open: d.open, credits: [...d.closest('.study').querySelectorAll('dt')].some(dt => /Credits/.test(dt.textContent) && !dt.closest('.build')) })));
+    if (I.folds.length !== 3 || I.folds.some(f => f.open)) problem('folds', 'expected three closed folds: ' + JSON.stringify(I.folds));
+    if (I.folds.some(f => !f.credits)) problem('folds', 'credits folded away in a study');
+    await page.evaluate(() => { const s = document.querySelector('#rok .build summary'); window.scrollTo(0, s.getBoundingClientRect().top + scrollY - 300); });
+    await sleep(700);
+    await page.click('#rok .build summary'); await sleep(900);
+    I.foldClick = await page.evaluate(() => { const d = document.querySelector('#rok .build'); const li = d.querySelector('li'); return { open: d.open, shown: li.getBoundingClientRect().height > 0 }; });
+    await page.focus('#bbs .build summary'); await page.keyboard.press('Enter'); await sleep(900);
+    I.foldKey = await page.evaluate(() => document.querySelector('#bbs .build').open);
+    if (!I.foldClick.open || !I.foldClick.shown) problem('folds', 'click did not open the rōk fold: ' + JSON.stringify(I.foldClick));
+    if (!I.foldKey) problem('folds', "Enter did not open the BB's fold");
+    // contrast of text on each colored surface
+    I.contrast = await page.evaluate(() => {
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const lum = s => { const [r, g, b] = s.match(/[\d.]+/g).map(Number); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+      const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return +((x + 0.05) / (y + 0.05)).toFixed(2); };
+      const bgOf = el => { for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) return c; } return 'rgb(238, 234, 227)'; };
+      const sel = ['.p-name', '.p-meta', '.hero-sub', '.list-text', '#rok .study-q', '#rok .facts dt', '#bbs .study-q', '#bbs .facts dt', '#lennys .study-q', '#lennys .facts dt', '.ap-rows p', '.cap-list', '.cap-note', '.contact-sub', '.foot-note', '.foot-info .dim'];
+      return sel.flatMap(s => [...document.querySelectorAll(s)].map(el => ({ s, r: ratio(getComputedStyle(el).color, bgOf(el)), op: +getComputedStyle(el).opacity })));
+    });
+    I.contrast.forEach(c => { if (c.op === 1 && c.r < 4.5) problem('contrast', `${c.s}: ${c.r}`); });
     // copy button
     await page.evaluate(() => document.getElementById('contact').scrollIntoView());
     await sleep(800);
@@ -196,34 +284,34 @@ async function frameState(page) {
     I.copy = await page.evaluate(() => document.querySelector('.copy-status').textContent);
     if (I.copy !== 'Copied') problem('contact', 'copy button status: ' + I.copy);
     I.mailto = await page.evaluate(() => [...document.querySelectorAll('a[href^="mailto:"]')].map(a => a.getAttribute('href')));
-    // keyboard: first Tab shows the skip link, then header links in order
-    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(800);
+    // keyboard: first Tab shows the skip link, then the hero's links, each with a visible outline; nothing hidden takes focus
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(3200);
     const order = [];
-    for (let k = 0; k < 8; k++) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; const cs = getComputedStyle(a); return `${a.tagName.toLowerCase()}:${(a.textContent || '').trim().slice(0, 22)}|outline=${cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0}`; })); }
+    for (let k = 0; k < 8; k++) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; const cs = getComputedStyle(a); return `${a.tagName.toLowerCase()}:${(a.textContent || '').trim().slice(0, 22)}|outline=${cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0}|op=${cs.opacity}`; })); }
     I.tabOrder = order;
     if (!/Skip/.test(order[0])) problem('keyboard', 'first Tab is not the skip link');
-    if (order.some(o => o.endsWith('outline=false'))) problem('keyboard', 'a focused control has no visible outline: ' + order.filter(o => o.endsWith('outline=false')).join(', '));
-    // refresh mid-page keeps a sane frame
+    if (order.some(o => /outline=false/.test(o))) problem('keyboard', 'a focused control has no visible outline: ' + order.filter(o => /outline=false/.test(o)).join(', '));
+    if (order.some(o => /op=0$/.test(o))) problem('keyboard', 'an invisible control took focus: ' + order.filter(o => /op=0$/.test(o)).join(', '));
+    // reload mid-page keeps a sane layout; no opening off the top
     await page.evaluate(() => { const el = document.getElementById('lennys'); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY + 200); });
     await sleep(800);
-    // mid-page the walkthroughs keep streaming, so the network never goes quiet: wait for load instead
     await page.reload({ waitUntil: 'load' }); await sleep(2000);
-    I.reloadMid = { y: await page.evaluate(() => Math.round(window.scrollY)), frame: await frameState(page) };
+    I.reloadMid = await page.evaluate(() => ({ y: Math.round(scrollY), loader: getComputedStyle(document.getElementById('loader')).display !== 'none', wide: document.documentElement.classList.contains('wide') }));
+    if (I.reloadMid.loader) problem('reload', 'the opening ran on a mid-page reload');
     // resize without reload: 1440 → 900 → 1440
     await page.setViewport({ width: 900, height: 900 }); await sleep(1200);
-    I.resizeNarrow = { mode: await page.evaluate(() => document.documentElement.className), hscroll: await page.evaluate(() => document.documentElement.scrollWidth > innerWidth) };
+    I.resizeNarrow = await page.evaluate(() => ({ wide: document.documentElement.classList.contains('wide'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
     await page.setViewport({ width: 1440, height: 900 }); await sleep(1200);
-    I.resizeBack = { mode: await page.evaluate(() => document.documentElement.className), frame: await frameState(page), hscroll: await page.evaluate(() => document.documentElement.scrollWidth > innerWidth) };
-    if (!/af-off/.test(I.resizeNarrow.mode) || !/af-on/.test(I.resizeBack.mode)) problem('resize', 'frame mode did not follow the width: ' + I.resizeNarrow.mode + ' → ' + I.resizeBack.mode);
+    I.resizeBack = await page.evaluate(() => ({ wide: document.documentElement.classList.contains('wide'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
+    if (I.resizeNarrow.wide || I.resizeNarrow.strip || !I.resizeBack.wide || !I.resizeBack.strip) problem('resize', 'layout did not follow the width: ' + JSON.stringify([I.resizeNarrow, I.resizeBack]));
     if (I.resizeNarrow.hscroll || I.resizeBack.hscroll) problem('resize', 'horizontal overflow after resizing');
     // drag through arbitrary widths
     I.widths = [];
     for (const w of [1366, 1180, 1023, 960, 820, 700, 600, 520, 480, 1600, 1920]) {
       await page.setViewport({ width: w, height: 900 }); await sleep(500);
-      const a = await page.evaluate(() => ({ w: innerWidth, hscroll: document.documentElement.scrollWidth > innerWidth + 1, fit: [...document.querySelectorAll('.fit-line')].map(l => l.getBoundingClientRect().right <= l.closest('.fit').getBoundingClientRect().right + 1).every(Boolean) }));
+      const a = await page.evaluate(() => ({ w: innerWidth, hscroll: document.documentElement.scrollWidth > innerWidth + 1 }));
       I.widths.push(a);
       if (a.hscroll) problem('resize sweep', `overflow at ${w}px`);
-      if (!a.fit) problem('resize sweep', `fitted headline crosses its frame at ${w}px`);
     }
     report.interactions.desktopLog = log;
     if (log.console.length || log.pageErrors.length) problem('desktop interactions', [...log.console, ...log.pageErrors].slice(0, 4).join(' | '));
@@ -234,24 +322,24 @@ async function frameState(page) {
   {
     const vp = VIEWPORTS[5];
     const { page, log } = await newPage(browser, vp);
-    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(1200);
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(3200);
     const M = report.interactions.menu = {};
-    await page.click('#menu-btn'); await sleep(400);
+    await page.click('#menu-btn'); await sleep(1100);
     M.open = await page.evaluate(() => ({ hidden: document.getElementById('menu').hidden, expanded: document.getElementById('menu-btn').getAttribute('aria-expanded'), focus: document.activeElement.textContent.trim(), mainInert: document.getElementById('main').inert }));
     await page.screenshot({ path: path.join(OUT, 'menu-open-390.jpg'), type: 'jpeg', quality: 72 });
-    // focus stays inside
-    for (let k = 0; k < 8; k++) await page.keyboard.press('Tab');
+    for (let k = 0; k < 10; k++) await page.keyboard.press('Tab');
     M.trapped = await page.evaluate(() => !!document.activeElement.closest('#menu'));
-    await page.keyboard.press('Escape'); await sleep(300);
+    await page.keyboard.press('Escape'); await sleep(1100);
     M.afterEscape = await page.evaluate(() => ({ hidden: document.getElementById('menu').hidden, focus: document.activeElement.id }));
-    await page.click('#menu-btn'); await sleep(300);
-    await page.click('#menu nav a[href="#capabilities"]'); await sleep(1800);
+    await page.click('#menu-btn'); await sleep(1000);
+    await page.click('.menu-nav a[href="#capabilities"]'); await sleep(2400);
     M.linkNav = await page.evaluate(() => ({ hidden: document.getElementById('menu').hidden, top: Math.round(document.getElementById('capabilities').getBoundingClientRect().top) }));
     if (M.open.hidden || M.open.expanded !== 'true' || !M.open.mainInert) problem('menu', 'did not open correctly');
     if (!M.trapped) problem('menu', 'focus escaped the open menu');
-    if (!M.afterEscape.hidden || M.afterEscape.focus !== 'menu-btn') problem('menu', 'Escape did not close and return focus');
-    if (!M.linkNav.hidden || Math.abs(M.linkNav.top - 60) > 8) problem('menu', 'menu link did not close and land: ' + JSON.stringify(M.linkNav));
+    if (!M.afterEscape.hidden || M.afterEscape.focus !== 'menu-btn') problem('menu', 'Escape did not close and return focus: ' + JSON.stringify(M.afterEscape));
+    if (!M.linkNav.hidden || Math.abs(M.linkNav.top) > 8) problem('menu', 'menu link did not close and land: ' + JSON.stringify(M.linkNav));
     report.interactions.menuLog = log;
+    if (log.console.length || log.pageErrors.length) problem('menu', [...log.console, ...log.pageErrors].slice(0, 3).join(' | '));
     await page.close();
   }
 
@@ -261,17 +349,21 @@ async function frameState(page) {
     await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(1200);
     const R = report.interactions['reduced-' + vp.name] = {};
     R.mode = await page.evaluate(() => document.documentElement.className);
-    R.overlayHidden = await page.evaluate(() => getComputedStyle(document.getElementById('af')).display === 'none');
+    R.loader = await page.evaluate(() => getComputedStyle(document.getElementById('loader')).display !== 'none');
     R.playButtons = await page.evaluate(() => document.querySelectorAll('.play').length);
     R.autoplaying = await page.evaluate(() => [...document.querySelectorAll('video')].filter(v => !v.paused).length);
     const H = await page.evaluate(() => document.documentElement.scrollHeight);
     let k = 0;
     for (let y = 0; y < H; y += vp.height * 1.6) { await scrollToY(page, y, 350); if (k < 12) await page.screenshot({ path: path.join(OUT, `reduced-${vp.name}-${String(k++).padStart(2, '0')}.jpg`), type: 'jpeg', quality: 65 }); }
-    R.allBracketsDrawn = await page.evaluate(() => [...document.querySelectorAll('[data-frame]')].every(el => el.classList.contains('in')));
-    // the headline fit must work without transitions too (it measures its own size changes)
-    R.heroFill = await page.evaluate(() => { const h = document.querySelector('.intro h1'), l = h.querySelector('.fit-line'); return +(l.getBoundingClientRect().width / h.clientWidth).toFixed(3); });
-    if (R.heroFill < 0.97) problem('reduced motion', `hero wordmark fills only ${Math.round(R.heroFill * 100)}% of its frame`);
-    if (!R.overlayHidden) problem('reduced motion', 'moving frame still shown');
+    R.hidden = await page.evaluate(() => {
+      const bad = [];
+      document.querySelectorAll('.hero-mark svg, .foot-mark svg').forEach(s => { const cs = getComputedStyle(s); if (cs.clipPath !== 'none' || cs.transform !== 'none') bad.push('letter'); });
+      document.querySelectorAll('[data-rise] span').forEach(s => { if (getComputedStyle(s).transform !== 'none') bad.push('word'); });
+      return bad.length;
+    });
+    if (/\bwide\b/.test(R.mode)) problem('reduced motion', 'the pinned sideways layout runs with reduced motion');
+    if (R.loader) problem('reduced motion', 'the opening ran');
+    if (R.hidden) problem('reduced motion', `${R.hidden} letters or words are not in their final place`);
     if (R.autoplaying) problem('reduced motion', 'recordings autoplay');
     const loops = await page.evaluate(() => document.querySelectorAll('video.media-video').length);
     if (R.playButtons !== loops) problem('reduced motion', `${R.playButtons} Play buttons for ${loops} recordings`);
@@ -285,8 +377,7 @@ async function frameState(page) {
     await page.setJavaScriptEnabled(false);
     await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: vp.dpr || 1, isMobile: !!vp.touch, hasTouch: !!vp.touch });
     await page.goto(BASE, { waitUntil: 'networkidle0' });
-    const ids = ['rok', 'lennys', 'bbs'];
-    for (const id of ids) {
+    for (const id of ['work', 'rok', 'lennys', 'bbs']) {
       await page.evaluate(id => document.getElementById(id).scrollIntoView(), id);
       await sleep(250);
       await page.screenshot({ path: path.join(OUT, `nojs-${vp.name}-${id}.jpg`), type: 'jpeg', quality: 70 });
@@ -295,28 +386,24 @@ async function frameState(page) {
     await page.screenshot({ path: path.join(OUT, `nojs-${vp.name}-hero.jpg`), type: 'jpeg', quality: 70 });
     const N = report.interactions['noJS-' + vp.name] = await page.evaluate(() => {
       const shown = el => !!el && getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().width > 0;
-      const h1 = document.querySelector('h1');
       const media = [...document.querySelectorAll('.crop, .site-desk, .phone-screen')].map(box => {
         const img = box.querySelector('img'); const b = box.getBoundingClientRect(), r = img ? img.getBoundingClientRect() : null;
         return { box: box.className, still: !!img && img.complete && img.naturalWidth > 0, fills: !!r && Math.abs(r.width - b.width) < 2 && Math.abs(r.height - b.height) < 2, src: img ? img.currentSrc.split('/').pop() : null };
       });
-      const fitOver = [...document.querySelectorAll('.fit')].some(f => [...f.querySelectorAll('.fit-line')].some(l => l.getBoundingClientRect().right > f.getBoundingClientRect().right + 1));
       return {
-        h1Visible: getComputedStyle(h1).visibility, text: h1.innerText.replace(/\s+/g, ' '),
-        hscroll: document.documentElement.scrollWidth > innerWidth, fitOver, media,
+        h1: document.querySelector('h1').innerText.replace(/\s+/g, ' '), hscroll: document.documentElement.scrollWidth > innerWidth, media,
+        heroNav: shown(document.querySelector('.hero-nav')),
         videosShown: [...document.querySelectorAll('video')].filter(shown).length,
-        deadControls: ['.menu-btn', '.copy', '.play'].filter(sel => [...document.querySelectorAll(sel)].some(shown)),
-        headerBg: getComputedStyle(document.querySelector('.bar')).backgroundColor,
+        deadControls: ['.burger', '.copy', '.play', '.live-btn'].filter(sel => [...document.querySelectorAll(sel)].some(shown)),
       };
     });
     const where = 'no-JS ' + vp.name;
-    if (N.h1Visible !== 'visible') problem(where, 'headline hidden');
+    if (!/Where design meets innovation/.test(N.h1)) problem(where, 'headline text missing: ' + N.h1);
     if (N.hscroll) problem(where, 'horizontal overflow');
-    if (N.fitOver) problem(where, 'a display headline crosses its frame');
+    if (!N.heroNav) problem(where, 'no navigation without the menu button');
     N.media.forEach(m => { if (!m.still || !m.fills) problem(where, `no still filling ${m.box} (${m.src})`); });
     if (N.videosShown) problem(where, `${N.videosShown} empty video boxes shown`);
     if (N.deadControls.length) problem(where, 'controls that need JavaScript are shown: ' + N.deadControls.join(', '));
-    if (/rgba\(0, 0, 0, 0\)|transparent/.test(N.headerBg)) problem(where, 'header has no background over light sections');
     await page.close();
   }
 
@@ -326,9 +413,9 @@ async function frameState(page) {
     const page = await browser.newPage();
     await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: vp.dpr || 1, isMobile: !!vp.touch, hasTouch: !!vp.touch });
     await page.goto(BASE, { waitUntil: 'networkidle0' });
-    await sleep(800);
+    await sleep(3200);
     const L = report.interactions['live-' + vp.name] = {};
-    L.buttons = await page.evaluate(() => [...document.querySelectorAll('.live-btn')].map(b => `${b.closest('.proj').id}/${b.dataset.live}:${b.hidden ? 'hidden' : 'shown'}`));
+    L.buttons = await page.evaluate(() => [...document.querySelectorAll('.live-btn')].map(b => `${b.closest('.study').id}/${b.dataset.live}:${b.hidden ? 'hidden' : 'shown'}`));
     await page.evaluate(s => { const e = document.querySelector(s); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 90); }, sel);
     await sleep(1400);
     await page.click(`${sel} .live-btn[data-live="${kind}"]`);

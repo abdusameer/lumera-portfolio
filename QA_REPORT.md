@@ -1,4 +1,12 @@
-# QA report — Lumera Creative portfolio rebuild
+# QA report
+
+## Latest: the light edition (2026-09-30)
+
+`qa/check.mjs` (rewritten for the new page): **0 problems** at 1440×900, 1280×800, 1024×768, 768×1024, 430×932, 390×844, 360×800 and 844×390, plus the opening, the sideways strip, keyboard focus, capabilities, navigation, folds, contrast (lowest 5.98:1), rōk's scrub, Lenny's colors, BB's window, copy, tab order, reload, resize, the phone menu, reduced motion, no JavaScript, Scroll it yourself and the legal page.
+
+Lighthouse (three warm runs, local): mobile 98 / 100 / 100 / 100, LCP 2.1–2.2 s, CLS 0; desktop 98–99 / 100 / 100 / 100, CLS 0.
+
+The sections below describe earlier versions.
 
 - **Date:** 2026-09-29
 - **Branch:** `redesign/adaptive-frame` (local; not pushed or merged)

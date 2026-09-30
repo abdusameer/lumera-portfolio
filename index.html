@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lumera Creative — Where design meets innovation</title>
 <meta name="description" content="Lumera Creative: where design meets innovation. We start with the problem, then design and build the technology it calls for. Concept studies: rōk, Lenny's Casita and BB's Bakery.">
-<meta name="theme-color" content="#0D0C0A">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#EEEAE3">
+<meta name="color-scheme" content="light">
 <meta name="author" content="Lumera Creative">
 <meta name="copyright" content="© 2026 Lumera Creative. All rights reserved.">
 <link rel="canonical" href="https://abdusameer.github.io/lumera-portfolio/">
@@ -20,9 +20,11 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="assets/fonts/archivo-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="62vw" media="(min-width: 1024px)">
 <link rel="stylesheet" href="assets/css/lumera.css">
+<!-- before the first paint: the layout mode, and whether the opening runs (a fresh visit at the top; not on reload or back) -->
+<script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');if(!m&&w>=1024&&w>h*1.1)d.classList.add('wide');if(!m&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,323 +38,408 @@
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false">
-  <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
-  <symbol id="i-down" viewBox="0 0 16 16"><path d="M8 1v13M3 9l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
-  <symbol id="i-out" viewBox="0 0 16 16"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <defs>
+    <!-- LUMERA, drawn from Archivo at its narrowest width (62) and heaviest weight (800); each letter stretches to its box -->
+    <path id="g-L" d="M0 688V0H152V555H354V688Z"/>
+    <path id="g-U" d="M207 700Q143 700 97 678Q51 657 25 605Q0 553 0 464V0H153V474Q153 521 164 545Q175 570 207 570Q239 570 250 545Q261 521 261 474V0H415V464Q415 553 390 605Q365 657 319 678Q273 700 207 700Z"/>
+    <path id="g-M" d="M0 688V0H214L269 309Q273 325 276 350Q280 375 284 401Q289 427 292 447H300Q302 430 306 407Q310 384 314 358Q318 333 321 309L376 0H584V688H440V387Q440 352 441 320Q442 288 444 263Q445 238 445 226H437Q436 237 433 253Q430 269 427 284Q424 299 422 312L351 688H233L162 311Q161 303 158 287Q154 271 152 254Q150 238 146 225H139Q141 246 142 273Q142 301 143 331Q144 361 144 387V688Z"/>
+    <path id="g-E" d="M0 688V0H380V132H153V273H346V404H153V556H384V688Z"/>
+    <path id="g-R" d="M0 688V0H230Q306 0 348 28Q390 56 407 102Q424 148 424 206Q424 265 410 314Q395 363 359 393L447 688H289L224 444H152V688ZM152 320H209Q245 320 258 292Q272 263 272 220Q272 190 266 170Q259 149 246 138Q233 128 206 128H152Z"/>
+    <path id="g-A" d="M0 688 145 0H354L499 688H340L317 561H177L156 688ZM197 434H297L267 249Q266 242 264 229Q262 216 260 199Q257 182 256 167Q254 152 251 137H243Q242 153 239 174Q236 195 234 216Q231 236 228 249Z"/>
+  </defs>
+  <symbol id="i-ne" viewBox="0 0 16 16"><path d="M3.5 12.5 12.5 3.5M5 3.5h7.5V11" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 16 16"><path d="M8 1.5v12.5M3 9l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
   <symbol id="i-laptop" viewBox="0 0 16 16"><path d="M3 3.5h10v7.5H3zM1 13.5h14" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
   <symbol id="i-phone" viewBox="0 0 16 16"><path d="M4.5 1.5h7v13h-7zM7 12.5h2" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
 </svg>
 
 <a class="skip" href="#work">Skip to selected work</a>
 
-<header class="bar" id="bar">
-  <a class="mark" href="#top" aria-label="Lumera Creative, back to top"><span class="mark-l">LUMERA</span> <span class="mark-c">Creative</span></a>
-  <nav class="nav" aria-label="Primary">
-    <a href="#work">Work</a>
-    <a href="#approach">Approach</a>
-    <a href="#capabilities">Capabilities</a>
-    <a class="nav-cta" href="#contact">Start a project</a>
-  </nav>
-  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span>Menu</span><i aria-hidden="true"></i></button>
+<!-- the opening: the letters as thin slices, then the page slides in over them -->
+<div class="loader" id="loader" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></div>
+
+<header class="top" id="top-bar">
+  <a class="logo" href="#top" aria-label="Lumera Creative, back to top"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></a>
+  <button class="burger" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="burger-label">Menu</span><span class="burger-dot" aria-hidden="true"><i></i><i></i></span></button>
 </header>
 
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
   <div class="menu-in">
     <div class="menu-top">
-      <p class="label" id="menu-title">Menu</p>
-      <button class="menu-close" type="button" id="menu-close">Close</button>
+      <a class="logo logo--menu" href="#top" aria-label="Lumera Creative, back to top"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></a>
+      <button class="menu-close" id="menu-close" type="button" aria-label="Close the menu"><i></i><i></i></button>
     </div>
-    <nav aria-label="Menu">
-      <a href="#work"><span class="num">01</span>Work</a>
-      <a href="#approach"><span class="num">02</span>Approach</a>
-      <a href="#capabilities"><span class="num">03</span>Capabilities</a>
-      <a href="#contact"><span class="num">04</span>Start a project</a>
+    <nav class="menu-nav" aria-label="Menu">
+      <a href="#work"><span>Work</span></a>
+      <a href="#approach"><span>Approach</span></a>
+      <a href="#capabilities"><span>Capabilities</span></a>
+      <a href="#contact"><span>Contact</span></a>
     </nav>
-    <p class="menu-mail"><a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a></p>
+    <div class="menu-info small">
+      <div><p>Lumera Creative</p><p class="dim">Creative technology partner</p></div>
+      <div><a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a><a href="legal.html">Legal &amp; credits</a></div>
+    </div>
+    <div class="menu-mark" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></div>
   </div>
 </div>
 
 <main id="main">
-  <!-- 01 — Introduction -->
-  <section class="intro" id="top" aria-labelledby="intro-title">
-    <div class="intro-frame" data-frame="open" data-frame-label="Open">
-      <p class="intro-label label"><span>Creative technology partner</span></p>
-      <h1 class="fit" id="intro-title" data-catch>
-        <span class="fit-line">Lumera</span><span class="visually-hidden"> — </span>
-        <span class="intro-tag">Where design meets innovation.</span>
-      </h1>
-      <div class="intro-foot">
-        <p class="intro-sub">We design and build the technology the problem calls for.</p>
-        <div class="intro-actions">
-          <a class="btn" href="#work">View selected work <svg class="i" aria-hidden="true"><use href="#i-down"/></svg></a>
-          <a class="btn btn-gold" href="#contact">Start a project <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  <!-- the opening and the work: on wide screens one pinned stage that moves sideways;
+       each project waits at the edge as a strip of its color and opens as it arrives -->
+  <section class="strip" id="top" aria-label="Lumera Creative and selected work">
+    <div class="stage" id="stage">
+
+      <div class="panel panel--hero" data-panel>
+        <nav class="hero-nav" aria-label="Primary">
+          <a href="#work" style="--dot: var(--c-rok)"><i aria-hidden="true"></i>Work</a>
+          <a href="#approach" style="--dot: var(--c-lennys)"><i aria-hidden="true"></i>Approach</a>
+          <a href="#capabilities" style="--dot: var(--c-bbs)"><i aria-hidden="true"></i>Capabilities</a>
+          <a href="#contact" style="--dot: var(--gold)"><i aria-hidden="true"></i>Contact</a>
+        </nav>
+        <h1 class="hero-h"><span class="visually-hidden">Lumera Creative. </span><span class="hero-mark" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></span><span class="hero-tag">Where design meets innovation.</span></h1>
+        <p class="hero-sub">We design and build the technology the problem calls for.</p>
+        <div class="hero-foot small">
+          <span>Creative technology partner</span>
+          <span>Concept studies · 2026</span>
+          <a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a>
         </div>
       </div>
+
+      <article class="panel panel--proj" data-panel style="--pc: var(--c-rok)" aria-label="01, rōk coffee and tea">
+        <div class="p-scroll">
+          <div class="p-media">
+            <img src="assets/img/work/rok-panel-900.webp" srcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" sizes="(min-width: 1024px) 62vw, 100vw" width="1600" height="1000" alt="A matcha latte in a clear cup printed with rōk, overflowing onto moss above misty tea hills.">
+            <span class="tag">Concept image</span>
+          </div>
+        </div>
+        <div class="p-info">
+          <p class="p-meta small"><span class="chip">2026</span><span>Concept study</span><span>Matcha · four cafés in Los Angeles</span></p>
+          <p class="p-name">rōk</p>
+          <span class="p-num small">01</span>
+          <a class="round" href="#rok" aria-label="rōk coffee and tea: see the study"><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+        </div>
+      </article>
+
+      <article class="panel panel--proj" data-panel style="--pc: var(--c-lennys)" aria-label="02, Lenny's Casita">
+        <div class="p-scroll">
+          <div class="p-media">
+            <img src="assets/img/work/lennys-panel-900.webp" srcset="assets/img/work/lennys-panel-900.webp 900w, assets/img/work/lennys-panel-1600.webp 1600w" sizes="(min-width: 1024px) 62vw, 100vw" width="1600" height="1000" alt="A board of Lenny's Casita tacos, grilled meats and fries." loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="p-info">
+          <p class="p-meta small"><span class="chip">2026</span><span>Concept study</span><span>Mexicali street food · Pico Boulevard</span></p>
+          <p class="p-name">Lenny's Casita</p>
+          <span class="p-num small">02</span>
+          <a class="round" href="#lennys" aria-label="Lenny's Casita: see the study"><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+        </div>
+      </article>
+
+      <article class="panel panel--proj panel--bbs" data-panel style="--pc: var(--c-bbs)" aria-label="03, BB's Bakery">
+        <div class="p-scroll">
+          <div class="p-media">
+            <img src="assets/img/bbs/hero-loaf-photo-700.webp" srcset="assets/img/bbs/hero-loaf-photo-700.webp 700w, assets/img/bbs/hero-loaf-photo-1100.webp 1100w" sizes="(min-width: 1024px) 40vw, 90vw" width="1100" height="1100" alt="A crusty round loaf with a cross-shaped score." loading="lazy" decoding="async">
+            <span class="tag">Concept image</span>
+          </div>
+          <!-- the rest of the work, streaming up the column once the strip has closed -->
+          <div class="stream" aria-hidden="true">
+            <figure><img src="assets/img/work/s-rok-field-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"><span class="tag">Concept image</span></figure>
+            <figure><img src="assets/img/work/s-rok-store-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"></figure>
+            <figure><img src="assets/img/work/s-rok-drinks-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"><span class="tag">Concept image</span></figure>
+            <figure><img src="assets/img/work/s-lennys-lenny-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"></figure>
+            <figure><img src="assets/img/work/s-lennys-wagyu-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"></figure>
+            <figure><img src="assets/img/work/s-lennys-eggplant-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"></figure>
+            <figure class="on-white"><img src="assets/img/work/s-bbs-sandwich-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"><span class="tag">Concept image</span></figure>
+            <figure class="on-white"><img src="assets/img/work/s-bbs-latte-720.webp" width="720" height="450" alt="" loading="lazy" decoding="async"><span class="tag">Concept image</span></figure>
+          </div>
+        </div>
+        <div class="p-info">
+          <p class="p-meta small"><span class="chip">2026</span><span>Concept study</span><span>Bakery, coffee &amp; tea · Olympic Boulevard</span></p>
+          <p class="p-name">BB's Bakery</p>
+          <span class="p-num small">03</span>
+          <a class="round" href="#bbs" aria-label="BB's Bakery: see the study"><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+        </div>
+        <a class="pill stream-pill" href="#rok">See the studies</a>
+      </article>
+
+      <div class="panel panel--list" data-panel id="work" aria-labelledby="work-title">
+        <div class="list-in">
+          <h2 class="big list-h" id="work-title" data-rise>Selected work</h2>
+          <ol class="list-rows small" aria-label="Projects">
+            <li><a href="#rok"><span class="num">01</span><span>rōk coffee and tea</span></a></li>
+            <li><a href="#lennys"><span class="num">02</span><span>Lenny's Casita</span></a></li>
+            <li><a href="#bbs"><span class="num">03</span><span>BB's Bakery</span></a></li>
+          </ol>
+          <p class="list-text" data-rise>Three concept studies from 2026. Each is an independent redesign of a real Los Angeles business, designed and built end to end.</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- 02 — Selected Work -->
-  <section class="work" id="work" aria-labelledby="work-title">
-    <header class="work-head">
-      <h2 class="label" id="work-title">Selected work</h2>
-      <p class="work-lede">Three concept studies from 2026. Each is an independent redesign of a real Los Angeles business, designed and built end to end.</p>
-      <ol class="work-index" aria-label="Projects">
-        <li><a href="#rok"><span class="num">01</span>rōk coffee and tea</a></li>
-        <li><a href="#lennys"><span class="num">02</span>Lenny's Casita</a></li>
-        <li><a href="#bbs"><span class="num">03</span>BB's Bakery</a></li>
-      </ol>
+  <!-- the studies: each on its color, with the whole site on a laptop and a phone -->
+  <article class="study study--rok" id="rok" aria-labelledby="rok-title" style="--sc: var(--c-rok)">
+    <header class="study-head">
+      <p class="study-num small"><span>01</span> / 03</p>
+      <h3 class="study-title" id="rok-title" data-rise>rōk coffee and tea</h3>
+      <p class="study-meta small"><span class="chip">Concept study</span><span>2026</span><span>Design · Development · 3D · Motion</span></p>
+      <p class="study-q"><span class="small">Starting question</span>Can the signature drink be the first thing you feel, before you read a word?</p>
     </header>
-
-    <!-- 01 rōk: the frame becomes a crop, scrubbed by scroll -->
-    <article class="proj proj--rok" id="rok" aria-labelledby="rok-title" data-tone="dark">
-      <div class="proj-n" data-frame="neutral" data-frame-label="01 / 03"><span class="num">01</span></div>
-      <div class="rok-grid">
-        <div class="proj-head">
-          <p class="proj-meta"><span class="chip">Concept Study</span><span class="num">2026</span><span>Design · Development · 3D · Motion</span></p>
-          <h3 class="proj-title" id="rok-title">rōk coffee and tea</h3>
-          <p class="proj-place">Ceremonial Uji matcha · four cafés in Los Angeles</p>
+    <figure class="site" id="rok-site">
+      <div class="site-screens">
+        <div class="site-desk">
+          <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/rok-site-poster.webp" data-src="assets/video/rok-site.mp4" data-src-sm="assets/video/rok-site-sm.mp4" aria-label="Screen recording of the whole rōk site on a laptop, scrolled from top to bottom."></video>
+          <noscript><img class="media-video" src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="The rōk site on a laptop, at the top of the page." loading="lazy"></noscript>
         </div>
-        <figure class="rok-media">
-          <div class="crop" data-frame="crop" data-frame-label="Crop" data-frame-clip>
-            <video class="scrub-video" muted playsinline preload="none" width="780" height="1050" data-poster="assets/video/rok-scrub-poster.webp" data-poster-end="assets/video/rok-scrub-end.webp" data-scrub="assets/video/rok-scrub.mp4" aria-label="The rōk pour: matcha fills a clear cup printed with rōk to the brim, then overflows down over the print. Scrolling this section plays it forward and back."></video>
-            <noscript><img class="scrub-video" src="assets/video/rok-scrub-poster.webp" width="780" height="1050" alt="Still from the rōk pour: a clear cup printed with rōk, filled with ice and milk, before the matcha." loading="lazy"></noscript>
-            <div class="scrub-meter" aria-hidden="true"><i></i></div>
+        <div class="site-phone">
+          <div class="phone-screen">
+            <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/rok-site-m-poster.webp" data-src="assets/video/rok-site-m.mp4" aria-label="Screen recording of the whole rōk site on a phone, scrolled from top to bottom."></video>
+            <noscript><img class="media-video" src="assets/video/rok-site-m-poster.webp" width="780" height="1688" alt="The rōk site on a phone, at the top of the page." loading="lazy"></noscript>
           </div>
-          <figcaption>Scroll to pour. A recording of the live study, scrubbed by your scroll the same way the site is.</figcaption>
-        </figure>
-        <div class="proj-body">
+        </div>
+      </div>
+      <div class="site-live" hidden>
+        <button class="live-btn pill" type="button" data-live="desk" data-src="https://abdusameer.github.io/rok_cafe/" data-name="rōk"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
+        <button class="live-btn pill" type="button" data-live="phone" data-src="https://abdusameer.github.io/rok_cafe/" data-name="rōk"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
+      </div>
+      <figcaption>The whole site on a laptop and a phone: the pour, the four cafés, the Fellow mug kit in 3D, press and the FAQ.</figcaption>
+    </figure>
+    <div class="study-body">
+      <figure class="rok-media">
+        <div class="crop">
+          <video class="scrub-video" muted playsinline preload="none" width="780" height="1050" data-poster="assets/video/rok-scrub-poster.webp" data-poster-end="assets/video/rok-scrub-end.webp" data-scrub="assets/video/rok-scrub.mp4" aria-label="The rōk pour: matcha fills a clear cup printed with rōk to the brim, then overflows down over the print. Scrolling this section plays it forward and back."></video>
+          <noscript><img class="scrub-video" src="assets/video/rok-scrub-poster.webp" width="780" height="1050" alt="Still from the rōk pour: a clear cup printed with rōk, filled with ice and milk, before the matcha." loading="lazy"></noscript>
+          <div class="scrub-meter" aria-hidden="true"><i></i></div>
+        </div>
+        <figcaption>Scroll to pour. A recording of the live study, scrubbed by your scroll the same way the site is.</figcaption>
+      </figure>
+      <div class="study-facts">
+        <dl class="facts">
+          <div><dt class="small">Direction</dt><dd>One pour, driven by the visitor's scroll. Scroll down and the cup fills until it overflows. Scroll back and it drains.</dd></div>
+          <div><dt class="small">Credits</dt><dd>Storefront photos by rōk. Drink and scene imagery are AI-generated stand-ins, disclosed on the site.</dd></div>
+        </dl>
+        <details class="build">
+          <summary>How we built it<i aria-hidden="true"></i></summary>
           <dl class="facts">
-            <div><dt>Starting question</dt><dd>Can the signature drink be the first thing you feel, before you read a word?</dd></div>
-            <div><dt>Direction</dt><dd>One pour, driven by the visitor's scroll. Scroll down and the cup fills until it overflows. Scroll back and it drains.</dd></div>
-            <div><dt>What we built</dt><dd><ul>
+            <div><dt class="small">What we built</dt><dd><ul>
               <li>Scroll-scrubbed hero film, with a still fallback for reduced motion</li>
               <li>Pinned locations story with a route map drawn from the four real addresses</li>
               <li>Exploded 3D view of the rōk × Fellow travel mug kit, modeled and rendered in Blender, in four colorways</li>
               <li>Tested at 21 viewport sizes, from 360 to 2560 px wide</li>
             </ul></dd></div>
-            <div><dt>Built with</dt><dd>HTML, CSS, JavaScript, Blender, ffmpeg</dd></div>
-            <div><dt>Credits</dt><dd>Storefront photos by rōk. Drink and scene imagery are AI-generated stand-ins, disclosed on the site.</dd></div>
+            <div><dt class="small">Built with</dt><dd>HTML, CSS, JavaScript, Blender, ffmpeg</dd></div>
           </dl>
-          <a class="btn btn-line" href="https://abdusameer.github.io/rok_cafe/" target="_blank" rel="noopener">Visit the live study <svg class="i" aria-hidden="true"><use href="#i-out"/></svg><span class="visually-hidden"> (opens in a new tab)</span></a>
-        </div>
+        </details>
+        <a class="pill" href="https://abdusameer.github.io/rok_cafe/" target="_blank" rel="noopener">Visit the live study<span class="visually-hidden"> (opens in a new tab)</span></a>
       </div>
-      <figure class="site" id="rok-site">
-        <div class="site-screens" data-frame="site" data-frame-label="Site" data-frame-clip>
-          <div class="site-desk">
-            <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/rok-site-poster.webp" data-src="assets/video/rok-site.mp4" data-src-sm="assets/video/rok-site-sm.mp4" aria-label="Screen recording of the whole rōk site on a laptop, scrolled from top to bottom."></video>
-            <noscript><img class="media-video" src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="The rōk site on a laptop, at the top of the page." loading="lazy"></noscript>
-          </div>
-          <div class="site-phone">
-            <div class="phone-screen">
-              <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/rok-site-m-poster.webp" data-src="assets/video/rok-site-m.mp4" aria-label="Screen recording of the whole rōk site on a phone, scrolled from top to bottom."></video>
-              <noscript><img class="media-video" src="assets/video/rok-site-m-poster.webp" width="780" height="1688" alt="The rōk site on a phone, at the top of the page." loading="lazy"></noscript>
-            </div>
-          </div>
-        </div>
-        <div class="site-live" hidden>
-          <button class="live-btn" type="button" data-live="desk" data-src="https://abdusameer.github.io/rok_cafe/" data-name="rōk"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
-          <button class="live-btn" type="button" data-live="phone" data-src="https://abdusameer.github.io/rok_cafe/" data-name="rōk"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
-        </div>
-        <figcaption>The whole site on a laptop and a phone: the pour, the four cafés, the Fellow mug kit in 3D, press and the FAQ.</figcaption>
-      </figure>
-    </article>
+    </div>
+  </article>
 
-    <!-- 02 Lenny's: the frame becomes a viewport onto both screens; the section takes the color of the page on screen -->
-    <article class="proj proj--lennys" id="lennys" aria-labelledby="lennys-title" data-tone="dark">
-      <div class="proj-n" data-frame="neutral" data-frame-label="02 / 03"><span class="num">02</span></div>
-      <div class="lennys-head">
-        <div>
-          <p class="proj-meta"><span class="chip">Concept Study</span><span class="num">2026</span><span>Design · Development · Motion</span></p>
-          <h3 class="proj-title" id="lennys-title">Lenny's Casita</h3>
-          <p class="proj-place">Mexicali street food · glatt kosher · Pico Boulevard, Los Angeles</p>
+  <!-- Lenny's: the night. While its recording plays the section takes the color of the page on screen -->
+  <article class="study study--lennys" id="lennys" aria-labelledby="lennys-title">
+    <header class="study-head">
+      <p class="study-num small"><span>02</span> / 03</p>
+      <h3 class="study-title" id="lennys-title" data-rise>Lenny's Casita</h3>
+      <p class="study-meta small"><span class="chip">Concept study</span><span>2026</span><span>Design · Development · Motion</span></p>
+      <p class="study-q"><span class="small">Starting question</span>Can a restaurant site feel like the night out it's selling?</p>
+    </header>
+    <figure class="site site--phone-left">
+      <div class="site-screens">
+        <div class="site-desk">
+          <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/lennys-site-poster.webp" data-src="assets/video/lennys-site.mp4" data-src-sm="assets/video/lennys-site-sm.mp4" data-colors="d" aria-label="Screen recording of the whole Lenny's Casita site on a laptop, scrolled from top to bottom."></video>
+          <noscript><img class="media-video" src="assets/video/lennys-site-poster.webp" width="1280" height="800" alt="The Lenny's Casita site on a laptop, at the top of the page." loading="lazy"></noscript>
         </div>
-        <p class="lennys-q"><span class="label">Starting question</span>Can a restaurant site feel like the night out it's selling?</p>
+        <div class="site-phone">
+          <div class="phone-screen">
+            <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/lennys-site-m-poster.webp" data-src="assets/video/lennys-site-m.mp4" data-colors="m" aria-label="Screen recording of the whole Lenny's Casita site on a phone, scrolled from top to bottom."></video>
+            <noscript><img class="media-video" src="assets/video/lennys-site-m-poster.webp" width="780" height="1688" alt="The Lenny's Casita site on a phone, at the top of the page." loading="lazy"></noscript>
+          </div>
+        </div>
       </div>
-      <figure class="site site--phone-left">
-        <div class="site-screens" data-frame="viewport" data-frame-label="Viewport" data-frame-clip>
-          <div class="site-desk">
-            <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/lennys-site-poster.webp" data-src="assets/video/lennys-site.mp4" data-src-sm="assets/video/lennys-site-sm.mp4" data-colors="d" aria-label="Screen recording of the whole Lenny's Casita site on a laptop, scrolled from top to bottom."></video>
-            <noscript><img class="media-video" src="assets/video/lennys-site-poster.webp" width="1280" height="800" alt="The Lenny's Casita site on a laptop, at the top of the page." loading="lazy"></noscript>
-          </div>
-          <div class="site-phone">
-            <div class="phone-screen">
-              <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/lennys-site-m-poster.webp" data-src="assets/video/lennys-site-m.mp4" data-colors="m" aria-label="Screen recording of the whole Lenny's Casita site on a phone, scrolled from top to bottom."></video>
-              <noscript><img class="media-video" src="assets/video/lennys-site-m-poster.webp" width="780" height="1688" alt="The Lenny's Casita site on a phone, at the top of the page." loading="lazy"></noscript>
-            </div>
-          </div>
-        </div>
-        <div class="site-live" hidden>
-          <button class="live-btn" type="button" data-live="desk" data-src="https://abdusameer.github.io/lennys-casita-redesign/" data-name="Lenny's Casita"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
-          <button class="live-btn" type="button" data-live="phone" data-src="https://abdusameer.github.io/lennys-casita-redesign/" data-name="Lenny's Casita"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
-        </div>
-        <figcaption>The whole site on a laptop and a phone, from the scroll film to the full food menu. While it plays, this section takes the color of the page on screen.</figcaption>
-      </figure>
-      <ol class="drinks" aria-label="The six cocktails, in order">
-        <li style="--c:#2f4b15">Spicy Margarita Balagán</li>
-        <li style="--c:#692830">Waterpamelon</li>
-        <li style="--c:#3f2c60">616 Gimlet</li>
-        <li style="--c:#2e483f">Carefuleta</li>
-        <li style="--c:#5c2412">Michelada de Casita</li>
-        <li style="--c:#4b1519">La Manzana Whiskey Sour</li>
-      </ol>
-      <dl class="facts facts--row">
-        <div><dt>Direction</dt><dd>Tell the evening in chapters: a film that moves with the scroll, a tour of plates, and a cocktail list where each drink repaints the page.</dd></div>
-        <div><dt>What we built</dt><dd><ul>
-          <li>Scroll-driven film hero in five scenes</li>
-          <li>Six cocktail chapters, each with its own page color</li>
-          <li>Live open or closed status from the posted hours</li>
-          <li>Custom-styled map with a static fallback, and a full menu page</li>
-        </ul></dd></div>
-        <div><dt>Built with</dt><dd>Vite, GSAP, Lenis, WebGL, MapLibre with OpenFreeMap</dd>
-          <dt>Credits</dt><dd>Photography and menu content from Lenny's Casita's own published material.</dd></div>
+      <div class="site-live" hidden>
+        <button class="live-btn pill" type="button" data-live="desk" data-src="https://abdusameer.github.io/lennys-casita-redesign/" data-name="Lenny's Casita"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
+        <button class="live-btn pill" type="button" data-live="phone" data-src="https://abdusameer.github.io/lennys-casita-redesign/" data-name="Lenny's Casita"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
+      </div>
+      <figcaption>The whole site on a laptop and a phone, from the scroll film to the full food menu. While it plays, this section takes the color of the page on screen.</figcaption>
+    </figure>
+    <ol class="drinks small" aria-label="The six cocktails, in order">
+      <li style="--c:#2f4b15">Spicy Margarita Balagán</li>
+      <li style="--c:#692830">Waterpamelon</li>
+      <li style="--c:#3f2c60">616 Gimlet</li>
+      <li style="--c:#2e483f">Carefuleta</li>
+      <li style="--c:#5c2412">Michelada de Casita</li>
+      <li style="--c:#4b1519">La Manzana Whiskey Sour</li>
+    </ol>
+    <div class="study-body study-body--row">
+      <dl class="facts">
+        <div><dt class="small">Direction</dt><dd>Tell the evening in chapters: a film that moves with the scroll, a tour of plates, and a cocktail list where each drink repaints the page.</dd></div>
       </dl>
-      <a class="btn btn-line" href="https://abdusameer.github.io/lennys-casita-redesign/" target="_blank" rel="noopener">Visit the live study <svg class="i" aria-hidden="true"><use href="#i-out"/></svg><span class="visually-hidden"> (opens in a new tab)</span></a>
-    </article>
-
-    <!-- 03 BB's Bakery: the frame becomes the boundary between sketch and photograph -->
-    <article class="proj proj--bbs" id="bbs" aria-labelledby="bbs-title" data-tone="light">
-      <div class="proj-n" data-frame="neutral" data-frame-label="03 / 03"><span class="num">03</span></div>
-      <div class="bbs-grid">
-        <div class="proj-head">
-          <p class="proj-meta"><span class="chip">Concept Study</span><span class="num">2026</span><span>Design · Development · Motion</span></p>
-          <h3 class="proj-title" id="bbs-title">BB's Bakery</h3>
-          <p class="proj-place">Bakery, coffee &amp; tea · Olympic Boulevard, Los Angeles</p>
-        </div>
-        <figure class="bbs-stage">
-          <div class="bbs-art" id="bbs-art">
-            <img class="bbs-sketch" src="assets/img/bbs/hero-loaf-outline-700.webp" srcset="assets/img/bbs/hero-loaf-outline-700.webp 700w, assets/img/bbs/hero-loaf-outline-1100.webp 1100w" sizes="(min-width: 1024px) 44vw, 90vw" width="1100" height="1100" alt="Pencil outline of a round scored loaf." loading="lazy" decoding="async">
-            <picture class="bbs-photo">
-              <source type="image/avif" srcset="assets/img/bbs/hero-loaf-photo-700.avif 700w, assets/img/bbs/hero-loaf-photo-1100.avif 1100w" sizes="(min-width: 1024px) 44vw, 90vw">
-              <img src="assets/img/bbs/hero-loaf-photo-700.webp" srcset="assets/img/bbs/hero-loaf-photo-700.webp 700w, assets/img/bbs/hero-loaf-photo-1100.webp 1100w" sizes="(min-width: 1024px) 44vw, 90vw" width="1100" height="1100" alt="The same loaf as a photograph: a crusty round with a cross-shaped score." loading="lazy" decoding="async">
-            </picture>
-            <div class="bbs-window" data-frame="boundary" data-frame-label="Boundary" data-frame-live data-frame-anchor="#bbs-art"></div>
-          </div>
-          <figcaption><span class="tag">Concept images</span> Inside the frame, the photograph. Outside it, the pencil sketch it started from. Both come from the study.</figcaption>
-        </figure>
-        <div class="proj-body">
+      <dl class="facts">
+        <div><dt class="small">Credits</dt><dd>Photography and menu content from Lenny's Casita's own published material.</dd></div>
+      </dl>
+      <div class="study-facts">
+        <details class="build">
+          <summary>How we built it<i aria-hidden="true"></i></summary>
           <dl class="facts">
-            <div><dt>Starting question</dt><dd>Can a small bakery's site feel handmade, like the bread?</dd></div>
-            <div><dt>Direction</dt><dd>A sketchbook. Each bread begins as a pencil drawing and becomes a photograph as you scroll, guided by a hand-drawn croissant.</dd></div>
-            <div><dt>What we built</dt><dd><ul>
+            <div><dt class="small">What we built</dt><dd><ul>
+              <li>Scroll-driven film hero in five scenes</li>
+              <li>Six cocktail chapters, each with its own page color</li>
+              <li>Live open or closed status from the posted hours</li>
+              <li>Custom-styled map with a static fallback, and a full menu page</li>
+            </ul></dd></div>
+            <div><dt class="small">Built with</dt><dd>Vite, GSAP, Lenis, WebGL, MapLibre with OpenFreeMap</dd></div>
+          </dl>
+        </details>
+        <a class="pill" href="https://abdusameer.github.io/lennys-casita-redesign/" target="_blank" rel="noopener">Visit the live study<span class="visually-hidden"> (opens in a new tab)</span></a>
+      </div>
+    </div>
+  </article>
+
+  <article class="study study--bbs" id="bbs" aria-labelledby="bbs-title" style="--sc: var(--c-bbs)">
+    <header class="study-head">
+      <p class="study-num small"><span>03</span> / 03</p>
+      <h3 class="study-title" id="bbs-title" data-rise>BB's Bakery</h3>
+      <p class="study-meta small"><span class="chip">Concept study</span><span>2026</span><span>Design · Development · Motion</span></p>
+      <p class="study-q"><span class="small">Starting question</span>Can a small bakery's site feel handmade, like the bread?</p>
+    </header>
+    <div class="study-body">
+      <figure class="bbs-stage">
+        <div class="bbs-art" id="bbs-art">
+          <img class="bbs-sketch" src="assets/img/bbs/hero-loaf-outline-700.webp" srcset="assets/img/bbs/hero-loaf-outline-700.webp 700w, assets/img/bbs/hero-loaf-outline-1100.webp 1100w" sizes="(min-width: 1024px) 40vw, 90vw" width="1100" height="1100" alt="Pencil outline of a round scored loaf." loading="lazy" decoding="async">
+          <picture class="bbs-photo">
+            <source type="image/avif" srcset="assets/img/bbs/hero-loaf-photo-700.avif 700w, assets/img/bbs/hero-loaf-photo-1100.avif 1100w" sizes="(min-width: 1024px) 40vw, 90vw">
+            <img src="assets/img/bbs/hero-loaf-photo-700.webp" srcset="assets/img/bbs/hero-loaf-photo-700.webp 700w, assets/img/bbs/hero-loaf-photo-1100.webp 1100w" sizes="(min-width: 1024px) 40vw, 90vw" width="1100" height="1100" alt="The same loaf as a photograph: a crusty round with a cross-shaped score." loading="lazy" decoding="async">
+          </picture>
+          <div class="bbs-window"></div>
+        </div>
+        <figcaption><span class="tag tag--inline">Concept images</span> Inside the frame, the photograph. Outside it, the pencil sketch it started from. Both come from the study.</figcaption>
+      </figure>
+      <div class="study-facts">
+        <dl class="facts">
+          <div><dt class="small">Direction</dt><dd>A sketchbook. Each bread begins as a pencil drawing and becomes a photograph as you scroll, guided by a hand-drawn croissant.</dd></div>
+          <div><dt class="small">Credits</dt><dd>All product imagery is AI-generated concept imagery, labeled on the site. Business facts come from its public listing.</dd></div>
+        </dl>
+        <details class="build">
+          <summary>How we built it<i aria-hidden="true"></i></summary>
+          <dl class="facts">
+            <div><dt class="small">What we built</dt><dd><ul>
               <li>Pinned menu where each bread draws itself, shades in, turns into a photograph, then erases</li>
               <li>A pencil croissant character with a scroll-choreographed story</li>
               <li>An after-hours visit chapter lit by a WebGL light field</li>
               <li>Prerendered React build that still works without JavaScript</li>
             </ul></dd></div>
-            <div><dt>Built with</dt><dd>React, TypeScript, Vite, GSAP, Lenis, WebGL</dd></div>
-            <div><dt>Credits</dt><dd>All product imagery is AI-generated concept imagery, labeled on the site. Business facts come from its public listing.</dd></div>
+            <div><dt class="small">Built with</dt><dd>React, TypeScript, Vite, GSAP, Lenis, WebGL</dd></div>
           </dl>
-          <a class="btn btn-line" href="https://abdusameer.github.io/BB-Bakery/" target="_blank" rel="noopener">Visit the live study <svg class="i" aria-hidden="true"><use href="#i-out"/></svg><span class="visually-hidden"> (opens in a new tab)</span></a>
+        </details>
+        <a class="pill" href="https://abdusameer.github.io/BB-Bakery/" target="_blank" rel="noopener">Visit the live study<span class="visually-hidden"> (opens in a new tab)</span></a>
+      </div>
+    </div>
+    <figure class="site" id="bbs-site">
+      <div class="site-screens">
+        <div class="site-desk">
+          <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/bbs-site-poster.webp" data-src="assets/video/bbs-site.mp4" data-src-sm="assets/video/bbs-site-sm.mp4" aria-label="Screen recording of the whole BB's Bakery site on a laptop, scrolled from top to bottom."></video>
+          <noscript><img class="media-video" src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="The BB's Bakery site on a laptop, at the top of the page." loading="lazy"></noscript>
+        </div>
+        <div class="site-phone">
+          <div class="phone-screen">
+            <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/bbs-site-m-poster.webp" data-src="assets/video/bbs-site-m.mp4" aria-label="Screen recording of the whole BB's Bakery site on a phone, scrolled from top to bottom."></video>
+            <noscript><img class="media-video" src="assets/video/bbs-site-m-poster.webp" width="780" height="1688" alt="The BB's Bakery site on a phone, at the top of the page." loading="lazy"></noscript>
+          </div>
         </div>
       </div>
-      <figure class="site" id="bbs-site">
-        <div class="site-screens" data-frame="site" data-frame-label="Site" data-frame-clip>
-          <div class="site-desk">
-            <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/bbs-site-poster.webp" data-src="assets/video/bbs-site.mp4" data-src-sm="assets/video/bbs-site-sm.mp4" aria-label="Screen recording of the whole BB's Bakery site on a laptop, scrolled from top to bottom."></video>
-            <noscript><img class="media-video" src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="The BB's Bakery site on a laptop, at the top of the page." loading="lazy"></noscript>
-          </div>
-          <div class="site-phone">
-            <div class="phone-screen">
-              <video class="media-video" muted playsinline preload="none" width="780" height="1688" data-poster="assets/video/bbs-site-m-poster.webp" data-src="assets/video/bbs-site-m.mp4" aria-label="Screen recording of the whole BB's Bakery site on a phone, scrolled from top to bottom."></video>
-              <noscript><img class="media-video" src="assets/video/bbs-site-m-poster.webp" width="780" height="1688" alt="The BB's Bakery site on a phone, at the top of the page." loading="lazy"></noscript>
-            </div>
-          </div>
-        </div>
-        <div class="site-live" hidden>
-          <button class="live-btn" type="button" data-live="desk" data-src="https://abdusameer.github.io/BB-Bakery/" data-name="BB's Bakery"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
-          <button class="live-btn" type="button" data-live="phone" data-src="https://abdusameer.github.io/BB-Bakery/" data-name="BB's Bakery"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
-        </div>
-        <figcaption><span class="tag">Concept images</span> The whole site on a laptop and a phone: the loaf, six breads going from pencil to photograph, the story and a visit.</figcaption>
-      </figure>
-    </article>
-  </section>
+      <div class="site-live" hidden>
+        <button class="live-btn pill" type="button" data-live="desk" data-src="https://abdusameer.github.io/BB-Bakery/" data-name="BB's Bakery"><svg class="i" aria-hidden="true"><use href="#i-laptop"/></svg><span class="live-label">Scroll it yourself</span></button>
+        <button class="live-btn pill" type="button" data-live="phone" data-src="https://abdusameer.github.io/BB-Bakery/" data-name="BB's Bakery"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span class="live-label">Scroll it yourself</span></button>
+      </div>
+      <figcaption><span class="tag tag--inline">Concept images</span> The whole site on a laptop and a phone: the loaf, six breads going from pencil to photograph, the story and a visit.</figcaption>
+    </figure>
+  </article>
 
-  <!-- 03 — Approach -->
+  <!-- approach: the dark room. Four steps as rows that light up under the pointer -->
   <section class="approach" id="approach" aria-labelledby="approach-title">
-    <p class="label approach-label">Approach</p>
-    <h2 class="approach-title" id="approach-title" data-catch>
-      <span class="a-muted">We don't start with a deliverable.</span>
-      <span class="a-line" data-frame="line" data-frame-label="Problem" aria-hidden="true"></span>
-      <span>We start with the problem.</span>
-    </h2>
-    <ol class="steps">
-      <li data-frame="step1" data-frame-label="Understand"><span class="num">01</span><h3>Understand what's in the way.</h3><p>Before anything is designed, we find the actual obstacle: what people can't find, can't feel, or can't do.</p></li>
-      <li data-frame="step2" data-frame-label="Decide"><span class="num">02</span><h3>Find where technology helps.</h3><p>Sometimes it's a website. Sometimes it's a tool, an automation, or less software than you expected.</p></li>
-      <li data-frame="step3" data-frame-label="Design"><span class="num">03</span><h3>Design the system that fits.</h3><p>Structure, interaction and look are designed together, for the people who will use it.</p></li>
-      <li data-frame="step4" data-frame-label="Form"><span class="num">04</span><h3>Build it, and test it properly.</h3><p>Real devices, real screen sizes, keyboards and reduced motion. Then we measure and fix.</p></li>
-    </ol>
+    <div class="ap-side">
+      <h2 class="big" id="approach-title" data-rise>Approach</h2>
+      <p class="ap-lede">We don't start with a deliverable. We start with the problem.</p>
+      <a class="pill pill--light" href="#contact">Start a project</a>
+    </div>
+    <div class="ap-main">
+      <div class="ap-count"><span class="ap-num" aria-hidden="true">(04)</span><span class="small">Steps, every project</span></div>
+      <ol class="ap-rows">
+        <li><span class="num small">01</span><h3>Understand what's in the way.</h3><p>Before anything is designed, we find the actual obstacle: what people can't find, can't feel, or can't do.</p></li>
+        <li><span class="num small">02</span><h3>Find where technology helps.</h3><p>Sometimes it's a website. Sometimes it's a tool, an automation, or less software than you expected.</p></li>
+        <li><span class="num small">03</span><h3>Design the system that fits.</h3><p>Structure, interaction and look are designed together, for the people who will use it.</p></li>
+        <li><span class="num small">04</span><h3>Build it, and test it properly.</h3><p>Real devices, real screen sizes, keyboards and reduced motion. Then we measure and fix.</p></li>
+      </ol>
+    </div>
   </section>
 
-  <!-- 04 — Capability index -->
+  <!-- capabilities: colored panels that push in one after another -->
   <section class="caps" id="capabilities" aria-labelledby="caps-title">
-    <div class="caps-head">
-      <h2 class="label" id="caps-title">Capabilities</h2>
-      <p>What we take on. Where published work exists, it's linked by project number.</p>
-    </div>
-    <div class="caps-index" data-frame="index" data-frame-label="Index">
-      <div class="cap-group">
-        <h3>Interactive web</h3>
-        <ul>
-          <li class="cap-row"><span class="cap-name">Websites</span><span class="cap-refs"><a href="#rok" aria-label="Project 01, rōk coffee and tea">01</a><a href="#lennys" aria-label="Project 02, Lenny's Casita">02</a><a href="#bbs" aria-label="Project 03, BB's Bakery">03</a></span></li>
-          <li class="cap-row"><span class="cap-name">Interactive experiences</span><span class="cap-refs"><a href="#rok" aria-label="Project 01, rōk coffee and tea">01</a><a href="#lennys" aria-label="Project 02, Lenny's Casita">02</a><a href="#bbs" aria-label="Project 03, BB's Bakery">03</a></span></li>
-          <li class="cap-row"><span class="cap-name">Website restructuring</span><span class="cap-refs"><a href="#work" aria-label="01–03: all three projects, as concept studies">01–03</a></span></li>
-          <li class="cap-row"><span class="cap-name">Digital product interfaces</span></li>
-        </ul>
-      </div>
-      <div class="cap-group">
-        <h3>Applied AI and automation</h3>
-        <p class="cap-note">No published examples yet.</p>
-        <ul>
-          <li class="cap-row"><span class="cap-name">AI assistants</span></li>
-          <li class="cap-row"><span class="cap-name">AI agents</span></li>
-          <li class="cap-row"><span class="cap-name">Workflow automation</span></li>
-          <li class="cap-row"><span class="cap-name">Process improvements</span></li>
-        </ul>
-      </div>
-      <div class="cap-group">
-        <h3>Custom systems</h3>
-        <p class="cap-note">No published examples yet.</p>
-        <ul>
-          <li class="cap-row"><span class="cap-name">Internal tools</span></li>
-          <li class="cap-row"><span class="cap-name">Dashboards</span></li>
-          <li class="cap-row"><span class="cap-name">Booking and ordering systems</span></li>
-          <li class="cap-row"><span class="cap-name">Integrations and purpose-built software</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- 05 — Contact -->
-  <section class="contact" id="contact" aria-labelledby="contact-title">
-    <div class="contact-field" data-frame="field" data-frame-label="Field">
-      <h2 class="fit" id="contact-title" data-catch>
-        <span class="fit-line">What's getting</span>
-        <span class="fit-line">in the way?</span>
-      </h2>
-      <div class="contact-foot">
-        <p class="contact-sub">Tell us what isn't working.</p>
-        <div class="contact-actions">
-          <a class="btn btn-gold btn-xl" href="mailto:lumera@lumeracreative.com?subject=New%20project">Start a project <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-          <p class="contact-mail"><a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a><button class="copy" type="button" data-copy="lumera@lumeracreative.com">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
+    <div class="caps-stage">
+      <h2 class="big caps-h" id="caps-title" data-rise>Capabilities</h2>
+      <div class="cap" style="--cc: var(--c-slate)">
+        <div class="cap-in">
+          <div class="cap-text">
+            <p class="cap-n small">01</p>
+            <h3>Interactive web</h3>
+            <ul class="cap-list small"><li>Websites</li><li>Interactive experiences</li><li>Website restructuring</li><li>Digital product interfaces</li></ul>
+            <a class="pill" href="#rok">See the work</a>
+          </div>
+          <div class="cap-media" aria-hidden="true">
+            <img src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            <img src="assets/video/lennys-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            <img src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+          </div>
         </div>
       </div>
+      <div class="cap" style="--cc: var(--c-terra)">
+        <div class="cap-in">
+          <div class="cap-text">
+            <p class="cap-n small">02</p>
+            <h3>Applied AI and automation</h3>
+            <ul class="cap-list small"><li>AI assistants</li><li>AI agents</li><li>Workflow automation</li><li>Process improvements</li></ul>
+            <a class="pill" href="#contact">Talk to us</a>
+          </div>
+          <p class="cap-note">No published examples yet.</p>
+        </div>
+      </div>
+      <div class="cap" style="--cc: var(--c-lilac)">
+        <div class="cap-in">
+          <div class="cap-text">
+            <p class="cap-n small">03</p>
+            <h3>Custom systems</h3>
+            <ul class="cap-list small"><li>Internal tools</li><li>Dashboards</li><li>Booking and ordering systems</li><li>Integrations and purpose-built software</li></ul>
+            <a class="pill" href="#contact">Talk to us</a>
+          </div>
+          <p class="cap-note">No published examples yet.</p>
+        </div>
+      </div>
+      <div class="cap-nav small" aria-hidden="true">
+        <span><b>01</b>Interactive web</span><span><b>02</b>Applied AI and automation</span><span><b>03</b>Custom systems</span>
+        <i class="cap-bar"><i></i></i>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <h2 class="contact-h" id="contact-title" data-rise>What's getting in the way?</h2>
+    <p class="contact-sub">Tell us what isn't working.</p>
+    <div class="contact-actions">
+      <a class="pill pill--gold" href="mailto:lumera@lumeracreative.com?subject=New%20project">Start a project</a>
+      <p class="contact-mail"><a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a><button class="copy" type="button" data-copy="lumera@lumeracreative.com">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <p class="foot-copy">&copy; 2026 Lumera Creative. All rights reserved.</p>
+  <div class="foot-info small">
+    <div><p>Lumera Creative</p><p class="dim">Creative technology partner</p></div>
+    <div><a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a></div>
+    <nav aria-label="Footer"><a href="legal.html">Legal &amp; credits</a><a href="#top">Back to top</a></nav>
+    <p>&copy; 2026 Lumera Creative. All rights reserved.</p>
+  </div>
   <p class="foot-note">The projects shown are concept studies: independent redesigns, not affiliated with or endorsed by the businesses. Their names, logos and photography belong to their owners.</p>
-  <nav class="foot-links" aria-label="Footer">
-    <a href="legal.html">Legal &amp; credits</a>
-    <a href="mailto:lumera@lumeracreative.com">lumera@lumeracreative.com</a>
-  </nav>
+  <div class="foot-mark" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></div>
 </footer>
-
-<div class="af" id="af" aria-hidden="true">
-  <i class="af-s af-t"></i><i class="af-s af-r"></i><i class="af-s af-b"></i><i class="af-s af-l"></i>
-  <span class="af-read"><b class="af-role">Open</b><span class="af-dim">— × —</span></span>
-</div>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
 <script src="assets/js/lennys-colors.js" defer></script>

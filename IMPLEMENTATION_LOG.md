@@ -119,3 +119,18 @@ The owner found the walkthroughs too fast, Lenny's especially ("I can't even see
 - Title, description, share text and `og.jpg` updated. The legal page and LICENSE name the three presented studies.
 - QA: 0 problems. Lighthouse: mobile 98 / 100 / 100 / 100 over warm runs (LCP 2.3 s, CLS 0); desktop 100 across the board.
 
+
+## The light edition, modeled on akaru.fr (2026-09-30, owner request)
+
+The owner studied akaru.fr (a Lyon agency site) and asked for the portfolio to follow it closely, in its light look, keeping the walkthroughs and Scroll it yourself. A first pass that only borrowed principles (light at both ends of the dark page, project colors, title cards) was judged not enough; it is kept locally in the git-ignored `_drafts/light-and-color/`.
+
+- Rebuilt from scratch: `index.html`, `assets/css/lumera.css`, `assets/js/lumera.js` and `qa/check.mjs`. Nothing of Akaru's code, photography, wording or logo is used; the layout and motion patterns are followed closely (see REFERENCE_NOTES.md).
+- Look: paper `#EEEAE3`, ink `#0E0D0B`, one muted color per project (sage, dusty rose, wheat) and three for the capability panels (slate, terra, lilac). Geist for all text. LUMERA is six SVG outlines taken with fontTools from our Archivo file at width 62 and weight 800; each letter stretches to fill its box (about 1 KB).
+- The opening: LUMERA as thin slices on black, the page slides in, the letters open. A head script decides before the first paint (fresh visits at the top only; never on reload, back, a hash or reduced motion) and sets the wide layout, so the first paint matches and nothing shifts. A CSS fallback hides the loader after 5 s if the script never runs.
+- The sideways strip (wide landscape screens, 1024 px and up): one sticky stage 6.95 screens long. The hero is half the width; the projects rest as 30 / 10 / 5 % strips and open to 62 % in turn, with a short settle at each; BB's then closes into a 26 % column and eight photographs stream up it beside the Selected work list. Keyboard focus inside a panel scrolls to where it is open; "Work" opens the list.
+- Studies on their colors (Lenny's stays the night and still follows its recording), the approach as a dark room of rows, the capabilities as panels that push in with the next colors waiting at the edge, and a dark close with LUMERA rising out of the footer letter by letter.
+- Phones and tablets: everything stacks as full-width color cards; the MENU pill opens a full-screen menu that rises from the bottom.
+- Hidden header controls in the wide hero are also out of the tab order (visibility), so no invisible control takes focus.
+- New images in `assets/img/work/`: rōk and Lenny's panels (1600 / 900 w) and eight 720 w column tiles, from the studies' own folders. AI-generated ones are labeled "Concept image".
+- `og.jpg` re-rendered from the new hero. The legal page takes the light look.
+- QA rewritten for the new page: 0 problems. Lighthouse over three warm runs: mobile 98 / 100 / 100 / 100 (LCP 2.1–2.2 s, CLS 0, TBT 0–40 ms, 338 KB), desktop 98–99 / 100 / 100 / 100 (CLS 0, 686 KB with the panel photographs).

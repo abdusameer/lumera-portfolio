@@ -30,3 +30,9 @@ It is a quality benchmark only. Nothing from it (layout, code, assets, wording, 
 ## Originality checkpoints
 
 Reviews are logged in `IMPLEMENTATION_LOG.md` after the hero, after the first project story, and after the completed site.
+
+## Second reference: akaru.fr (studied 2026-09-30)
+
+At the owner's request the light edition follows akaru.fr closely in layout and motion: the letter-slice opening, the tall narrow wordmark, projects waiting as color strips and opening sideways, the column with an image stream, a dark section of rows that light up, colored panels pushing in, the MENU pill and full-screen menu, round arrow buttons, and the wordmark rising out of the footer.
+
+What is ours: all code (written from scratch; no Akaru source was copied), all copy, the LUMERA letterforms (from Archivo, SIL OFL), the palette values, and all imagery (from our own studies). Akaru's photography, text, logo and trophy are not used. The owner accepted that the result will read as closely modeled on a well-known site.
