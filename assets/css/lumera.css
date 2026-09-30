@@ -168,10 +168,12 @@ html:not(.af-on) :is([data-frame="crop"], [data-frame="viewport"], [data-frame="
 .intro h1 { align-self: end; padding-top: clamp(20px, 4vh, 48px); font-size: clamp(52px, 12.4vw, 200px); }
 .intro-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 22px 48px; margin-top: clamp(22px, 3.6vh, 44px); }
 .intro-sub { max-width: 30ch; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.4; color: var(--paper-2); }
+/* the tagline under the wordmark: its own size, so the fit only scales the wordmark */
+.intro-tag { display: block; margin-top: clamp(14px, 1.6vw, 26px); font-size: clamp(21px, 3.1vw, 50px); font-weight: 700; font-stretch: 100%; line-height: 1.02; letter-spacing: .005em; }
 .intro-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
-/* gold catch-light: big statements catch the pointer (desktop) or sweep with scroll (touch) */
-:is(.has-glow, .has-sheen) [data-catch] {
+/* gold moves through the big statements as the page scrolls */
+.has-sheen [data-catch] {
   --lx: -9999px; --ly: -9999px;
   background: radial-gradient(var(--cr, 300px) circle at var(--lx) var(--ly), var(--gold-hi) 0%, #DDB266 32%, #B98A45 50%, var(--fg) 76%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -228,22 +230,7 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
 .drinks li.is-on { color: var(--fg); border-top-color: var(--fg); }
 .proj--lennys .facts--row { margin-top: clamp(40px, 5vw, 72px); }
 
-/* 03 Stagger — the frame holds the facts; the media steps back */
-.proj--stagger { --bg: #F3EEE6; --acc: #897946; }
-.stagger-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); }
-.stagger-top { grid-column: 1 / span 8; margin-bottom: clamp(32px, 4vw, 60px); }
-.stagger-grid .site { grid-column: 1 / -1; grid-row: 2; }
-.stagger-facts { grid-column: 1 / span 7; grid-row: 3; margin-top: clamp(28px, 3.4vw, 52px); padding: clamp(24px, 2.4vw, 40px); background: var(--bg); }
-.stagger-facts .facts { margin-top: 0; }
-
-/* 04 Motiq — the frame opens as a mask */
-.proj--motiq { --bg: #1C1914; --acc: #AC9881; }
-.motiq-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); row-gap: 24px; align-items: end; margin-bottom: clamp(28px, 3.4vw, 52px); }
-.motiq-head .proj-title { grid-column: 1 / span 7; font-size: clamp(72px, 13vw, 220px); line-height: .8; }
-.motiq-head > div { grid-column: 8 / span 5; padding-bottom: 8px; }
-.proj--motiq .facts--row { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(40px, 5vw, 72px); }
-
-/* 05 BB's Bakery — the frame is the boundary between sketch and photograph */
+/* 03 BB's Bakery — the frame is the boundary between sketch and photograph */
 .proj--bbs { --bg: #EEE6D9; --acc: #8F5B30; }
 .bbs-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--g); align-items: start; }
 .bbs-stage { grid-column: 1 / span 6; grid-row: 1 / span 2; }
@@ -355,7 +342,7 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .rok-grid .proj-head, .rok-grid .proj-body, .rok-media { grid-column: 1 / -1; grid-row: auto; }
   .rok-media { margin: 40px 0 8px; }
   .lennys-head > div, .lennys-q { grid-column: 1 / -1; }
-  .facts--row, .proj--motiq .facts--row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .facts--row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
   /* the pair stacks: the laptop full width, then the phone at phone size, its buttons right below */
   .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 18px; justify-items: center; }
   .site-desk { width: 100%; }
@@ -364,9 +351,6 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .site--phone-left .site-live [data-live="phone"] { order: 0; }
   .live-btn { justify-self: center; }
   .drinks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 16px; }
-  .stagger-top, .stagger-grid .site, .stagger-facts { grid-column: 1 / -1; grid-row: auto; }
-  .stagger-facts { margin: 28px 0 0; padding: 26px 0 0; background: none; }
-  .motiq-head .proj-title, .motiq-head > div { grid-column: 1 / -1; }
   .bbs-stage, .bbs-grid .proj-head, .bbs-grid .proj-body { grid-column: 1 / -1; grid-row: auto; }
   .bbs-stage { margin-top: 36px; }
   .approach-label, .approach-title, .steps { grid-column: 1 / -1; }
@@ -385,19 +369,18 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .mark-c { display: none; }
   .intro { min-height: 0; padding-bottom: 8px; }
   .intro-frame { grid-template-rows: auto auto auto; padding: 18px 14px 20px; min-height: 0; }
-  /* .179 × the frame's inner width is what the fit settles on for this headline, so the hero holds its height while the font loads */
-  .intro h1 { align-self: start; padding-top: clamp(40px, 12vh, 96px); font-size: calc((100vw - 2 * var(--m) - 28px) * .179); }
+  /* .256 × the frame's inner width is what the fit settles on for the wordmark, so the hero holds its height while the font loads */
+  .intro h1 { align-self: start; padding-top: clamp(40px, 12vh, 96px); font-size: calc((100vw - 2 * var(--m) - 28px) * .256); }
   .intro-label span + span { padding-left: 0; border-left: 0; }
   .intro-actions { width: 100%; }
   .intro-actions .btn { flex: 1 1 auto; }
   .proj::before { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--m) / 2); width: 1px; background: var(--line); }
   .proj-n { margin-bottom: 28px; }
   .proj-title { font-size: clamp(40px, 12.4vw, 60px); }
-  .facts--row, .proj--motiq .facts--row { grid-template-columns: 1fr; }
+  .facts--row { grid-template-columns: 1fr; }
   .drinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crop { width: min(88%, 380px); }
   .rok-media figcaption { width: min(88%, 380px); }
-  .motiq-head .proj-title { font-size: clamp(72px, 24vw, 120px); }
   .steps li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 8px; }
   .steps li p { grid-column: 2; }
   .approach-title { font-size: clamp(30px, 8.6vw, 44px); }
@@ -415,13 +398,15 @@ figcaption { margin-top: 12px; max-width: 62ch; font-size: 13.5px; line-height: 
   .contact-field { min-height: 0; }
   .crop { width: min(60%, 300px); }
   /* same reasoning as phones; on short screens the fit is capped by height (see fitOne) */
-  .intro h1 { font-size: min(calc((100vw - 2 * var(--m) - 2 * clamp(20px, 2.8vw, 44px)) * .179), calc((100vh - var(--header) - 150px) / 2.58)); }
-  @supports (height: 100svh) { .intro h1 { font-size: min(calc((100vw - 2 * var(--m) - 2 * clamp(20px, 2.8vw, 44px)) * .179), calc((100svh - var(--header) - 150px) / 2.58)); } }
+  .intro h1 { font-size: min(calc((100vw - 2 * var(--m) - 2 * clamp(20px, 2.8vw, 44px)) * .256), calc((100vh - var(--header) - 150px - clamp(21px, 3.1vw, 50px) * 1.02 - clamp(14px, 1.6vw, 26px)) / .86)); }
+  @supports (height: 100svh) { .intro h1 { font-size: min(calc((100vw - 2 * var(--m) - 2 * clamp(20px, 2.8vw, 44px)) * .256), calc((100svh - var(--header) - 150px - clamp(21px, 3.1vw, 50px) * 1.02 - clamp(14px, 1.6vw, 26px)) / .86)); } }
 }
 
 /* ---------- reduced motion: stable final frame states ---------- */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+  /* zero, not .01ms: a tiny duration would make every property change (default transition-property: all) animate,
+     and the headline fit measures its own size changes immediately */
+  *, *::before, *::after { transition-duration: 0s !important; transition-delay: 0s !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
 
 /* ---------- legal page ---------- */

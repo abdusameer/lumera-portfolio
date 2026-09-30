@@ -10,15 +10,15 @@ Live at https://abdusameer.github.io/lumera-portfolio/
 |---|---|---|---|---|
 | 01 | rōk coffee and tea | Concept Study | 2026 | https://abdusameer.github.io/rok_cafe/ |
 | 02 | Lenny's Casita | Concept Study | 2026 | https://abdusameer.github.io/lennys-casita-redesign/ |
-| 03 | Stagger Coffee | Concept Study | 2026 | https://abdusameer.github.io/stagger_rebuild/ |
-| 04 | Motiq | Concept Study | 2026 | https://designz-ah.github.io/motiq-la/ |
-| 05 | BB's Bakery | Concept Study | 2026 | https://abdusameer.github.io/BB-Bakery/ |
+| 03 | BB's Bakery | Concept Study | 2026 | https://abdusameer.github.io/BB-Bakery/ |
 
-All five are independent redesigns of real Los Angeles businesses, made on our own initiative. They are not affiliated with or endorsed by the businesses.
+The Stagger Coffee (https://abdusameer.github.io/stagger_rebuild/) and Motiq (https://designz-ah.github.io/motiq-la/) studies stay online but are no longer presented here.
+
+All three are independent redesigns of real Los Angeles businesses, made on our own initiative. They are not affiliated with or endorsed by the businesses.
 
 ## The idea: one frame that changes its job
 
-A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. In the projects it becomes a crop (rōk), a viewport (Lenny's), a container for the facts (Stagger), a mask (Motiq) and the boundary between sketch and photograph (BB's). Every project also shows its whole site, scrolled from top to bottom, on a laptop and an iPhone-style phone side by side. Each recording rests on the site's first screen before it scrolls, and **Scroll it yourself** loads the live site inside either screen, so visitors can scroll it at their own pace. Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
+A single hairline frame travels down the page and takes a different role in each section. It is an open, unresolved boundary around the opening statement. The hero reads LUMERA, Where design meets innovation, and gold moves through the big statements as you scroll. In the projects the frame becomes a crop (rōk), a viewport (Lenny's) and the boundary between sketch and photograph (BB's). Every project also shows its whole site, scrolled from top to bottom, on a laptop and an iPhone-style phone side by side. Each recording rests on the site's first screen before it scrolls, and **Scroll it yourself** loads the live site inside either screen, so visitors can scroll it at their own pace. Under the approach statement it flattens to a line, then closes step by step. It outlines the capability index and, at the end, closes in gold around the contact field. A small readout names its current role and live size.
 
 On phones and tablets (under 1024 px), with reduced motion, and without JavaScript, the moving frame is replaced by static corner frames on each section.
 

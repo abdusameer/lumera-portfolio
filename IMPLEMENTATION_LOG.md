@@ -108,3 +108,14 @@ The owner found the walkthroughs too fast, Lenny's especially ("I can't even see
 - The screen keeps the recording's exact 780:1688, and the phone column widened from .2888 to .2993 of the laptop's, so the device body still matches the laptop's height. Live mode, no-JS stills and the Play buttons mount inside the new `.phone-screen`.
 - QA: 0 problems. Lighthouse: desktop 100 across the board; mobile 98–99 over warm runs, with LCP 2.1–2.3 s and CLS 0.
 
+## Three studies, new hero, scroll gold (2026-09-29, owner request)
+
+- The portfolio presents rōk, Lenny's Casita and BB's Bakery, numbered 01–03. Stagger Coffee and Motiq stay online at their own addresses; their walkthroughs moved to the git-ignored `_drafts/assets/video-not-presented/`, and their styles were removed.
+- The hero is now LUMERA with "Where design meets innovation." under it (the owner's "Designs Meets" corrected to "Design Meets"). The wordmark fits the frame's width and may grow to 380 px, and the fit leaves room for the tagline. On phones the pre-load size is 0.256 × the frame's width, so nothing moves while fonts load.
+- There is no pointer glow anymore; on every device the gold moves through the big statements as you scroll (owner feedback). The hero sweeps as you scroll away from it.
+- rōk updated its hero (the cup is printed with rōk and fills to the brim before it overflows), so its laptop and phone walkthroughs were re-recorded. "Scroll to pour" is re-cut from the study's own hero video: 780×1050 at 24 fps, a keyframe every 6 frames, 1.9 MB.
+- Bug fixed: under reduced motion, `transition-duration: .01ms` on every element made every property change (the default transition-property is `all`) animate, so the headline fit measured stale sizes and shrank the wordmark (181 px instead of 317 px at 1440×900). Transitions are now 0 s under reduced motion. QA checks the wordmark still fills its frame there.
+- The pour clip loads only within 300 px of the screen (its still at 1200 px). With a shorter work list it had started riding the first load (2.1 MB); first load is 221 KB again.
+- Title, description, share text and `og.jpg` updated. The legal page and LICENSE name the three presented studies.
+- QA: 0 problems. Lighthouse: mobile 98 / 100 / 100 / 100 over warm runs (LCP 2.3 s, CLS 0); desktop 100 across the board.
+

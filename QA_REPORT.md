@@ -10,10 +10,10 @@
 | Check | Result |
 |---|---|
 | Rendered QA: 8 viewports, plus interaction, reduced-motion, no-JavaScript and legal-page runs | 0 problems |
-| Whole-site walkthroughs | 10 recordings (5 sites × laptop and phone), exact 60 fps, 78 MB in total, each loaded only as its project nears the screen |
+| Whole-site walkthroughs | 6 recordings (3 presented sites × laptop and phone), exact 60 fps, each loaded only as its project nears the screen |
 | Scroll it yourself (the live site inside a screen) | Loads and fills the screen at a real laptop (1280) or phone (390) width, scrolls independently of the page, and closes back to the recording |
 | Console errors or warnings, failed requests, HTTP errors | None on any run |
-| Lighthouse, mobile (3 runs) | 98–99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.1–2.3 s, CLS 0, TBT 0–20 ms |
+| Lighthouse, mobile (warm runs) | 98 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 2.3 s, CLS 0, TBT 0–30 ms; 221 KB first load |
 | Lighthouse, desktop (2 runs) | 100 on all four; LCP 0.5 s, CLS 0–0.002 |
 | Legal page, mobile and desktop | 100 on all four |
 | Deployment | Ready; waiting on the owner's approval to merge into `main` and push |
@@ -33,7 +33,7 @@ Every viewport loaded the full page, took a screenshot of each section and ran t
 | 360×800 (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
 | 844×390 landscape (touch, 2×) | Static frames | No | 0 | Yes | 0 | 0 | 0 | 0 | 0 | 0 |
 
-At 1024 px and up, the frame took the expected role at every section: Open (hero), 01 / 05 (divider), Crop (rōk's pour), Site (rōk's laptop-and-phone pair), Viewport (Lenny's pair), 03 / 05 at the top of Stagger (its facts box sits below the pair), Mask (Motiq's pair), Boundary (BB's artwork), Site (BB's pair), Problem (approach line), Index (capabilities) and Field (contact).
+At 1024 px and up, the frame took the expected role at every section: Open (hero), 01 / 03 (divider), Crop (rōk's pour), Site (rōk's pair), Viewport (Lenny's pair), Boundary (BB's artwork), Site (BB's pair), Problem (approach line), Index (capabilities) and Field (contact). With reduced motion, the hero wordmark fills its frame (checked).
 
 An extra width sweep at 480, 520, 600, 700, 820, 960, 1023, 1180, 1366, 1600 and 1920 px found no horizontal overflow. The fitted headlines stayed inside their frames at every width.
 
@@ -108,10 +108,8 @@ Each project shows its whole site, scrolled from top to bottom, on a laptop (160
 
 | Project | Laptop | Small laptop copy (1024×640) | Phone | Capture rate (laptop / phone) |
 |---|---|---|---|---|
-| rōk coffee and tea | 28.9 s, 4.1 MB | 2.2 MB | 30.0 s, 4.2 MB | 125 / 132 fps |
+| rōk coffee and tea (re-recorded after rōk's new hero) | 28.9 s, 4.6 MB | 2.2 MB | 30.0 s, 4.4 MB | 125 / 132 fps |
 | Lenny's Casita (home page, then the food menu page) | 60.3 s, 12.3 MB | 7.6 MB | 57.6 s, 11.9 MB | 116 and 87 / 128 and 129 fps |
-| Stagger Coffee | 28.3 s, 5.1 MB | 2.8 MB | 28.8 s, 4.4 MB | 131 / 128 fps |
-| Motiq | 33.8 s, 5.5 MB | 3.2 MB | 31.6 s, 4.6 MB | 128 / 127 fps |
 | BB's Bakery | 23.2 s, 4.1 MB | 2.0 MB | 22.9 s, 3.1 MB | 118 / 130 fps |
 
 Lenny's scroll film plays over 13 s on the laptop and 8 s on the phone, slow enough to see each scene. Every walkthrough ends exactly at the bottom of its page. A frame-by-frame scan found no jumps; the flagged moments are the sites' own transitions, such as Lenny's instant color change per cocktail or Stagger's coffee bean zooming open.
