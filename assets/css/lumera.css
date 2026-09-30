@@ -207,9 +207,15 @@ ul, ol { list-style: none; padding: 0; }
 
 .panel--list { background: var(--paper); padding: 9rem var(--m) 6rem; }
 .list-in { display: grid; gap: 4rem; }
-.list-rows a { display: flex; justify-content: space-between; gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--ink); transition: padding .45s var(--ease); }
+.list-label { display: flex; justify-content: space-between; margin-bottom: 1.2rem; }
+/* every project: the featured three open their study below, the rest open their live site */
+.list-rows a { display: grid; grid-template-columns: 4rem minmax(0, 1fr) auto; align-items: center; gap: 1.6rem; min-height: 44px; padding: 1.1rem 0; border-bottom: 1px solid var(--line); transition: padding .45s var(--ease); }
 .list-rows li:first-child a { border-top: 1px solid var(--ink); }
+.list-rows li:nth-child(3) a { border-bottom-color: var(--ink); }   /* the featured three, then the rest */
 .list-rows a:hover, .list-rows a:focus-visible { padding-left: 1rem; }
+.lr-kind { display: inline-flex; align-items: center; gap: .6rem; color: var(--muted); text-align: right; }
+.lr-kind .i { width: max(1.1rem, 11px); height: max(1.1rem, 11px); }
+.list-rows a:hover .lr-kind { color: var(--ink); }
 .list-text { max-width: 34ch; font-size: max(2.4rem, 20px); line-height: 1.2; letter-spacing: -.015em; }
 
 /* ---------- the strip on wide screens: one pinned stage; the script sets every panel's width and position ---------- */
@@ -231,9 +237,9 @@ ul, ol { list-style: none; padding: 0; }
 .wide .p-media { aspect-ratio: auto; width: 100%; height: 62vh; }
 .wide .p-info { position: absolute; left: 0; bottom: 0; width: 62vw; height: 38vh; min-height: 0; }
 .wide .panel--list { padding: 0; }
-.wide .list-in { position: absolute; top: 0; left: 0; width: 74vw; height: 100%; padding: 10vh 3.2rem 5vh 4rem; grid-template-columns: 1fr 30rem; grid-template-rows: auto 1fr auto; gap: 0; }
-.wide .list-h { grid-column: 1 / -1; }
-.wide .list-rows { grid-column: 2; align-self: start; margin-top: 4vh; }
+.wide .list-in { position: absolute; top: 0; left: 0; width: 74vw; height: 100%; padding: 10vh 3.2rem 5vh 4rem; grid-template-columns: 1fr 46rem; grid-template-rows: auto 1fr auto; gap: 0; }
+.wide .list-h { grid-column: 1; grid-row: 1; }
+.wide .list-all { grid-column: 2; grid-row: 1 / 3; align-self: start; margin-top: 1.6rem; }
 .wide .list-text { grid-column: 1 / -1; align-self: end; max-width: 34ch; }
 /* the column the last project becomes, and the rest of the work streaming up it */
 .wide .stream { display: grid; gap: 8px; margin-top: 8px; opacity: 0; transition: opacity .4s; }

@@ -12,9 +12,15 @@ Live at https://abdusameer.github.io/lumera-portfolio/
 | 02 | Lenny's Casita | Concept Study | 2026 | https://abdusameer.github.io/lennys-casita-redesign/ |
 | 03 | BB's Bakery | Concept Study | 2026 | https://abdusameer.github.io/BB-Bakery/ |
 
-Only our strongest work is presented. The Stagger Coffee (https://abdusameer.github.io/stagger_rebuild/) and Motiq (https://designz-ah.github.io/motiq-la/) studies stay online but are not shown here.
+The Projects list shows everything we've made; the three above are featured with full studies, and the rest open their live sites:
 
-All three are independent redesigns of real Los Angeles businesses, made on our own initiative. They are not affiliated with or endorsed by the businesses.
+| # | Project | Type | Live site |
+|---|---|---|---|
+| 04 | Stagger Coffee | Website concept | https://abdusameer.github.io/stagger_rebuild/ |
+| 05 | Motiq | Website concept | https://designz-ah.github.io/motiq-la/ |
+| 06 | Tirzah's Mexi-Terranean Grill | Website concept | https://abdusameer.github.io/Tirzahs_Mexi-Med/ |
+
+All six are independent concepts for real Los Angeles businesses, made on our own initiative. They are not affiliated with or endorsed by the businesses.
 
 ## The design: paper, one ink, a color for each project
 

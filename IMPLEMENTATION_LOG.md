@@ -134,3 +134,9 @@ The owner studied akaru.fr (a Lyon agency site) and asked for the portfolio to f
 - New images in `assets/img/work/`: rōk and Lenny's panels (1600 / 900 w) and eight 720 w column tiles, from the studies' own folders. AI-generated ones are labeled "Concept image".
 - `og.jpg` re-rendered from the new hero. The legal page takes the light look.
 - QA rewritten for the new page: 0 problems. Lighthouse over three warm runs: mobile 98 / 100 / 100 / 100 (LCP 2.1–2.2 s, CLS 0, TBT 0–40 ms, 338 KB), desktop 98–99 / 100 / 100 / 100 (CLS 0, 686 KB with the panel photographs).
+
+## Every project in the list (2026-09-30, owner request)
+
+- The work list (now headed "Projects") shows everything we've made, six in all: the three featured studies (rōk, Lenny's Casita, BB's Bakery) open their sections below; Stagger Coffee, Motiq and Tirzah's Mexi-Terranean Grill open their live sites in a new tab, marked "Website concept ↗". The owner chose these six; the Stagger app concept, the personal site, Upgrade Society (offline) and About Time are not listed.
+- Each row shows its number, name and kind; a heavier rule separates the featured three from the rest. On wide screens the list sits beside the heading at the top of the panel; on phones it stacks under it.
+- The legal page names all six (dated September 30, 2026).
