@@ -89,7 +89,8 @@ async function auditStatic(page) {
 
 // where each strip panel is, in px, and the column's state
 const stripState = page => page.evaluate(() => ({
-  wide: document.documentElement.classList.contains('wide'),
+  pin: document.documentElement.classList.contains('pin'),
+  narrow: document.documentElement.classList.contains('narrow'),
   panels: [...document.querySelectorAll('[data-panel]')].map(p => { const r = p.getBoundingClientRect(); return { x: Math.round(r.left), w: Math.round(r.width) }; }),
   stream: document.querySelector('.stream').classList.contains('on'),
   pastHero: document.documentElement.classList.contains('past-hero'),
@@ -173,7 +174,7 @@ const stripState = page => page.evaluate(() => ({
     // the strip: at rest the hero is half the width and the projects wait at the edge; each opens in turn
     I.strip = { rest: await stripState(page) };
     const r = I.strip.rest;
-    if (!r.wide) problem('strip', 'wide mode is off at 1440×900');
+    if (!r.pin || r.narrow) problem('strip', 'the wide pinned layout is off at 1440×900');
     if (Math.abs(r.panels[0].w - VW * 0.5) > 2 || r.panels[1].x < VW * 0.45 || r.panels[4].x < VW * 0.9) problem('strip', 'rest layout: ' + JSON.stringify(r.panels));
     if (r.pastHero) problem('strip', 'header controls shown over the hero');
     const holdY = VH * 0.3;
@@ -296,14 +297,14 @@ const stripState = page => page.evaluate(() => ({
     await page.evaluate(() => { const el = document.getElementById('lennys'); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY + 200); });
     await sleep(800);
     await page.reload({ waitUntil: 'load' }); await sleep(2000);
-    I.reloadMid = await page.evaluate(() => ({ y: Math.round(scrollY), loader: getComputedStyle(document.getElementById('loader')).display !== 'none', wide: document.documentElement.classList.contains('wide') }));
+    I.reloadMid = await page.evaluate(() => ({ y: Math.round(scrollY), loader: getComputedStyle(document.getElementById('loader')).display !== 'none', pin: document.documentElement.classList.contains('pin') }));
     if (I.reloadMid.loader) problem('reload', 'the opening ran on a mid-page reload');
     // resize without reload: 1440 → 900 → 1440
     await page.setViewport({ width: 900, height: 900 }); await sleep(1200);
-    I.resizeNarrow = await page.evaluate(() => ({ wide: document.documentElement.classList.contains('wide'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
+    I.resizeNarrow = await page.evaluate(() => ({ pin: document.documentElement.classList.contains('pin'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
     await page.setViewport({ width: 1440, height: 900 }); await sleep(1200);
-    I.resizeBack = await page.evaluate(() => ({ wide: document.documentElement.classList.contains('wide'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
-    if (I.resizeNarrow.wide || I.resizeNarrow.strip || !I.resizeBack.wide || !I.resizeBack.strip) problem('resize', 'layout did not follow the width: ' + JSON.stringify([I.resizeNarrow, I.resizeBack]));
+    I.resizeBack = await page.evaluate(() => ({ pin: document.documentElement.classList.contains('pin'), hscroll: document.documentElement.scrollWidth > innerWidth, strip: document.querySelector('.strip').style.height }));
+    if (I.resizeNarrow.pin || I.resizeNarrow.strip || !I.resizeBack.pin || !I.resizeBack.strip) problem('resize', 'layout did not follow the width: ' + JSON.stringify([I.resizeNarrow, I.resizeBack]));
     if (I.resizeNarrow.hscroll || I.resizeBack.hscroll) problem('resize', 'horizontal overflow after resizing');
     // drag through arbitrary widths
     I.widths = [];
@@ -315,6 +316,39 @@ const stripState = page => page.evaluate(() => ({
     }
     report.interactions.desktopLog = log;
     if (log.console.length || log.pageErrors.length) problem('desktop interactions', [...log.console, ...log.pageErrors].slice(0, 4).join(' | '));
+    await page.close();
+  }
+
+  /* ---------- phone: the same pinned strip and capability panels, drawn for a tall window ---------- */
+  {
+    const vp = VIEWPORTS[5];
+    const { page, log } = await newPage(browser, vp);
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(3400);
+    const P = report.interactions.phoneStrip = {};
+    const VW = vp.width, VH = vp.height;
+    P.rest = await stripState(page);
+    P.burgerAtRest = await page.evaluate(() => getComputedStyle(document.getElementById('menu-btn')).visibility);
+    if (!P.rest.pin || !P.rest.narrow) problem('phone strip', 'the narrow pinned layout is off at 390×844: ' + JSON.stringify(P.rest));
+    if (Math.abs(P.rest.panels[0].w - VW * 0.8) > 2 || Math.abs(P.rest.panels[1].x - VW * 0.8) > 2) problem('phone strip', 'rest layout: ' + JSON.stringify(P.rest.panels));
+    if (P.burgerAtRest !== 'visible') problem('phone strip', 'the menu pill is hidden over the hero');
+    for (const i of [1, 2, 3, 4]) {
+      await stepTo(page, (0.3 + i) * VH, 8, 1400);
+      const st = await stripState(page);
+      P['open' + i] = st.panels[i];
+      const want = i === 4 ? VW : VW * 0.84;
+      if (Math.abs(st.panels[i].x) > 3 || Math.abs(st.panels[i].w - want) > 3) problem('phone strip', `panel ${i} is not open at the left edge: ` + JSON.stringify(st.panels[i]));
+    }
+    P.listRisen = await page.evaluate(() => document.querySelector('.list-h').classList.contains('in'));
+    if (!P.listRisen) problem('phone strip', 'the project list heading did not rise');
+    const capTop = await page.evaluate(() => document.getElementById('capabilities').offsetTop);
+    P.caps = [];
+    for (const k of [0, 1, 2]) {
+      await stepTo(page, capTop + (0.25 + k) * VH + 10, 6, 1300);
+      P.caps.push(await page.evaluate(() => [...document.querySelectorAll('.cap')].map(p => Math.round(p.getBoundingClientRect().left))));
+    }
+    P.caps.forEach((x, k) => { if (Math.abs(x[k]) > 3 || (k < 2 && !(x[k + 1] > VW * 0.85 && x[k + 1] < VW))) problem('phone capabilities', `panel ${k + 1} not in place: ` + JSON.stringify(x)); });
+    await page.screenshot({ path: path.join(OUT, 'phone-caps-390.jpg'), type: 'jpeg', quality: 70 });
+    if (log.console.length || log.pageErrors.length) problem('phone strip', [...log.console, ...log.pageErrors].slice(0, 3).join(' | '));
     await page.close();
   }
 
@@ -361,7 +395,7 @@ const stripState = page => page.evaluate(() => ({
       document.querySelectorAll('[data-rise] span').forEach(s => { if (getComputedStyle(s).transform !== 'none') bad.push('word'); });
       return bad.length;
     });
-    if (/\bwide\b/.test(R.mode)) problem('reduced motion', 'the pinned sideways layout runs with reduced motion');
+    if (/\bpin\b/.test(R.mode)) problem('reduced motion', 'the pinned sideways layout runs with reduced motion');
     if (R.loader) problem('reduced motion', 'the opening ran');
     if (R.hidden) problem('reduced motion', `${R.hidden} letters or words are not in their final place`);
     if (R.autoplaying) problem('reduced motion', 'recordings autoplay');

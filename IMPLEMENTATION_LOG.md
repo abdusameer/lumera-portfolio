@@ -140,3 +140,12 @@ The owner studied akaru.fr (a Lyon agency site) and asked for the portfolio to f
 - The work list (now headed "Projects") shows everything we've made, six in all: the three featured studies (rōk, Lenny's Casita, BB's Bakery) open their sections below; Stagger Coffee, Motiq and Tirzah's Mexi-Terranean Grill open their live sites in a new tab, marked "Website concept ↗". The owner chose these six; the Stagger app concept, the personal site, Upgrade Society (offline) and About Time are not listed.
 - Each row shows its number, name and kind; a heavier rule separates the featured three from the rest. On wide screens the list sits beside the heading at the top of the panel; on phones it stacks under it.
 - The legal page names all six (dated September 30, 2026).
+
+## The sideways strip on phones (2026-10-01, owner request)
+
+- Phones and portrait tablets now get the same pinned experience as desktop. The mode is "pin" with a "narrow" variant, decided in the head script before the first paint: wide is a landscape window 1024 px and up (at least 500 tall); narrow is a portrait window at least 600 tall and 1.15 times taller than wide. Phones held sideways, small landscape windows and reduced motion stay stacked.
+- Narrow strip: the hero rests at 80% with rōk, Lenny's and BB's as 12 / 5 / 3% strips; each project opens to 84%, then the project list slides in at 100% as a fourth step (no column or stream). Panel photos take the top half of the small viewport; names drop to 4.4rem.
+- Narrow capabilities: heading on top, the panel's words, then the fanned sites; the next panels wait at the edge as on desktop; the nav keeps only its numbers.
+- The stages fill the large viewport (100lvh) and keep their content clear of a phone's toolbars (padding of 100lvh - 100svh, zero on desktops). Height-only resizes (toolbars showing and hiding) don't re-lay the page.
+- On phones the projects arrive only a short way during the opening, so rōk's photo is on screen from the first paint; the opening waits at most 1 s for the font and shows the slices for at least 0.9 s. rōk's photo is preloaded at every size.
+- QA: new phone checks (resting layout, each panel opening, the list rising, the capability panels). 0 problems. Lighthouse: desktop 99 / 100 / 100 / 100; mobile 94–98 / 100 / 100 / 100 (LCP 2.1–3.0 s under simulated throttling: the largest element on a phone's first screen is now rōk's photo, counted when the opening's loader leaves), CLS 0.

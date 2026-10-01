@@ -151,8 +151,8 @@ ul, ol { list-style: none; padding: 0; }
 /* in the wide opening the hero carries its own menu; the small logo and the pill arrive once it moves away */
 /* hidden also means out of the tab order (visibility), switched after the fade so the fade still shows */
 .top .logo, .burger { visibility: visible; }
-.wide:not(.past-hero) .top .logo, .wide:not(.past-hero) .burger { opacity: 0; transform: translateY(-140%); visibility: hidden; transition: opacity .5s var(--ease), transform .7s var(--ease), visibility 0s .7s; }
-.js:not(.wide):not(.past-hero) .top .logo { opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s; }
+.pin:not(.past-hero) .top .logo, .pin:not(.narrow):not(.past-hero) .burger { opacity: 0; transform: translateY(-140%); visibility: hidden; transition: opacity .5s var(--ease), transform .7s var(--ease), visibility 0s .7s; }
+.js:not(.pin):not(.past-hero) .top .logo { opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s; }
 
 /* ---------- menu ---------- */
 .menu { position: fixed; inset: 0; z-index: 70; background: var(--ink); color: var(--paper); clip-path: inset(100% 0 0 0); transition: clip-path .9s var(--ease-io); }
@@ -219,37 +219,57 @@ ul, ol { list-style: none; padding: 0; }
 .list-text { max-width: 34ch; font-size: max(2.4rem, 20px); line-height: 1.2; letter-spacing: -.015em; }
 
 /* ---------- the strip on wide screens: one pinned stage; the script sets every panel's width and position ---------- */
-.wide .strip { position: relative; }
-.wide .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.wide .panel { position: absolute; top: 0; left: 0; height: 100%; will-change: transform, width; }
-.wide .panel--hero { width: 50vw; min-height: 0; padding: 2.4rem 3.2rem 2.4rem; }
+.pin .strip { position: relative; }
+.pin .stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
+.pin .panel { position: absolute; top: 0; left: 0; height: 100%; will-change: transform, width; }
+.pin .panel--hero { width: 50vw; min-height: 0; padding: 2.4rem 3.2rem 2.4rem; }
 /* the resting layout, so the first paint already matches what the script draws */
-.wide .panel:nth-child(2) { width: 30vw; transform: translate3d(50vw, 0, 0); }
-.wide .panel:nth-child(3) { width: 10vw; transform: translate3d(80vw, 0, 0); }
-.wide .panel:nth-child(4) { width: 5vw; transform: translate3d(90vw, 0, 0); }
-.wide .panel:nth-child(5) { width: 5vw; transform: translate3d(95vw, 0, 0); }
-.wide .hero-nav { display: flex; justify-content: space-between; font-size: max(1.4rem, 13px); }
-.wide .hero-nav a { display: flex; align-items: center; gap: 1rem; padding: .6rem 0; }
+.pin .panel:nth-child(2) { width: 30vw; transform: translate3d(50vw, 0, 0); }
+.pin .panel:nth-child(3) { width: 10vw; transform: translate3d(80vw, 0, 0); }
+.pin .panel:nth-child(4) { width: 5vw; transform: translate3d(90vw, 0, 0); }
+.pin .panel:nth-child(5) { width: 5vw; transform: translate3d(95vw, 0, 0); }
+.pin .hero-nav { display: flex; justify-content: space-between; font-size: max(1.4rem, 13px); }
+.pin .hero-nav a { display: flex; align-items: center; gap: 1rem; padding: .6rem 0; }
 .hero-nav i { width: .8rem; height: .8rem; border-radius: 50%; background: var(--dot); transition: transform .5s var(--ease); }
 .hero-nav a:hover i, .hero-nav a:focus-visible i { transform: scale(2.6); }
-.wide .hero-mark { height: 42vh; }
-.wide .panel--proj { display: block; }
-.wide .p-media { aspect-ratio: auto; width: 100%; height: 62vh; }
-.wide .p-info { position: absolute; left: 0; bottom: 0; width: 62vw; height: 38vh; min-height: 0; }
-.wide .panel--list { padding: 0; }
-.wide .list-in { position: absolute; top: 0; left: 0; width: 74vw; height: 100%; padding: 10vh 3.2rem 5vh 4rem; grid-template-columns: 1fr 46rem; grid-template-rows: auto 1fr auto; gap: 0; }
-.wide .list-h { grid-column: 1; grid-row: 1; }
-.wide .list-all { grid-column: 2; grid-row: 1 / 3; align-self: start; margin-top: 1.6rem; }
-.wide .list-text { grid-column: 1 / -1; align-self: end; max-width: 34ch; }
+.pin .hero-mark { height: 42vh; }
+.pin .panel--proj { display: block; }
+.pin .p-media { aspect-ratio: auto; width: 100%; height: 62vh; }
+.pin .p-info { position: absolute; left: 0; bottom: 0; width: 62vw; height: 38vh; min-height: 0; }
+.pin .panel--list { padding: 0; }
+.pin .list-in { position: absolute; top: 0; left: 0; width: 74vw; height: 100%; padding: 10vh 3.2rem 5vh 4rem; grid-template-columns: 1fr 46rem; grid-template-rows: auto 1fr auto; gap: 0; }
+.pin .list-h { grid-column: 1; grid-row: 1; }
+.pin .list-all { grid-column: 2; grid-row: 1 / 3; align-self: start; margin-top: 1.6rem; }
+.pin .list-text { grid-column: 1 / -1; align-self: end; max-width: 34ch; }
 /* the column the last project becomes, and the rest of the work streaming up it */
-.wide .stream { display: grid; gap: 8px; margin-top: 8px; opacity: 0; transition: opacity .4s; }
-.wide .stream.on { opacity: 1; }
+.pin .stream { display: grid; gap: 8px; margin-top: 8px; opacity: 0; transition: opacity .4s; }
+.pin .stream.on { opacity: 1; }
 .stream figure { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--paper-2); }
 .stream img { width: 100%; height: 100%; object-fit: cover; }
 .stream .on-white img { mix-blend-mode: multiply; }
-.wide .stream-pill { display: inline-flex; position: absolute; left: 50%; bottom: 3.2vh; z-index: 3; transform: translateX(-50%); opacity: 0; pointer-events: none; transition: opacity .4s, color .45s var(--ease); }
-.wide .stream-pill.on { opacity: 1; pointer-events: auto; }
-.wide .panel--bbs .p-info { transition: opacity .3s; }
+.pin .stream-pill { display: inline-flex; position: absolute; left: 50%; bottom: 3.2vh; z-index: 3; transform: translateX(-50%); opacity: 0; pointer-events: none; transition: opacity .4s, color .45s var(--ease); }
+.pin .stream-pill.on { opacity: 1; pointer-events: auto; }
+.pin .panel--bbs .p-info { transition: opacity .3s; }
+
+/* phones and portrait tablets: the same stage, drawn for a tall window. The hero rests at 80% with the projects as
+   strips beside it; each opens to 84%, then the project list slides in at full width. */
+.pin.narrow .panel--hero { width: 80vw; padding: 9rem 2rem calc(2.4rem + 100lvh - 100svh); }
+.pin.narrow .panel:nth-child(2) { width: 12vw; transform: translate3d(80vw, 0, 0); }
+.pin.narrow .panel:nth-child(3) { width: 5vw; transform: translate3d(92vw, 0, 0); }
+.pin.narrow .panel:nth-child(4) { width: 3vw; transform: translate3d(97vw, 0, 0); }
+.pin.narrow .panel:nth-child(5) { width: 0; transform: translate3d(100vw, 0, 0); }
+.pin.narrow .hero-nav { display: none; }
+.pin.narrow .hero-mark { height: 34svh; min-height: 0; }
+.pin.narrow .hero-foot { flex-direction: column; margin-top: 2.4rem; }
+.pin.narrow .p-media { height: 50svh; }
+.pin.narrow .p-info { top: 50svh; height: auto; width: 84vw; padding: 1.6rem 1.6rem calc(1.6rem + 100lvh - 100svh); }
+.pin.narrow .p-name { font-size: max(4.4rem, 34px); }
+.pin.narrow .list-in { width: 100vw; padding: 9rem var(--m) calc(3.2rem + 100lvh - 100svh); grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; gap: 2.4rem; }
+.pin.narrow .list-h { grid-column: 1; grid-row: auto; font-size: max(5.6rem, 40px); }
+.pin.narrow .list-all { grid-column: 1; grid-row: auto; margin-top: 0; }
+.pin.narrow .list-rows a { padding: .6rem 0; }
+.pin.narrow .list-text { grid-column: 1; font-size: max(1.9rem, 17px); }
+.pin.narrow .stream, .pin.narrow .stream-pill { display: none; }
 
 /* ---------- the studies ---------- */
 .study { position: relative; padding: 14rem var(--m) 12rem; background: var(--sc, var(--paper)); color: var(--ink); --fg-2: rgba(14, 13, 11, .72); --rule: var(--line); }
@@ -361,17 +381,30 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .cap-media img { align-self: start; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: .4rem; }
 .cap-note { align-self: end; font-size: max(2.4rem, 19px); line-height: 1.2; letter-spacing: -.015em; }
 .cap-nav { display: none; }
-.wide .caps-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.wide .caps-h { position: absolute; top: 10vh; left: 16rem; z-index: 10; padding: 0; }
-.wide .cap { position: absolute; inset: 0; padding: 30vh 16rem 16vh; will-change: transform; }
-.wide .cap-in { grid-template-columns: 1fr 1fr; column-gap: 8rem; height: 100%; }
-.wide .cap-media { display: block; height: 100%; }
+.pin .caps-stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
+.pin .caps-h { position: absolute; top: 10vh; left: 16rem; z-index: 10; padding: 0; }
+.pin .cap { position: absolute; inset: 0; padding: 30vh 16rem 16vh; will-change: transform; }
+.pin .cap-in { grid-template-columns: 1fr 1fr; column-gap: 8rem; height: 100%; }
+.pin .cap-media { display: block; height: 100%; }
 /* the three sites, fanned */
-.wide .cap-media img { position: absolute; width: 64%; box-shadow: 0 30px 60px -30px rgba(14, 13, 11, .45); }
-.wide .cap-media img:nth-child(1) { left: 0; top: 0; }
-.wide .cap-media img:nth-child(2) { left: 18%; top: 20%; }
-.wide .cap-media img:nth-child(3) { left: 36%; top: 40%; }
-.wide .cap-nav { position: absolute; left: 16rem; right: 16rem; bottom: 5vh; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 1.6rem; }
+.pin .cap-media img { position: absolute; width: 64%; box-shadow: 0 30px 60px -30px rgba(14, 13, 11, .45); }
+.pin .cap-media img:nth-child(1) { left: 0; top: 0; }
+.pin .cap-media img:nth-child(2) { left: 18%; top: 20%; }
+.pin .cap-media img:nth-child(3) { left: 36%; top: 40%; }
+.pin .cap-nav { position: absolute; left: 16rem; right: 16rem; bottom: 5vh; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 1.6rem; }
+/* phones: the heading at the top, the panel's words, then the sites; the nav keeps only its numbers */
+.pin.narrow .caps-h { top: 9rem; left: var(--m); font-size: max(5.6rem, 40px); }
+.pin.narrow .cap { padding: 18rem var(--m) calc(9rem + 100lvh - 100svh); }
+.pin.narrow .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; row-gap: 2.4rem; }
+.pin.narrow .cap h3 { font-size: max(3.6rem, 28px); }
+.pin.narrow .cap-list { margin: 1.6rem 0 2.4rem; }
+.pin.narrow .cap-media img { width: 72%; }
+.pin.narrow .cap-media img:nth-child(2) { left: 14%; top: 16%; }
+.pin.narrow .cap-media img:nth-child(3) { left: 28%; top: 32%; }
+.pin.narrow .cap-note { align-self: start; }
+.pin.narrow .cap-nav { left: var(--m); right: var(--m); bottom: calc(3.2rem + 100lvh - 100svh); }
+.pin.narrow .cap-nav span { font-size: 0; }
+.pin.narrow .cap-nav b { font-size: max(1.1rem, 11px); }
 .cap-nav span { color: rgba(14, 13, 11, .78); transition: color .4s; }   /* 4.5:1 or better on every panel color */
 .cap-nav span.on { color: var(--ink); }
 .cap-nav b { margin-right: 1.6rem; font-weight: 600; }

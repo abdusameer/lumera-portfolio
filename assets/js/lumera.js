@@ -1,5 +1,5 @@
 /* Lumera Creative — site behavior, light edition. Plain JavaScript, one rAF loop, Lenis for scroll.
-   On wide screens the opening and the work share one pinned stage: each project waits at the edge as a strip of
+   On wide screens and portrait phones the opening and the work share one pinned stage: each project waits at the edge as a strip of
    its color and opens as it arrives; the capabilities are colored panels that push in one after another. */
 (() => {
   'use strict';
@@ -39,9 +39,17 @@
   const markDirty = () => { dirty = true; };
   const fontsReady = (doc.fonts && doc.fonts.ready) ? doc.fonts.ready : Promise.resolve();
 
-  /* ------------------------------------------------------------------ mode: the pinned layouts need a wide, landscape window and motion */
-  let wide = root.classList.contains('wide');
-  const wantWide = () => !reduce && innerWidth >= WIDE && innerWidth > innerHeight * 1.1;
+  /* ------------------------------------------------------------------ mode: the pinned layouts need motion and room.
+     Wide: a landscape window 1024 px and up. Narrow: a portrait phone or tablet at least 600 px tall.
+     Anything else (phones held sideways, small square windows, reduced motion) reads as one stacked column.
+     The head script makes the same decision before the first paint. */
+  const modeNow = () => {
+    const w = innerWidth, h = innerHeight;
+    const wideOK = !reduce && w >= WIDE && w > h * 1.1 && h >= 500;
+    const narrowOK = !reduce && !wideOK && h >= 600 && h >= w * 1.15;
+    return { pin: wideOK || narrowOK, narrow: narrowOK };
+  };
+  let pin = root.classList.contains('pin'), narrow = root.classList.contains('narrow');
 
   /* ------------------------------------------------------------------ the strip */
   const strip = $('.strip'), stage = $('#stage');
@@ -50,13 +58,15 @@
   const bbsScroll = $('.p-scroll', bbsP), bbsMedia = $('.p-media', bbsP), bbsInfo = $('.p-info', bbsP);
   const stream = $('.stream', bbsP), streamPill = $('.stream-pill', bbsP);
   const stripRise = $$('[data-rise]', strip);
-  // scroll lengths, in screen heights: a rest on the opening, one per project, the column closing, the stream
+  // scroll lengths, in screen heights: a rest on the opening, one per project, the column closing, the stream.
+  // Narrow screens have no column: the project list is a fourth step instead.
   const G = { hold: 0.3, step: 1, close: 0.8, stream: 1.7, tail: 0.15 };
+  const steps = () => (narrow ? 4 : 3);
   let S = null, introK = 1, introT = 0;
 
   function measureStrip() {
     panels.forEach(p => { p._x = p._w = null; });
-    if (!wide) {
+    if (!pin) {
       S = null;
       strip.style.height = '';
       panels.forEach(p => { p.style.width = ''; p.style.transform = ''; });
@@ -66,20 +76,22 @@
       return;
     }
     const vw = innerWidth, vh = innerHeight;
-    const len = vh * (G.hold + 3 * G.step + G.close + G.stream + G.tail);
+    const len = vh * (G.hold + steps() * G.step + (narrow ? 0 : G.close + G.stream) + G.tail);
     strip.style.height = (len + vh) + 'px';
     const COL = 0.26 * vw, tileH = COL * 10 / 16;
     S = {
       vw, vh, len, top: strip.offsetTop,
-      HERO: 0.5 * vw, OPEN: 0.62 * vw, S1: 0.30 * vw, S2: 0.10 * vw, S3: 0.05 * vw, COL, tileH,
+      ...(narrow ? { HERO: 0.8 * vw, OPEN: 0.84 * vw, S1: 0.12 * vw, S2: 0.05 * vw, S3: 0.03 * vw }
+                 : { HERO: 0.5 * vw, OPEN: 0.62 * vw, S1: 0.30 * vw, S2: 0.10 * vw, S3: 0.05 * vw }),
+      COL, tileH,
       // the column's own image, then the stream, travel up until the last tile clears the pill
       travel: Math.max(0, tileH + stream.children.length * (tileH + 8) - vh * 0.84),
     };
     markDirty();
   }
   // the scroll position at which a panel is open at the left edge
-  const stripY = i => S.top + S.vh * (i <= 0 ? 0 : i <= 3 ? G.hold + i * G.step : G.hold + 3 * G.step + G.close);
-  const openW = i => (i === 0 ? S.HERO : S.OPEN);
+  const stripY = i => S.top + S.vh * (i <= 0 ? 0 : (i <= 3 || narrow) ? G.hold + i * G.step : G.hold + 3 * G.step + G.close);
+  const openW = i => (i === 0 ? S.HERO : i === 4 ? S.vw : S.OPEN);
   const widthAt = (i, f) => {
     const d = i - f, o = openW(i);
     if (d <= 0) return o;
@@ -95,24 +107,25 @@
   };
 
   function drawStrip() {
-    const s = clamp(sy - S.top, 0, S.len), u = s / S.vh;
-    const A0 = G.hold, A1 = A0 + 3 * G.step, B1 = A1 + G.close;
+    const s = clamp(sy - S.top, 0, S.len), u = s / S.vh, n = steps();
+    const A0 = G.hold, A1 = A0 + n * G.step, B1 = A1 + G.close;
     let f = 0, q = 0, r = 0;
     if (u > A0 && u < A1) { const x = (u - A0) / G.step, k = Math.floor(x); f = k + settle(x - k); }
-    else if (u >= A1) { f = 3; q = smooth(clamp((u - A1) / G.close, 0, 1)); r = clamp((u - B1) / G.stream, 0, 1); }
+    else if (u >= A1) { f = n; if (!narrow) { q = smooth(clamp((u - A1) / G.close, 0, 1)); r = clamp((u - B1) / G.stream, 0, 1); } }
 
     // the track: panels before the current one have gone by at full width; the current one is sliding out
-    const fi = Math.min(Math.floor(f), 3);
+    const fi = Math.min(Math.floor(f), n);
     let x = 0;
     for (let j = 0; j < fi; j++) x -= openW(j);
     x -= (f - fi) * openW(fi);
-    const w = [0, 1, 2, 3].map(i => widthAt(i, f));
+    const w = [0, 1, 2, 3, 4].map(i => widthAt(i, f));
     if (q > 0) w[3] = lerp(S.OPEN, S.COL, q);                // the last project closes into a column
     const ie = introK >= 1 ? 1 : easeOutQuart(introK);
     let cx = x;
     for (let i = 0; i < 5; i++) {
-      const wi = i < 4 ? w[i] : Math.max(0, S.vw - cx);      // the work list fills whatever is left
-      const arrive = i > 0 && ie < 1 ? (1 - ie) * S.vw * (0.32 + i * 0.07) : 0;
+      const wi = i < 4 || narrow ? w[i] : Math.max(0, S.vw - cx);   // wide: the work list fills whatever is left
+      // the projects arrive from the right; on phones only a short way, so rōk's photo is on screen from the first paint
+      const arrive = i > 0 && ie < 1 ? (1 - ie) * S.vw * (narrow ? 0.05 * i : 0.32 + i * 0.07) : 0;
       place(panels[i], cx + arrive, wi);
       cx += wi;
     }
@@ -123,7 +136,7 @@
     stream.classList.toggle('on', q > 0.55);
     streamPill.classList.toggle('on', q > 0.9);
     bbsScroll.style.transform = r > 0 ? `translate3d(0,${(-r * S.travel).toFixed(1)}px,0)` : '';
-    if (q > 0.3) stripRise.forEach(el => el.classList.add('in'));
+    if (narrow ? f > n - 0.6 : q > 0.3) stripRise.forEach(el => el.classList.add('in'));
 
     root.classList.toggle('past-hero', f > 0.28 || s >= S.len);
   }
@@ -150,7 +163,7 @@
   const caps = $('#capabilities'), capPanels = $$('.cap', caps), capNav = $$('.cap-nav span', caps), capBar = $('.cap-bar i', caps);
   let C = null, capOn = -1;
   function measureCaps() {
-    if (!wide) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
+    if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
     const vh = innerHeight, n = capPanels.length;
     const len = vh * ((n - 1) + 0.5);                      // a quarter-screen rest before the first move and after the last
     caps.style.height = (len + vh) + 'px';
@@ -263,8 +276,8 @@
       introK = 0; introT = performance.now() + 250; markDirty();
       setTimeout(() => { loader.classList.remove('show', 'out'); root.classList.remove('intro-run', 'intro-go'); }, 2700);
     };
-    // never hold the page for long: at most 1.5 s for the font, and the slices show for at least 1.1 s
-    Promise.race([fontsReady, new Promise(r => setTimeout(r, 1500))]).then(() => setTimeout(go, Math.max(0, 1100 - (performance.now() - t0))));
+    // never hold the page for long: at most 1 s for the font, and the slices show for at least 0.9 s
+    Promise.race([fontsReady, new Promise(r => setTimeout(r, 1000))]).then(() => setTimeout(go, Math.max(0, 900 - (performance.now() - t0))));
   }
 
   /* ------------------------------------------------------------------ words that rise into place */
@@ -283,7 +296,7 @@
       });
       el.classList.add('rise');
       // inside the wide strip they rise when the work list opens (see drawStrip); elsewhere when they come into view
-      if (!strip.contains(el) || !wide) rio.observe(el);
+      if (!strip.contains(el) || !pin) rio.observe(el);
     }), { timeout: 1500 });
   }
 
@@ -524,8 +537,8 @@
 
   /* ------------------------------------------------------------------ layout changes */
   function setMode() {
-    const w = wantWide();
-    if (w !== wide) { wide = w; root.classList.toggle('wide', wide); }
+    const m = modeNow();
+    if (m.pin !== pin || m.narrow !== narrow) { pin = m.pin; narrow = m.narrow; root.classList.toggle('pin', pin); root.classList.toggle('narrow', narrow); }
     measureStrip(); measureCaps(); liveFit();
     if (lenis) lenis.resize();
   }
@@ -534,7 +547,7 @@
     clearTimeout(rt);
     rt = setTimeout(() => {
       // phones hide and show their toolbars while scrolling; only a real change of size re-lays the page
-      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 120 && !wide) return;
+      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && (narrow || !pin)) return;
       lastW = innerWidth; lastH = innerHeight; setMode();
     }, 120);
   };
