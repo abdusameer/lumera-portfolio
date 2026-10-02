@@ -158,6 +158,11 @@
     if (Math.abs(sy - y) > 4) scrollToY(y, false);
   });
   stage.addEventListener('scroll', () => { stage.scrollLeft = 0; stage.scrollTop = 0; });
+  // a project panel is one link: a click anywhere on it (but not on the stream or another link) opens its study
+  $$('.panel--proj', stage).forEach(p => p.addEventListener('click', e => {
+    if (e.defaultPrevented || e.target.closest('a, button, .stream')) return;
+    const a = $('.round', p); if (a) a.click();
+  }));
 
   /* ------------------------------------------------------------------ capabilities: panels push in from the right */
   const caps = $('#capabilities'), capPanels = $$('.cap', caps), capNav = $$('.cap-nav span', caps), capBar = $('.cap-bar i', caps);
@@ -257,7 +262,7 @@
     mainEl.inert = false; footEl.inert = false; topBar.inert = false;
     if (lenis) lenis.start();
     doc.removeEventListener('keydown', onMenuKey);
-    menuT = setTimeout(() => { if (!menu.classList.contains('is-open')) menu.hidden = true; }, reduce ? 0 : 900);
+    menuT = setTimeout(() => { if (!menu.classList.contains('is-open')) menu.hidden = true; }, reduce ? 0 : 520);
     if (restore && lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   menuBtn.addEventListener('click', () => (menu.classList.contains('is-open') ? closeMenu(true) : openMenu()));
@@ -395,6 +400,8 @@
   const closeLive = () => {
     if (!live) return;
     const L = live; live = null;
+    clearTimeout(L.slowT);
+    if (L.slow) L.slow.remove();
     if (liveRO) liveRO.unobserve(L.box);
     L.frame.remove();
     L.box.classList.remove('is-live', 'is-loaded');
@@ -412,13 +419,31 @@
     frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
     frame.setAttribute('allow', 'autoplay; fullscreen');
     frame.referrerPolicy = 'no-referrer';
-    frame.addEventListener('load', () => box.classList.add('is-loaded'), { once: true });
+    frame.addEventListener('load', () => {
+      box.classList.add('is-loaded');
+      if (live && live.frame === frame) { clearTimeout(live.slowT); if (live.slow) { live.slow.remove(); live.slow = null; } }
+    }, { once: true });
     frame.src = b.dataset.src;
     const v = $('video', box);
     if (v) { clearTimeout(v._hold); v.pause(); }
+    box.dataset.wait = `Opening the live ${b.dataset.name} site…`;
     box.classList.add('is-live');
     box.appendChild(frame);
-    live = { box, kind, frame, btn: b };
+    live = { box, kind, frame, btn: b, slow: null };
+    // ten seconds is longer than these sites ever take; say so, take the blame, and offer another way in
+    live.slowT = setTimeout(() => {
+      if (!live || live.frame !== frame || box.classList.contains('is-loaded')) return;
+      const note = doc.createElement('div');
+      note.className = 'live-slow';
+      note.setAttribute('role', 'status');
+      const msg = doc.createElement('p'); msg.textContent = 'This is taking longer than it should. Sorry about that.';
+      const link = doc.createElement('a');
+      link.href = b.dataset.src; link.target = '_blank'; link.rel = 'noopener';
+      link.textContent = 'Open it in a new tab';
+      note.append(msg, link);
+      box.appendChild(note);
+      live.slow = note;
+    }, 10000);
     fitLive();
     if (liveRO) liveRO.observe(box);
     nameBtn(b, true);
@@ -522,9 +547,10 @@
   }
 
   /* ------------------------------------------------------------------ copy the email address */
+  const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   $$('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
     const status = btn.parentElement.querySelector('.copy-status');
-    const text = btn.dataset.copy;
+    const text = btn.dataset.copy, label = btn.dataset.label || (btn.dataset.label = btn.textContent);
     let ok = false;
     try { await navigator.clipboard.writeText(text); ok = true; } catch (err) {
       const ta = doc.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -532,7 +558,17 @@
       try { ok = doc.execCommand('copy'); } catch (e2) { ok = false; }
       ta.remove();
     }
-    if (status) { status.textContent = ok ? 'Copied' : 'Select and copy the address'; clearTimeout(btn._t); btn._t = setTimeout(() => { status.textContent = ''; }, 2600); }
+    clearTimeout(btn._t);
+    if (ok) {
+      btn.textContent = 'Copied'; btn.classList.add('is-done');
+      if (status) status.textContent = 'Copied';
+    } else {
+      // our side couldn't copy; do the next best thing and leave the address selected
+      const a = btn.parentElement.querySelector('a[href^="mailto:"]');
+      if (a) { const r = doc.createRange(); r.selectNodeContents(a); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+      if (status) status.textContent = `Couldn't copy it for you. It's selected: press ${mac ? '⌘C' : 'Ctrl+C'}.`;
+    }
+    btn._t = setTimeout(() => { btn.textContent = label; btn.classList.remove('is-done'); if (status) status.textContent = ''; }, 2600);
   }));
 
   /* ------------------------------------------------------------------ layout changes */

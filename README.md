@@ -37,7 +37,7 @@ The capability panels push in on phones too. Phones held sideways, small landsca
 
 Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requested from third parties until a visitor opens a live study with Scroll it yourself.
 
-- `index.html`, `legal.html`: the two pages. A one-line script in the head sets the layout mode and whether the opening runs before the first paint, so nothing shifts.
+- `index.html`, `legal.html`, `404.html`: the pages. GitHub Pages serves `404.html` for any missing address, so it uses absolute paths. A one-line script in the head sets the layout mode and whether the opening runs before the first paint, so nothing shifts.
 - `assets/css/lumera.css`: the whole design system and every layout. On wide screens sizes follow a 1440 × 900 artboard (1rem = 10 px at 1440); reading sizes keep a px floor so zoom still enlarges text.
 - `assets/js/lumera.js`: the opening, the sideways strip, the capability panels, words rising into place, the footer letters, lazy video, rōk's scrub, Lenny's colors, BB's window, the Scroll it yourself live screens, the menu and the copy button. One animation loop.
 - `assets/js/lennys-colors.js`: Lenny's page colors, sampled from its walkthroughs and darkened where needed to keep text contrast (generated).

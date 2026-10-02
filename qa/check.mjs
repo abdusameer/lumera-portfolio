@@ -10,7 +10,7 @@ import { start } from './serve.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(HERE, 'results');
 fs.mkdirSync(OUT, { recursive: true });
-const PORT = 4321;
+const PORT = Number(process.env.PORT) || 4321;
 const BASE = `http://localhost:${PORT}/lumera-portfolio/`;
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -469,6 +469,78 @@ const stripState = page => page.evaluate(() => ({
     else if (!L.open.fits || !L.open.videoHidden) problem(where, 'live site does not fill its screen: ' + JSON.stringify(L.open));
     if (L.closed.iframe || !L.closed.videoVisible) problem(where, 'Back to the recording did not restore the video: ' + JSON.stringify(L.closed));
     if (vp.width < 760 && L.buttons.some(b => /desk:shown/.test(b))) problem(where, 'laptop live mode offered on a phone');
+    await page.close();
+  }
+
+  /* ---------- the feel of it: presses, panels, the opening once, copy, a slow live site, the 404 ---------- */
+  {
+    const F = report.interactions.feel = {};
+    // hover styles only where a pointer can hover, so a tap on a phone never leaves a button stuck "hovered"
+    const css = fs.readFileSync(path.join(HERE, '..', 'assets', 'css', 'lumera.css'), 'utf8');
+    let stripped = css, i;
+    while ((i = stripped.indexOf('@media (hover: hover)')) >= 0) {
+      let j = stripped.indexOf('{', i), depth = 0, k = j;
+      for (; k < stripped.length; k++) { if (stripped[k] === '{') depth++; else if (stripped[k] === '}' && --depth === 0) break; }
+      stripped = stripped.slice(0, i) + stripped.slice(k + 1);
+    }
+    F.bareHover = (stripped.match(/[^\n]*:hover[^\n]*/g) || []).filter(l => !/^\s*\/?\*/.test(l.trim()));
+    if (F.bareHover.length) problem('feel', 'hover rules outside (hover: hover): ' + F.bareHover.slice(0, 3).join(' | '));
+    const { page, log } = await newPage(browser, VIEWPORTS[0]);
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(3400);
+    // a click anywhere on a project panel opens its study
+    await page.evaluate(() => window.scrollTo(0, innerHeight * 1.3)); await sleep(1500);
+    const img = await page.$('[data-panel]:nth-child(2) .p-media img');
+    await img.click(); await sleep(2400);
+    F.panelClick = await page.evaluate(() => ({ top: Math.round(document.getElementById('rok').getBoundingClientRect().top), hash: location.hash }));
+    if (Math.abs(F.panelClick.top) > 6 || F.panelClick.hash !== '#rok') problem('feel', 'clicking the rōk panel did not open its study: ' + JSON.stringify(F.panelClick));
+    // the copy button confirms on itself, then returns
+    await page.evaluate(() => document.getElementById('contact').scrollIntoView()); await sleep(800);
+    const ctx = browser.defaultBrowserContext(); await ctx.overridePermissions(BASE, ['clipboard-read', 'clipboard-write', 'clipboard-sanitized-write']);
+    await page.click('.copy'); await sleep(250);
+    F.copyNow = await page.evaluate(() => document.querySelector('.copy').textContent);
+    await sleep(2800);
+    F.copyAfter = await page.evaluate(() => document.querySelector('.copy').textContent);
+    if (F.copyNow !== 'Copied' || F.copyAfter !== 'Copy') problem('feel', `copy button said "${F.copyNow}" then "${F.copyAfter}"`);
+    // the opening plays once per visit: coming back to the page doesn't raise the curtain again
+    await page.goto(BASE + 'legal.html', { waitUntil: 'networkidle0' });
+    await page.click('.foot-links a[href="./"]'); await sleep(350);
+    F.openingAgain = await page.evaluate(() => getComputedStyle(document.getElementById('loader')).display !== 'none');
+    if (F.openingAgain) problem('feel', 'the opening ran again on coming back to the page');
+    if (log.console.length || log.pageErrors.length) problem('feel', [...log.console, ...log.pageErrors].slice(0, 3).join(' | '));
+    await page.close();
+  }
+  {
+    // a live site that never answers: after ten seconds the screen says so and offers a new tab
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1440, height: 900 });
+    await page.setRequestInterception(true);
+    page.on('request', r => { if (r.url().includes('lennys-casita-redesign')) return; r.continue(); });   // left hanging on purpose
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(3200);
+    await page.evaluate(() => { const e = document.querySelector('#lennys .site'); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 90); });
+    await sleep(1200);
+    await page.click('#lennys .live-btn[data-live="desk"]'); await sleep(600);
+    const F = report.interactions.feel;
+    F.liveWait = await page.evaluate(() => document.querySelector('#lennys .site-desk').dataset.wait);
+    await sleep(10200);
+    F.liveSlow = await page.evaluate(() => { const n = document.querySelector('#lennys .live-slow'); return n ? { text: n.textContent.trim(), href: n.querySelector('a') && n.querySelector('a').href } : null; });
+    await page.click('#lennys .live-btn[data-live="desk"]'); await sleep(500);
+    F.liveSlowGone = await page.evaluate(() => !document.querySelector('.live-slow') && !document.querySelector('#lennys iframe'));
+    if (!/Lenny's Casita/.test(F.liveWait || '')) problem('feel', 'the live screen does not name what it is opening: ' + F.liveWait);
+    if (!F.liveSlow || !/longer/.test(F.liveSlow.text) || !/lennys-casita-redesign/.test(F.liveSlow.href || '')) problem('feel', 'no note when the live site runs long: ' + JSON.stringify(F.liveSlow));
+    if (!F.liveSlowGone) problem('feel', 'Back to the recording left the note or the frame behind');
+    await page.close();
+  }
+  for (const vp of [VIEWPORTS[0], VIEWPORTS[5]]) {
+    // the 404 page, in the site's own design
+    const { page, log } = await newPage(browser, vp);
+    await page.goto(BASE + '404.html', { waitUntil: 'networkidle0' });
+    const a = await auditStatic(page);
+    const L = await page.evaluate(() => ({ h1: document.querySelector('h1').textContent, bg: getComputedStyle(document.body).backgroundColor, links: [...document.querySelectorAll('a[href^="/lumera-portfolio/"]')].length }));
+    report.interactions['404-' + vp.name] = { ...L, hscroll: a.hscroll };
+    await page.screenshot({ path: path.join(OUT, `404-${vp.name}.jpg`), type: 'jpeg', quality: 70 });
+    if (a.hscroll || L.bg !== 'rgb(238, 234, 227)' || L.links < 4) problem('404 ' + vp.name, JSON.stringify(L));
+    if (vp.touch && a.targetsUnder24.length) problem('404 ' + vp.name, 'small touch targets ' + a.targetsUnder24.join(' | '));
+    if (log.console.length || log.pageErrors.length || log.http.length) problem('404 ' + vp.name, [...log.console, ...log.pageErrors, ...log.http].join(' | '));
     await page.close();
   }
 

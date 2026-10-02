@@ -149,3 +149,18 @@ The owner studied akaru.fr (a Lyon agency site) and asked for the portfolio to f
 - The stages fill the large viewport (100lvh) and keep their content clear of a phone's toolbars (padding of 100lvh - 100svh, zero on desktops). Height-only resizes (toolbars showing and hiding) don't re-lay the page.
 - On phones the projects arrive only a short way during the opening, so rōk's photo is on screen from the first paint; the opening waits at most 1 s for the font and shows the slices for at least 0.9 s. rōk's photo is preloaded at every size.
 - QA: new phone checks (resting layout, each panel opening, the list rising, the capability panels). 0 problems. Lighthouse: desktop 99 / 100 / 100 / 100; mobile 94–98 / 100 / 100 / 100 (LCP 2.1–3.0 s under simulated throttling: the largest element on a phone's first screen is now rōk's photo, counted when the opening's loader leaves), CLS 0.
+
+## How it feels (2026-10-01, owner request before shipping)
+
+A pass on felt states rather than features: arriving, finding your way, waiting, success, empty, and things going wrong.
+
+- Hover styles run only where a pointer can hover (`@media (hover: hover)`), so a tap on a phone never leaves a pill filled or a row shifted. Presses answer at once (scale .95 in 0.1 s) and spring back on the softer base transition.
+- A project panel is one link: a click anywhere on it (not on the stream) opens its study. On hover the photo eases forward (1.04 over 1.4 s) and the arrow fills, so the whole card reads as alive.
+- The opening plays once per visit (sessionStorage), not again on returning from the legal page.
+- The menu arrives in 0.75 s and leaves in 0.5 s; its links follow a little sooner.
+- Scroll it yourself names what it is opening ("Opening the live rōk site…"). If a live site hasn't loaded after 10 s the screen owns it ("This is taking longer than it should. Sorry about that.") and offers it in a new tab.
+- Copy email: the button itself says "Copied", then returns. If the browser blocks copying, the address is selected and the note gives the shortcut instead of a chore.
+- The empty capability panels invite rather than report.
+- The approach rows no longer invert like buttons they aren't; light passes over them and the number turns gold.
+- A 404 page in the site's design that owns the broken link and offers the way back.
+- QA: new checks for hover rules outside the hover query, a panel click, the copy button's round trip, the opening not repeating, a live site left hanging (the note and the new-tab link), and the 404 page; QA takes its port from `PORT`. 0 problems. Lighthouse: mobile 97–98 / 100 / 100 / 100, desktop 99 / 100 / 100 / 100, CLS 0.

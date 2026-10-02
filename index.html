@@ -23,8 +23,8 @@
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
 <link rel="stylesheet" href="assets/css/lumera.css">
-<!-- before the first paint: the layout mode, and whether the opening runs (a fresh visit at the top; not on reload or back) -->
-<script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');if(!m&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
+<!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
+<script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -405,7 +405,7 @@
             <ul class="cap-list small"><li>AI assistants</li><li>AI agents</li><li>Workflow automation</li><li>Process improvements</li></ul>
             <a class="pill" href="#contact">Talk to us</a>
           </div>
-          <p class="cap-note">No published examples yet.</p>
+          <p class="cap-note">No published examples yet. If there's work that keeps landing on your desk, we'd like to hear about it.</p>
         </div>
       </div>
       <div class="cap" style="--cc: var(--c-lilac)">
@@ -416,7 +416,7 @@
             <ul class="cap-list small"><li>Internal tools</li><li>Dashboards</li><li>Booking and ordering systems</li><li>Integrations and purpose-built software</li></ul>
             <a class="pill" href="#contact">Talk to us</a>
           </div>
-          <p class="cap-note">No published examples yet.</p>
+          <p class="cap-note">No published examples yet. If your team is working around a tool that doesn't fit, tell us what it should do.</p>
         </div>
       </div>
       <div class="cap-nav small" aria-hidden="true">
