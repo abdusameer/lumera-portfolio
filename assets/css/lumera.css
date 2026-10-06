@@ -457,59 +457,80 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .cap-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(14, 13, 11, .2); overflow: hidden; }
 .cap-bar i { position: absolute; inset: 0; background: var(--ink); transform-origin: 0 0; transform: scaleX(var(--p, 0)); }
 
-/* ---------- systems and automation: a scripted demonstration, text first ---------- */
-.systems { padding: 14rem var(--m) 14rem; background: var(--paper); }
+/* ---------- systems and automation: a quiet technical diagram, text first ---------- */
+/* a dark panel (like the approach room), five nodes on a drawn line, each in one of the studio's project colors;
+   a small marker carries the inquiry along the line while a record fills in beside the log */
+.systems { padding: 14rem var(--m); background: var(--paper); }
 .sys-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; row-gap: 3rem; margin-bottom: 8rem; }
 .sys-head h2 { grid-column: 1 / span 7; }
 .sys-intro { grid-column: 8 / span 5; align-self: end; max-width: 40ch; font-size: max(2.4rem, 19px); line-height: 1.2; letter-spacing: -.015em; }
-.sys-demo { display: grid; gap: 4rem; padding: 3.2rem 0 0; border-top: 1px solid var(--ink); }
-.sys-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2.4rem 4rem; }
-.sys-title h3 { margin: 1.6rem 0 1.2rem; font-size: max(4.8rem, 32px); font-weight: 400; line-height: 1; letter-spacing: -.035em; }
-.sys-note { max-width: 56ch; color: var(--muted); font-size: max(1.5rem, 15px); }
+.sys-demo { --node: max(6.4rem, 52px); --soft: rgba(238, 234, 227, .72); --hair: rgba(238, 234, 227, .24); display: grid; gap: 6rem; padding: 6rem 6.4rem 7rem; border-radius: 1.2rem; background: var(--ink); color: var(--paper); overflow: hidden; }
+.sys-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 3rem 4rem; }
+.sys-title h3 { margin: 2rem 0 1.6rem; font-size: max(7.2rem, 40px); font-weight: 400; line-height: .95; letter-spacing: -.045em; }
+.sys-note { max-width: 52ch; color: var(--soft); font-size: max(1.5rem, 15px); }
 .sys-controls { display: flex; flex-wrap: wrap; gap: 1.2rem; }
-.sys-hint { color: var(--muted); }
-.sys-card { display: grid; gap: 1.6rem; padding: 2.4rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.sys-card h4 { color: var(--muted); }
-.sys-card dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.4rem; margin: 0; }
-.sys-card dt { margin-bottom: .6rem; color: var(--muted); }
-.sys-card dd { margin: 0; font-size: max(1.8rem, 16px); }
-.sys-stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 3.2rem; }
-.sys-stage { position: relative; display: grid; align-content: start; gap: 1.2rem; padding: 2rem 2rem 2.4rem; border: 1px solid var(--line); border-radius: .6rem; transition: background-color .5s var(--ease), color .5s var(--ease), border-color .5s var(--ease); }
-.sys-stage h4 { font-size: max(2.4rem, 20px); font-weight: 400; line-height: 1.1; letter-spacing: -.02em; }
-.sys-stage p { font-size: max(1.5rem, 15px); line-height: 1.4; }
+.sys-hint { margin-top: -3rem; color: var(--soft); }
+.sys-track { position: relative; }
+.sys-stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.sys-stage { position: relative; display: grid; justify-items: center; align-content: start; gap: 1.6rem; padding: 0 1.6rem; text-align: center; }
+.sys-node { position: relative; z-index: 2; display: grid; place-items: center; width: var(--node); height: var(--node); border: 2px solid rgba(238, 234, 227, .6); border-radius: 50%; background: var(--ink); color: var(--paper); font-size: max(1.5rem, 14px); font-variant-numeric: tabular-nums; transition: background-color .5s var(--ease), border-color .5s var(--ease), color .5s var(--ease); }
+.sys-stage h4 { font-size: max(2.8rem, 22px); font-weight: 400; line-height: 1.05; letter-spacing: -.025em; }
+.sys-stage p { max-width: 24ch; color: var(--soft); font-size: max(1.5rem, 15px); line-height: 1.4; }
 .sys-state { display: inline-flex; align-items: center; gap: .8rem; min-height: 1.6em; }
 .sys-state:empty { visibility: hidden; }
 .sys-state:not(:empty)::before { content: ""; flex: none; width: 1rem; height: 1rem; min-width: 9px; min-height: 9px; border: 2px solid currentColor; border-radius: 50%; }
 .sys-stage.is-active .sys-state::before { background: currentColor; }
 .sys-stage.is-done .sys-state::before { width: 1rem; height: .55rem; min-width: 10px; min-height: 6px; border: 0; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; border-radius: 0; transform: rotate(-45deg) translateY(-2px); }
-/* three states, told apart by border, fill and a word, never by color alone */
-.sys-stage.is-waiting { border-style: dashed; border-color: rgba(14, 13, 11, .55); }
-.sys-stage.is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.sys-stage.is-done { border-color: var(--ink); }
-/* the line to the next stage fills as a stage completes */
-.sys-stage:not(:last-child)::after { content: ""; position: absolute; top: 4.2rem; left: 100%; width: 3.2rem; height: 2px; background: linear-gradient(var(--ink), var(--ink)) left center / 0% 100% no-repeat, linear-gradient(var(--line), var(--line)); transition: background-size .8s var(--ease-io); }
+/* the three states differ by ring (dashed, filled, outlined), by a word and by a mark, never by color alone */
+.sys-stage.is-waiting .sys-node { border-style: dashed; }
+.sys-stage.is-active .sys-node { border-color: var(--ac); background: var(--ac); color: var(--ink); font-weight: 600; }
+.sys-stage.is-done .sys-node { border-color: var(--ac); color: var(--ac); }
+.sys-stage.is-active .sys-state { color: var(--ac); }
+.sys-stage.is-done .sys-state { color: var(--soft); }
+/* the line to the next stage fills in the stage's color as it completes */
+.sys-stage:not(:last-child)::after { content: ""; position: absolute; top: calc(var(--node) / 2 - 1px); left: 50%; width: 100%; height: 2px; z-index: 1; background: linear-gradient(var(--ac), var(--ac)) left center / 0% 100% no-repeat, linear-gradient(var(--hair), var(--hair)); transition: background-size .9s var(--ease-io); }
 .sys-stage.is-done:not(:last-child)::after { background-size: 100% 100%, 100% 100%; }
-.sys-log-wrap { display: grid; gap: 1.2rem; }
-.sys-log-wrap h4 { color: var(--muted); }
-.sys-log { counter-reset: ev; display: grid; max-width: 72ch; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--line); }
-.sys-log li { counter-increment: ev; display: grid; grid-template-columns: 5rem minmax(0, 1fr); padding: 1.2rem 0; border-top: 1px solid var(--line); font-size: max(1.7rem, 15px); transition: opacity .5s var(--ease); }
-.sys-log li::before { content: counter(ev, decimal-leading-zero); color: var(--muted); font-variant-numeric: tabular-nums; }
-.sys-log li.is-pending { visibility: hidden; opacity: 0; }
+/* the marker that carries the inquiry: it moves to the stage that is running (placed by the script) */
+.sys-packet { position: absolute; left: 0; top: 0; z-index: 3; width: 1.4rem; height: 1.4rem; min-width: 12px; min-height: 12px; margin: -.7rem 0 0 -.7rem; border-radius: 3px; background: var(--paper); box-shadow: 0 0 0 4px var(--ink); opacity: 0; pointer-events: none; transform: translate(var(--px, 0px), var(--py, 0px)); transition: transform .9s var(--ease-io), opacity .4s var(--ease); }
+.sys-demo:not([data-mode="idle"]) .sys-packet { opacity: 1; }
+.sys-lower { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 8rem; padding-top: 5rem; border-top: 1px solid var(--hair); }
+.sys-card, .sys-log-wrap { display: grid; align-content: start; gap: 1.6rem; }
+.sys-card h4, .sys-log-wrap h4 { color: var(--soft); }
+.sys-record, .sys-log { counter-reset: ev; display: grid; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--hair); }
+.sys-record > div { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.6rem; padding: 1.2rem 0; border-top: 1px solid var(--hair); transition: opacity .5s var(--ease); }
+.sys-record dt { color: var(--soft); align-self: center; }
+.sys-record dd { margin: 0; font-size: max(1.8rem, 16px); }
+.sys-log li { counter-increment: ev; display: grid; grid-template-columns: 5rem minmax(0, 1fr); padding: 1.2rem 0; border-top: 1px solid var(--hair); font-size: max(1.7rem, 15px); transition: opacity .5s var(--ease); }
+.sys-log li::before { content: counter(ev, decimal-leading-zero); color: var(--soft); font-variant-numeric: tabular-nums; }
+.sys-log li.is-pending, .sys-record > div.is-pending { visibility: hidden; opacity: 0; }
+@media (hover: hover) { .sys-stage:hover .sys-node { border-color: var(--ac); } }
 .note-link { text-decoration: underline; text-underline-offset: 3px; }
-html:not(.js) .sys-controls, html:not(.js) .sys-hint { display: none; }
+html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet { display: none; }
+/* the panel and its stages arrive once, as the section comes into view (not with reduced motion, not without the script) */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .sys-demo { transition: clip-path 1.2s var(--ease-io), opacity .8s var(--ease); }
+  html.js .sys-demo:not(.in) { clip-path: inset(7% 0 0 0 round 1.2rem); opacity: 0; }
+  html.js .sys-stage { transition: opacity .9s var(--ease) calc(var(--i) * 110ms + 250ms), transform .9s var(--ease) calc(var(--i) * 110ms + 250ms); }
+  html.js .sys-demo:not(.in) .sys-stage { opacity: 0; transform: translateY(2.4rem); }
+}
 @media (max-width: 1023px) {
-  .systems { padding: 10rem var(--m) 10rem; }
+  .systems { padding: 10rem var(--m); }
   .sys-head { margin-bottom: 5rem; }
   .sys-head h2, .sys-intro { grid-column: 1 / -1; }
-  .sys-card dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sys-demo { gap: 5rem; padding: 4rem 3rem 5rem; }
+  .sys-title h3 { font-size: max(5.6rem, 36px); }
+  .sys-lower { grid-template-columns: minmax(0, 1fr); row-gap: 5rem; }
   /* the workflow reads top to bottom, one stage under the next */
-  .sys-stages { grid-template-columns: minmax(0, 1fr); row-gap: 3.2rem; max-width: 56rem; }
-  .sys-stage:not(:last-child)::after { top: 100%; left: 3.4rem; width: 2px; height: 3.2rem; background: linear-gradient(var(--ink), var(--ink)) center top / 100% 0% no-repeat, linear-gradient(var(--line), var(--line)); transition-property: background-size; }
+  .sys-stages { grid-template-columns: minmax(0, 1fr); row-gap: 3.6rem; max-width: 60rem; }
+  .sys-stage { grid-template-columns: var(--node) minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; justify-items: start; column-gap: 2.4rem; row-gap: 1rem; padding: 0; text-align: left; }
+  .sys-node { grid-row: 1 / span 4; }
+  .sys-stage:not(:last-child)::after { top: var(--node); left: calc(var(--node) / 2 - 1px); width: 2px; height: calc(100% - var(--node) + 3.6rem); background: linear-gradient(var(--ac), var(--ac)) center top / 100% 0% no-repeat, linear-gradient(var(--hair), var(--hair)); }
   .sys-stage.is-done:not(:last-child)::after { background-size: 100% 100%, 100% 100%; }
 }
 @media (max-width: 759px) {
-  .sys-card dl { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
-  .sys-title h3 { font-size: max(4rem, 32px); }
+  .sys-demo { padding: 3.2rem 2rem 4rem; border-radius: .8rem; }
+  .sys-title h3 { font-size: max(4.8rem, 34px); }
+  .sys-record > div { grid-template-columns: minmax(0, 1fr); gap: .4rem; }
 }
 
 /* ---------- contact + footer: the dark close ---------- */
@@ -537,7 +558,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint { display: none; }
 /* ---------- focus: an outline you can see on every surface ---------- */
 /* pills and round buttons swap their colors when focused, so the outline is set to the surface instead of the text */
 .pill:focus-visible, .round:focus-visible, .copy:focus-visible, .live-btn:focus-visible { outline-color: var(--ink); }
-.study--lennys :focus-visible, .approach :focus-visible, .contact :focus-visible, .foot :focus-visible, .menu :focus-visible { outline-color: var(--paper); }
+.study--lennys :focus-visible, .approach :focus-visible, .contact :focus-visible, .foot :focus-visible, .menu :focus-visible, .sys-demo :focus-visible { outline-color: var(--paper); }
 /* controls that float over anything (photos, recordings, every color) carry a two-tone ring */
 .burger:focus-visible, .logo:focus-visible, .menu-close:focus-visible, .play:focus-visible, .skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 2px #0E0D0B; }
 /* on Lenny's night the pills fill with paper, as they do in the other dark rooms */

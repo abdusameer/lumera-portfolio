@@ -608,18 +608,25 @@
      The five stages and the log are plain text in the page; this only lights them in turn. Nothing here talks to a real system. */
   const sys = $('#sys-demo');
   if (sys) {
-    const stages = $$('.sys-stage', sys), logs = $$('.sys-log li', sys), N = stages.length;
-    const run = $('#sys-run'), reset = $('#sys-reset'), live = $('#sys-live'), statusEl = $('#sys-status'), hint = $('.sys-hint', sys);
+    const stages = $$('.sys-stage', sys), logs = $$('.sys-log li, .sys-record > div[data-stage]', sys), N = stages.length;
+    const run = $('#sys-run'), reset = $('#sys-reset'), live = $('#sys-live'), statusEl = $('#sys-status'), hint = $('.sys-hint', sys), track = $('.sys-track', sys), packet = $('.sys-packet', sys);
     const STATUS = ['Not started', 'Received', 'Categorized as a kitchen remodel estimate', 'Assigned to residential estimates', 'Follow-up notifications prepared', 'Recorded in the pipeline, next step a site visit'];
     const EVENT = ['New estimate request received. Contact details captured.', 'Request categorized.', 'Assigned to the appropriate workflow.', 'Follow-up notification prepared.', 'Record added to the business pipeline.'];
     const STEP = 2200;                                   // ms a stage stays lit
-    let mode = reduce ? 'done' : 'idle', elapsed = 0, drawn = '', said = -1;   // idle | play | pause | done (reduced motion starts at the end)
+    let mode = reduce ? 'done' : 'idle', elapsed = 0, drawn = '', said = -1, at = 0;   // idle | play | pause | done (reduced motion starts at the end)
     const LABEL = { idle: 'Run demonstration', play: 'Pause', pause: 'Resume', done: 'Replay' };
+    // the marker sits on the center of the stage that is running (offsets, so the entrance movement doesn't skew it)
+    const place = k => {
+      const li = stages[Math.max(0, Math.min(N - 1, k))], node = $('.sys-node', li);
+      track.style.setProperty('--px', (li.offsetLeft + node.offsetLeft + node.offsetWidth / 2) + 'px');
+      track.style.setProperty('--py', (li.offsetTop + node.offsetTop + node.offsetHeight / 2) + 'px');
+    };
     const paint = () => {
       const k = mode === 'idle' ? -1 : mode === 'done' ? N : Math.min(N, Math.floor(elapsed / STEP));
       const key = mode + k;
       if (key === drawn) return;
-      drawn = key;
+      drawn = key; at = k;
+      sys.dataset.mode = mode;
       stages.forEach((el, i) => {
         const st = mode === 'idle' ? '' : i < k ? 'done' : i === k ? 'active' : 'waiting';
         el.classList.remove('is-done', 'is-active', 'is-waiting');
@@ -628,6 +635,7 @@
       });
       logs.forEach(li => li.classList.toggle('is-pending', mode === 'idle' || (mode !== 'done' && +li.dataset.stage - 1 > k)));
       statusEl.textContent = STATUS[mode === 'idle' ? 0 : Math.min(N, k + 1)];
+      place(k < 0 ? 0 : k);
       run.textContent = LABEL[mode];
       reset.hidden = mode === 'idle' || (reduce && mode === 'done' && !elapsed);
       hint.hidden = mode !== 'idle';
@@ -647,6 +655,12 @@
       if (elapsed >= N * STEP) { go('done'); return; }
       paint();
     });
+    if ('ResizeObserver' in window) new ResizeObserver(() => place(at < 0 ? 0 : at)).observe(track);
+    // the panel arrives once, as it comes into view
+    if (!reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { sys.classList.add('in'); io.disconnect(); } }, { rootMargin: '0px 0px -12% 0px' });
+      io.observe(sys);
+    } else sys.classList.add('in');
     paint();
   }
 

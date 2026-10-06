@@ -478,45 +478,58 @@
       <h2 class="big" id="systems-title" data-rise>Systems &amp; automation</h2>
       <p class="sys-intro">A website creates the point of contact. The systems behind it determine what happens next. Lumera designs connected workflows that capture information, organize requests, route work, and help businesses respond consistently.</p>
     </div>
-    <div class="sys-demo" id="sys-demo">
+    <div class="sys-demo" id="sys-demo" data-mode="idle">
       <div class="sys-top">
         <div class="sys-title">
           <p class="small"><span class="chip">Lumera capability demonstration</span></p>
-          <h3 id="sys-demo-title">From inquiry to action</h3>
+          <h3 id="sys-demo-title" data-rise>From inquiry to action</h3>
           <p class="sys-note">A scripted example with fictional sample data. It isn't connected to a real customer, inbox, CRM or production system, and it isn't client work.</p>
         </div>
         <div class="sys-controls" role="group" aria-labelledby="sys-demo-title">
-          <button class="pill" type="button" id="sys-run">Run demonstration</button>
-          <button class="pill" type="button" id="sys-reset" hidden>Start over</button>
+          <button class="pill pill--gold" type="button" id="sys-run">Run demonstration</button>
+          <button class="pill pill--light" type="button" id="sys-reset" hidden>Start over</button>
         </div>
       </div>
       <p class="sys-hint small" hidden>Press Run demonstration to follow one sample inquiry through the five stages.</p>
-      <div class="sys-card">
-        <h4 class="small">Sample inquiry (fictional)</h4>
-        <dl>
-          <div><dt class="small">From</dt><dd>Alex Morgan</dd></div>
-          <div><dt class="small">Business</dt><dd>Example Home Services</dd></div>
-          <div><dt class="small">Request</dt><dd>Estimate for a kitchen remodel</dd></div>
-          <div><dt class="small">Status</dt><dd id="sys-status">Recorded in the pipeline</dd></div>
-        </dl>
-      </div>
-      <ol class="sys-stages" aria-label="The five stages">
-        <li class="sys-stage"><span class="sys-num small">01</span><h4>Capture</h4><p>The inquiry arrives through the website and its details are stored in one place.</p><span class="sys-state small" aria-hidden="true"></span></li>
-        <li class="sys-stage"><span class="sys-num small">02</span><h4>Qualify</h4><p>The request is checked for the information needed and sorted by type of work.</p><span class="sys-state small" aria-hidden="true"></span></li>
-        <li class="sys-stage"><span class="sys-num small">03</span><h4>Route</h4><p>It is assigned to the workflow that handles that type of request.</p><span class="sys-state small" aria-hidden="true"></span></li>
-        <li class="sys-stage"><span class="sys-num small">04</span><h4>Notify</h4><p>The people involved, and the customer, are told what happens next.</p><span class="sys-state small" aria-hidden="true"></span></li>
-        <li class="sys-stage"><span class="sys-num small">05</span><h4>Record</h4><p>The request is logged in the pipeline with its status and next step.</p><span class="sys-state small" aria-hidden="true"></span></li>
-      </ol>
-      <div class="sys-log-wrap">
-        <h4 class="small">Event log</h4>
-        <ol class="sys-log">
-          <li data-stage="1">New estimate request received</li>
-          <li data-stage="1">Contact details captured</li>
-          <li data-stage="2">Request categorized</li>
-          <li data-stage="3">Assigned to the appropriate workflow</li>
-          <li data-stage="4">Follow-up notification prepared</li>
-          <li data-stage="5">Record added to the business pipeline</li>
+      <div class="sys-track">
+        <ol class="sys-stages" aria-label="The five stages">
+          <li class="sys-stage" style="--ac: var(--c-rok); --i: 0"><span class="sys-node"><b>01</b></span><h4>Capture</h4><p>The inquiry arrives through the website and its details are stored in one place.</p><span class="sys-state small" aria-hidden="true"></span></li>
+          <li class="sys-stage" style="--ac: var(--c-lennys); --i: 1"><span class="sys-node"><b>02</b></span><h4>Qualify</h4><p>The request is checked for the information needed and sorted by type of work.</p><span class="sys-state small" aria-hidden="true"></span></li>
+          <li class="sys-stage" style="--ac: var(--c-bbs); --i: 2"><span class="sys-node"><b>03</b></span><h4>Route</h4><p>It is assigned to the workflow that handles that type of request.</p><span class="sys-state small" aria-hidden="true"></span></li>
+          <li class="sys-stage" style="--ac: var(--c-slate); --i: 3"><span class="sys-node"><b>04</b></span><h4>Notify</h4><p>The people involved, and the customer, are told what happens next.</p><span class="sys-state small" aria-hidden="true"></span></li>
+          <li class="sys-stage" style="--ac: var(--c-terra); --i: 4"><span class="sys-node"><b>05</b></span><h4>Record</h4><p>The request is logged in the pipeline with its status and next step.</p><span class="sys-state small" aria-hidden="true"></span></li>
         </ol>
+        <span class="sys-packet" aria-hidden="true"></span>
+      </div>
+      <div class="sys-lower">
+        <div class="sys-card">
+          <h4 class="small">Sample inquiry (fictional)</h4>
+          <dl class="sys-record">
+            <div><dt class="small">Status</dt><dd id="sys-status">Recorded in the pipeline</dd></div>
+            <div data-stage="1"><dt class="small">From</dt><dd>Alex Morgan</dd></div>
+            <div data-stage="1"><dt class="small">Business</dt><dd>Example Home Services</dd></div>
+            <div data-stage="1"><dt class="small">Request</dt><dd>Estimate for a kitchen remodel</dd></div>
+            <div data-stage="2"><dt class="small">Category</dt><dd>Kitchen remodel, estimate request</dd></div>
+            <div data-stage="2"><dt class="small">Details</dt><dd>Complete</dd></div>
+            <div data-stage="3"><dt class="small">Workflow</dt><dd>Residential estimates</dd></div>
+            <div data-stage="3"><dt class="small">Assigned to</dt><dd>Estimates team</dd></div>
+            <div data-stage="4"><dt class="small">Customer</dt><dd>Acknowledgement prepared</dd></div>
+            <div data-stage="4"><dt class="small">Team</dt><dd>New-request alert prepared</dd></div>
+            <div data-stage="5"><dt class="small">Pipeline</dt><dd>New</dd></div>
+            <div data-stage="5"><dt class="small">Next step</dt><dd>Site visit</dd></div>
+          </dl>
+        </div>
+        <div class="sys-log-wrap">
+          <h4 class="small">Event log</h4>
+          <ol class="sys-log">
+            <li data-stage="1">New estimate request received</li>
+            <li data-stage="1">Contact details captured</li>
+            <li data-stage="2">Request categorized</li>
+            <li data-stage="3">Assigned to the appropriate workflow</li>
+            <li data-stage="4">Follow-up notification prepared</li>
+            <li data-stage="5">Record added to the business pipeline</li>
+          </ol>
+        </div>
       </div>
       <p class="visually-hidden" id="sys-live" role="status" aria-live="polite"></p>
     </div>
