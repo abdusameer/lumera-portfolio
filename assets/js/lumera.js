@@ -191,13 +191,61 @@
     capBar.style.setProperty('--p', ((sC + 1) / C.n).toFixed(4));
   });
 
-  /* ------------------------------------------------------------------ header: the small logo turns light over the dark sections */
-  const topBar = $('#top-bar');
-  const darks = $$('#lennys, .approach, .contact, .foot');
+  /* ------------------------------------------------------------------ header: the owl takes the tone of whatever is behind it.
+     It reads what sits under the logo (a photo, a recording, or a section's color) and turns light over dark ground, ink over light. */
+  const topBar = $('#top-bar'), logoEl = $('.top .logo');
+  const chan = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const lumOf = (r, g, b) => 0.2126 * chan(r) + 0.7152 * chan(g) + 0.0722 * chan(b);
+  const probe = doc.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  const grids = new WeakMap();                                    // each photo, read once at low resolution
+  const readGrid = (src, natW, natH, w) => {
+    const h = Math.max(1, Math.round(w * natH / natW));
+    probe.canvas.width = w; probe.canvas.height = h;
+    try { probe.drawImage(src, 0, 0, w, h); } catch (e) { return null; }
+    const d = probe.getImageData(0, 0, w, h).data, lum = new Float32Array(w * h);
+    for (let i = 0; i < w * h; i++) lum[i] = lumOf(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]);
+    return { w, h, lum };
+  };
+  const imgGrid = img => { if (!grids.has(img)) grids.set(img, readGrid(img, img.naturalWidth, img.naturalHeight, 48)); return grids.get(img); };
+  let vid = { el: null, t: 0, g: null };                          // a playing recording, re-read four times a second
+  const vidGrid = v => { const now = performance.now(); if (vid.el !== v || now - vid.t > 250) vid = { el: v, t: now, g: readGrid(v, v.videoWidth, v.videoHeight, 32) }; return vid.g; };
+  // the media's own pixels under the logo, through object-fit cover or contain; null over a letterbox
+  const mediaTone = (el, natW, natH, g, r) => {
+    if (!g) return null;
+    const b = el.getBoundingClientRect(), contain = getComputedStyle(el).objectFit === 'contain';
+    const s = contain ? Math.min(b.width / natW, b.height / natH) : Math.max(b.width / natW, b.height / natH);
+    const ox = b.left + (b.width - natW * s) / 2, oy = b.top + (b.height - natH * s) / 2;
+    const u0 = (r.left - ox) / (natW * s), u1 = (r.right - ox) / (natW * s), v0 = (r.top - oy) / (natH * s), v1 = (r.bottom - oy) / (natH * s);
+    if (u1 < 0 || u0 > 1 || v1 < 0 || v0 > 1) return null;
+    const x0 = Math.floor(clamp(u0, 0, 1) * (g.w - 1)), x1 = Math.ceil(clamp(u1, 0, 1) * (g.w - 1));
+    const y0 = Math.floor(clamp(v0, 0, 1) * (g.h - 1)), y1 = Math.ceil(clamp(v1, 0, 1) * (g.h - 1));
+    let sum = 0, n = 0;
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { sum += g.lum[y * g.w + x]; n++; }
+    return n ? sum / n : null;
+  };
+  const toneUnder = r => {
+    for (const el of doc.elementsFromPoint((r.left + r.right) / 2, (r.top + r.bottom) / 2)) {
+      if (topBar.contains(el)) continue;
+      let t = null;
+      if (el.tagName === 'IMG' && el.complete && el.naturalWidth) t = mediaTone(el, el.naturalWidth, el.naturalHeight, imgGrid(el), r);
+      else if (el.tagName === 'VIDEO' && el.readyState >= 2 && el.videoWidth && getComputedStyle(el).visibility !== 'hidden') t = mediaTone(el, el.videoWidth, el.videoHeight, vidGrid(el), r);
+      else if (el.tagName === 'IFRAME') return /lennys/.test(el.src) ? 0.02 : 0.8;   // a live study: Lenny's is a night site
+      else {
+        const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+        if (m && (m.length < 4 || +m[3] > 0.5)) return lumOf(+m[0], +m[1], +m[2]);
+      }
+      if (t !== null) return t;
+    }
+    return lumOf(238, 234, 227);                                  // the paper
+  };
+  let toneAt = 0, onDark = false;
   tasks.add((dt, moved) => {
-    if (!moved && !dirty) return;
-    const on = darks.some(el => { const r = el.getBoundingClientRect(); return r.top <= 40 && r.bottom >= 40; });
-    topBar.classList.toggle('on-dark', on);
+    const now = performance.now();
+    if (now - toneAt < (moved || dirty ? 90 : 300)) return;       // about ten looks a second while scrolling; recordings keep it looking at rest
+    toneAt = now;
+    if (getComputedStyle(logoEl).visibility === 'hidden') return;
+    const dark = toneUnder(logoEl.getBoundingClientRect()) < 0.18;   // where ink and paper read equally well
+    if (dark !== onDark) { onDark = dark; topBar.classList.toggle('on-dark', dark); }
   });
 
   /* ------------------------------------------------------------------ in-page links */

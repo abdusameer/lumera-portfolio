@@ -168,3 +168,8 @@ A pass on felt states rather than features: arriving, finding your way, waiting,
 ## The owl as the site icon (2026-10-05, owner request)
 
 The owner chose to keep the site exactly as it is and show their owl mark only as its icon: in the browser tab (`assets/favicon.svg`, the owl alone in flat silver on near-black, 6 KB) and on phone home screens (`assets/apple-touch-icon.png`, 180 px, linked from all three pages). Nothing on the page changed. The owl was traced flat from the owner's logo; the tracing kit is in `.claude/recording/mark/` (git-ignored). Two larger treatments were tried locally and set aside at the owner's request: a dark opening with the logo throughout, and a scroll-film opening.
+
+## The owl in the corner (2026-10-05, owner request)
+
+- The small logo at the top left (and in the menu's corner) is now our owl in its ring instead of the narrow LUMERA, 52 px, the height of the menu pill. It comes from `assets/img/owl.svg` (6 KB, cached), colored through CSS. The big LUMERA in the opening, the menu and the footer stays.
+- It takes the tone of whatever is behind it: the script reads what sits under the logo about ten times a second while scrolling (a photo or a playing recording, sampled at low resolution, or a section's color) and turns the owl light over dark ground and ink over light. The old version only knew four dark sections, so it vanished over Lenny's photo in the strip.

@@ -47,6 +47,7 @@ Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requ
 - `assets/video/`: a whole-site walkthrough of each study at 60 fps, recorded top to bottom: `<name>-site.mp4` on a laptop, `<name>-site-sm.mp4` a lighter laptop copy, `<name>-site-m.mp4` on a phone. `rok-scrub.mp4` is rōk's pour, keyframed every 6 frames so scrolling can seek it. WebP posters.
 - `assets/img/bbs/`: the BB's loaf as a pencil sketch and as a photograph (concept images).
 - `assets/og.jpg`, `assets/favicon.svg`, `assets/apple-touch-icon.png`: the share image, and our owl as the icon in browser tabs and on phone home screens.
+- `assets/img/owl.svg`: the owl that sits in the top-left corner as the small logo. It turns light or ink to suit whatever is behind it.
 
 Videos load only when they come near the screen and pause when they leave it. With reduced motion, nothing plays by itself: each recording gets a Play button, and rōk shows a still.
 
@@ -62,7 +63,7 @@ Then open http://localhost:4321/lumera-portfolio/.
 
 ## Checks
 
-`qa/check.mjs` drives the site in headless Chrome at 8 viewport sizes, from 1440×900 down to 360×800 plus a phone held sideways. It checks overflow, headings, alt text, video labels, broken assets, in-page links and touch target size at every size, and that the footer's letters have risen at the end of the page. It also runs the opening, the sideways strip (resting layout, each project opening, the column, the stream), keyboard focus opening a panel, the capability panels, the header over dark sections, navigation, the folds, text contrast on every colored surface, rōk's scrub, Lenny's colors, BB's window, the copy button, the tab order (no invisible control takes focus), reload and resize, the phone menu, reduced motion, no JavaScript, Scroll it yourself and the legal page. It needs Google Chrome installed (set `CHROME` to use another path).
+`qa/check.mjs` drives the site in headless Chrome at 8 viewport sizes, from 1440×900 down to 360×800 plus a phone held sideways. It checks overflow, headings, alt text, video labels, broken assets, in-page links and touch target size at every size, and that the footer's letters have risen at the end of the page. It also runs the opening, the sideways strip (resting layout, each project opening, the column, the stream), keyboard focus opening a panel, the capability panels, the corner owl turning light over dark ground, navigation, the folds, text contrast on every colored surface, rōk's scrub, Lenny's colors, BB's window, the copy button, the tab order (no invisible control takes focus), reload and resize, the phone menu, reduced motion, no JavaScript, Scroll it yourself and the legal page. It needs Google Chrome installed (set `CHROME` to use another path).
 
 ```bash
 cd qa && npm install && node check.mjs
