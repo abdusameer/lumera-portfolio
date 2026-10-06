@@ -152,6 +152,7 @@ ul, ol { list-style: none; padding: 0; }
 .logo { display: block; width: max(5.2rem, 44px); height: max(5.2rem, 44px); color: var(--ink); pointer-events: auto; transition: opacity .5s var(--ease), transform .7s var(--ease), color .3s; }
 .logo-owl { display: block; width: 100%; height: 100%; fill: currentColor; }
 .top.on-dark .logo { color: var(--paper); }
+.top.logo-away .logo { opacity: 0; transform: translateY(-.8rem); visibility: hidden; transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s .35s; }
 .burger {
   pointer-events: auto; display: flex; align-items: center; gap: 1.2rem;
   height: max(5.2rem, 44px); padding: 0 1.4rem 0 2.2rem; border-radius: 99px;
@@ -208,6 +209,12 @@ ul, ol { list-style: none; padding: 0; }
 .hero-mark { display: block; height: 32vh; height: 32svh; min-height: 18rem; color: var(--ink); }
 .hero-tag { display: block; margin-top: 2rem; font-size: max(2.4rem, 20px); line-height: 1.1; letter-spacing: -.02em; }
 .hero-sub { max-width: 34ch; margin-top: 1rem; color: var(--muted); font-size: max(1.6rem, 15px); }
+/* the opening hint: only where the page moves sideways; quiet, in the muted ink, gone once the visitor starts to explore */
+.cue { display: none; }
+.pin .cue { display: flex; align-items: center; gap: 1.2rem; margin-top: 2.2rem; color: var(--muted); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.cue-ico { flex: none; width: max(2.4rem, 22px); height: max(2.4rem, 22px); animation: cue-nudge 3.2s var(--ease-io) infinite; }
+@keyframes cue-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 2px); } }
+.cue-off .cue { opacity: 0; transform: translateY(.6rem); pointer-events: none; }
 .hero-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 2rem; margin-top: 3.6rem; padding-top: 1.2rem; border-top: 1px solid var(--ink); }
 .hero-foot a { padding: .6rem 0; margin: -.6rem 0; }
 @media (hover: hover) { .hero-foot a:hover { opacity: .6; } }
@@ -248,6 +255,7 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- the strip on wide screens: one pinned stage; the script sets every panel's width and position ---------- */
 .pin .strip { position: relative; }
+.pin .stage, .pin .caps-stage, .sys-demo { touch-action: pan-y pinch-zoom; }
 .pin .stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
 .pin .panel { position: absolute; top: 0; left: 0; height: 100%; will-change: transform, width; }
 .pin .panel--hero { width: 50vw; min-height: 0; padding: 2.4rem 3.2rem 2.4rem; }
@@ -440,7 +448,7 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .pin .cap-nav { position: absolute; left: 16rem; right: 16rem; bottom: 5vh; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 1.6rem; }
 /* phones: the heading at the top, the panel's words, then the sites; the nav keeps only its numbers */
 .pin.narrow .caps-h { top: 9rem; left: var(--m); font-size: max(5.6rem, 40px); }
-.pin.narrow .cap { padding: 18rem var(--m) calc(9rem + 100lvh - 100svh); }
+.pin.narrow .cap { padding: 18rem calc(var(--m) + 11vw) calc(9rem + 100lvh - 100svh) var(--m); }
 .pin.narrow .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; row-gap: 2.4rem; }
 .pin.narrow .cap h3 { font-size: max(3.6rem, 28px); }
 .pin.narrow .cap-list { margin: 1.6rem 0 2.4rem; }
@@ -464,17 +472,21 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .sys-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; row-gap: 3rem; margin-bottom: 8rem; }
 .sys-head h2 { grid-column: 1 / span 7; }
 .sys-intro { grid-column: 8 / span 5; align-self: end; max-width: 40ch; font-size: max(2.4rem, 19px); line-height: 1.2; letter-spacing: -.015em; }
+.sys-pin { position: relative; }
+html.js .sys-pin.is-pinned .sys-stick { position: sticky; top: 0; min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: grid; align-items: start; padding-top: var(--sys-pt, max(8.4rem, 84px)); }
 .sys-demo { --node: max(6.4rem, 52px); --soft: rgba(238, 234, 227, .72); --hair: rgba(238, 234, 227, .24); display: grid; gap: 6rem; padding: 6rem 6.4rem 7rem; border-radius: 1.2rem; background: var(--ink); color: var(--paper); overflow: hidden; }
 .sys-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 3rem 4rem; }
 .sys-title h3 { margin: 2rem 0 1.6rem; font-size: max(7.2rem, 40px); font-weight: 400; line-height: .95; letter-spacing: -.045em; }
 .sys-note { max-width: 52ch; color: var(--soft); font-size: max(1.5rem, 15px); }
 .sys-controls { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+.sys-controls .pill:disabled { opacity: .42; pointer-events: none; }
+.sys-controls .pill:disabled::before { display: none; }
 .sys-hint { margin-top: -3rem; color: var(--soft); }
 .sys-track { position: relative; }
 .sys-stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
 .sys-stage { position: relative; display: grid; justify-items: center; align-content: start; gap: 1.6rem; padding: 0 1.6rem; text-align: center; }
 .sys-node { position: relative; z-index: 2; display: grid; place-items: center; width: var(--node); height: var(--node); border: 2px solid rgba(238, 234, 227, .6); border-radius: 50%; background: var(--ink); color: var(--paper); font-size: max(1.5rem, 14px); font-variant-numeric: tabular-nums; transition: background-color .5s var(--ease), border-color .5s var(--ease), color .5s var(--ease); }
-.sys-stage h4 { font-size: max(2.8rem, 22px); font-weight: 400; line-height: 1.05; letter-spacing: -.025em; }
+.sys-stage h4 { margin: 0; font-size: max(2.8rem, 22px); font-weight: 400; line-height: 1.05; letter-spacing: -.025em; }
 .sys-stage p { max-width: 24ch; color: var(--soft); font-size: max(1.5rem, 15px); line-height: 1.4; }
 .sys-state { display: inline-flex; align-items: center; gap: .8rem; min-height: 1.6em; }
 .sys-state:empty { visibility: hidden; }
@@ -493,16 +505,46 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 /* the marker that carries the inquiry: it moves to the stage that is running (placed by the script) */
 .sys-packet { position: absolute; left: 0; top: 0; z-index: 3; width: 1.4rem; height: 1.4rem; min-width: 12px; min-height: 12px; margin: -.7rem 0 0 -.7rem; border-radius: 3px; background: var(--paper); box-shadow: 0 0 0 4px var(--ink); opacity: 0; pointer-events: none; transform: translate(var(--px, 0px), var(--py, 0px)); transition: transform .9s var(--ease-io), opacity .4s var(--ease); }
 .sys-demo:not([data-mode="idle"]) .sys-packet { opacity: 1; }
-.sys-lower { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 8rem; padding-top: 5rem; border-top: 1px solid var(--hair); }
+/* quiet at first: only the stages and the button. The sample record and the log are folded away and open when the visitor runs it */
+.sys-reveal { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .9s var(--ease-io), margin-top .9s var(--ease-io); }
+.sys-lower { min-height: 0; overflow: hidden; }
+.sys-lower-in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 8rem; padding-top: 5rem; border-top: 1px solid var(--hair); }
+html.js .sys-demo[data-mode="idle"] .sys-reveal { grid-template-rows: 0fr; margin-top: -6rem; }
+html.js .sys-demo[data-mode="idle"] { padding-bottom: 4.4rem; }
+/* pinned on a large window it has to fit one screen, below the corner logo and menu: a tighter panel, the note beside the title,
+   the record showing the stage that is running and the log in two columns. The script checks that the fullest state fits and
+   otherwise leaves the panel unpinned. */
+.sys-demo.sys-pinned { gap: 1.8rem; padding: 2.4rem 4.4rem 2.6rem; }
+.sys-pinned .sys-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0 2rem; align-items: end; }
+.sys-pinned .sys-title { display: contents; }
+.sys-pinned .sys-title > p.small { grid-area: 1 / 1; align-self: center; }
+.sys-pinned .sys-controls { grid-area: 1 / 3; gap: .8rem; }
+.sys-pinned .sys-title h3 { grid-area: 2 / 1; margin: 1.6rem 0 0; font-size: max(4.8rem, 32px); }
+.sys-pinned .sys-note { grid-area: 2 / 3; justify-self: end; max-width: 56ch; padding-bottom: .6rem; font-size: max(1.3rem, 13px); }
+.sys-pinned .sys-hint { margin-top: -.4rem; }
+.sys-pinned .sys-stage { gap: 1rem; }
+.sys-pinned .sys-stage p { font-size: max(1.4rem, 14px); }
+html.js .sys-demo.sys-pinned[data-mode="idle"] { padding-bottom: 2.6rem; }
+html.js .sys-demo.sys-pinned[data-mode="idle"] .sys-reveal { margin-top: -1.8rem; }
+.sys-pinned .sys-lower-in { grid-template-columns: 5fr 7fr; column-gap: 6rem; padding-top: 1.6rem; }
+.sys-pinned .sys-card, .sys-pinned .sys-log-wrap { gap: 1.2rem; }
+.sys-pinned .sys-record > div[data-stage]:not(.is-now) { display: none; }
+.sys-pinned .sys-record, .sys-pinned .sys-log { border-bottom: 0; }
+.sys-pinned .sys-record { --row: max(3.6rem, 34px); min-height: calc(var(--row) * 4 + 1px); align-content: start; }   /* room for the most rows any stage shows, so the panel never changes height */
+.sys-pinned .sys-record > div { grid-template-columns: 11rem minmax(0, 1fr); min-height: var(--row); padding: .6rem 0; }
+.sys-pinned .sys-record dd { font-size: max(1.6rem, 15px); }
+.sys-pinned .sys-log { grid-auto-flow: column; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, auto); column-gap: 3.2rem; }
+.sys-pinned .sys-log li { padding: .6rem 0; grid-template-columns: 4rem minmax(0, 1fr); font-size: max(1.6rem, 15px); }
 .sys-card, .sys-log-wrap { display: grid; align-content: start; gap: 1.6rem; }
-.sys-card h4, .sys-log-wrap h4 { color: var(--soft); }
+.sys-card h4, .sys-log-wrap h4 { margin: 0; color: var(--soft); }
 .sys-record, .sys-log { counter-reset: ev; display: grid; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--hair); }
-.sys-record > div { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.6rem; padding: 1.2rem 0; border-top: 1px solid var(--hair); transition: opacity .5s var(--ease); }
+.sys-record > div { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.6rem; padding: 1.2rem 0; border-top: 1px solid var(--hair); }
 .sys-record dt { color: var(--soft); align-self: center; }
 .sys-record dd { margin: 0; font-size: max(1.8rem, 16px); }
-.sys-log li { counter-increment: ev; display: grid; grid-template-columns: 5rem minmax(0, 1fr); padding: 1.2rem 0; border-top: 1px solid var(--hair); font-size: max(1.7rem, 15px); transition: opacity .5s var(--ease); }
+.sys-log li { counter-increment: ev; display: grid; grid-template-columns: 5rem minmax(0, 1fr); padding: 1.2rem 0; border-top: 1px solid var(--hair); font-size: max(1.7rem, 15px); }
 .sys-log li::before { content: counter(ev, decimal-leading-zero); color: var(--soft); font-variant-numeric: tabular-nums; }
-.sys-log li.is-pending, .sys-record > div.is-pending { visibility: hidden; opacity: 0; }
+.sys-log li, .sys-record > div { transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.sys-log li.is-pending, .sys-record > div.is-pending { visibility: hidden; opacity: 0; transform: translateY(.8rem); }
 @media (hover: hover) { .sys-stage:hover .sys-node { border-color: var(--ac); } }
 .note-link { text-decoration: underline; text-underline-offset: 3px; }
 html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet { display: none; }
@@ -519,7 +561,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .sys-head h2, .sys-intro { grid-column: 1 / -1; }
   .sys-demo { gap: 5rem; padding: 4rem 3rem 5rem; }
   .sys-title h3 { font-size: max(5.6rem, 36px); }
-  .sys-lower { grid-template-columns: minmax(0, 1fr); row-gap: 5rem; }
+  .sys-lower-in { grid-template-columns: minmax(0, 1fr); row-gap: 5rem; }
   /* the workflow reads top to bottom, one stage under the next */
   .sys-stages { grid-template-columns: minmax(0, 1fr); row-gap: 3.6rem; max-width: 60rem; }
   .sys-stage { grid-template-columns: var(--node) minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; justify-items: start; column-gap: 2.4rem; row-gap: 1rem; padding: 0; text-align: left; }
@@ -531,6 +573,10 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .sys-demo { padding: 3.2rem 2rem 4rem; border-radius: .8rem; }
   .sys-title h3 { font-size: max(4.8rem, 34px); }
   .sys-record > div { grid-template-columns: minmax(0, 1fr); gap: .4rem; }
+  /* the five controls in a tidy two-column grid, Run across the top, each one a full-size target */
+  .sys-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .sys-controls #sys-run { grid-column: 1 / -1; }
+  .sys-controls .pill { justify-content: space-between; }
 }
 
 /* ---------- contact + footer: the dark close ---------- */
@@ -578,6 +624,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .study-body { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
   .study-body > *, .study--rok .case-detail, .study--bbs .case-detail { grid-column: 1 / -1; }
   .case-overview { margin-bottom: 6rem; }
+  .case-lede { font-size: max(2.3rem, 19px); line-height: 1.22; }
   .case-overview > * { grid-column: 1 / -1; }
   .study--lennys .case-detail { grid-template-columns: minmax(0, 1fr); row-gap: 4rem; }
   .study--lennys .case-cols, .study--lennys .case-scope, .study--lennys .case-context, .study--lennys .case-end { grid-column: 1 / -1; }

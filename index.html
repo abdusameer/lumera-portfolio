@@ -100,6 +100,7 @@
         </nav>
         <h1 class="hero-h"><span class="visually-hidden">Lumera Creative. </span><span class="hero-mark" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></span><span class="hero-tag">Where design meets innovation.</span></h1>
         <p class="hero-sub">We design and build the technology the problem calls for.</p>
+        <p class="cue small" aria-hidden="true"><svg class="cue-ico" viewBox="0 0 24 24" focusable="false"><path d="M12 3v18M8.5 6.5 12 3l3.5 3.5M8.5 17.5 12 21l3.5-3.5M3 12h18M6.5 8.5 3 12l3.5 3.5M17.5 8.5 21 12l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Scroll or swipe to explore</span></p>
         <div class="hero-foot small">
           <span>Creative technology and automation agency</span>
           <span>Concept studies · 2026</span>
@@ -478,6 +479,7 @@
       <h2 class="big" id="systems-title" data-rise>Systems &amp; automation</h2>
       <p class="sys-intro">A website creates the point of contact. The systems behind it determine what happens next. Lumera designs connected workflows that capture information, organize requests, route work, and help businesses respond consistently.</p>
     </div>
+    <div class="sys-pin"><div class="sys-stick">
     <div class="sys-demo" id="sys-demo" data-mode="idle">
       <div class="sys-top">
         <div class="sys-title">
@@ -487,10 +489,13 @@
         </div>
         <div class="sys-controls" role="group" aria-labelledby="sys-demo-title">
           <button class="pill pill--gold" type="button" id="sys-run">Run demonstration</button>
-          <button class="pill pill--light" type="button" id="sys-reset" hidden>Start over</button>
+          <button class="pill pill--light" type="button" id="sys-pause" disabled>Pause</button>
+          <button class="pill pill--light" type="button" id="sys-prev" disabled>Previous stage</button>
+          <button class="pill pill--light" type="button" id="sys-next">Next stage</button>
+          <button class="pill pill--light" type="button" id="sys-replay" disabled>Replay</button>
         </div>
       </div>
-      <p class="sys-hint small" hidden>Press Run demonstration to follow one sample inquiry through the five stages.</p>
+      <p class="sys-hint small" hidden>Press Run demonstration, or scroll, swipe or use the arrow keys, to follow one sample inquiry through the five stages.</p>
       <div class="sys-track">
         <ol class="sys-stages" aria-label="The five stages">
           <li class="sys-stage" style="--ac: var(--c-rok); --i: 0"><span class="sys-node"><b>01</b></span><h4>Capture</h4><p>The inquiry arrives through the website and its details are stored in one place.</p><span class="sys-state small" aria-hidden="true"></span></li>
@@ -501,7 +506,9 @@
         </ol>
         <span class="sys-packet" aria-hidden="true"></span>
       </div>
+      <div class="sys-reveal">
       <div class="sys-lower">
+      <div class="sys-lower-in">
         <div class="sys-card">
           <h4 class="small">Sample inquiry (fictional)</h4>
           <dl class="sys-record">
@@ -531,8 +538,11 @@
           </ol>
         </div>
       </div>
+      </div>
+      </div>
       <p class="visually-hidden" id="sys-live" role="status" aria-live="polite"></p>
     </div>
+  </div></div>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-title">

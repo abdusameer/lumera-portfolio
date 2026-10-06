@@ -22,9 +22,11 @@
 
   /* ------------------------------------------------------------------ scroll + one loop */
   let lenis = null;
-  if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: 0.09, wheelMultiplier: 0.95, smoothWheel: true });
+  if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: 0.09, wheelMultiplier: 0.95, smoothWheel: true, gestureOrientation: 'both' });   // 'both': each wheel or trackpad event moves the page by its dominant axis only
 
   const tasks = new Set();
+  const regions = [];                                           // the pinned experiences: { bounds(), stops() }, in page order (see the input section)
+  let measureDemo = () => {}, demoMoved = () => false;
   let sy = window.scrollY, prevSy = -1, lastT = 0, dirty = true;
   const loop = t => {
     const dt = lastT ? Math.min(64, t - lastT) : 16.667; lastT = t;
@@ -91,6 +93,7 @@
   }
   // the scroll position at which a panel is open at the left edge
   const stripY = i => S.top + S.vh * (i <= 0 ? 0 : (i <= 3 || narrow) ? G.hold + i * G.step : G.hold + 3 * G.step + G.close);
+  regions.push({ bounds: () => S && [S.top, S.top + S.len], stops: () => (S ? [0, 1, 2, 3, 4].map(stripY).concat(S.top + S.len) : []) });
   const openW = i => (i === 0 ? S.HERO : i === 4 ? S.vw : S.OPEN);
   const widthAt = (i, f) => {
     const d = i - f, o = openW(i);
@@ -175,6 +178,7 @@
     C = { vh, vw: innerWidth, n, len, top: caps.offsetTop };
     markDirty();
   }
+  regions.push({ bounds: () => C && [C.top, C.top + C.len], stops: () => (C ? [C.top].concat(capPanels.map((p, i) => C.top + (0.25 + i) * C.vh), [C.top + C.len]) : []) });
   tasks.add((dt, moved) => {
     if (!C || (!moved && !dirty)) return;
     if (sy < C.top - C.vh * 1.5 || sy > C.top + C.len + C.vh * 1.5) return;
@@ -206,9 +210,14 @@
     for (let i = 0; i < w * h; i++) lum[i] = lumOf(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]);
     return { w, h, lum };
   };
-  const imgGrid = img => { if (!grids.has(img)) grids.set(img, readGrid(img, img.naturalWidth, img.naturalHeight, 48)); return grids.get(img); };
+  const imgGrid = img => {                                        // read once, off the main thread; null until it is ready
+    if (grids.has(img)) return grids.get(img);
+    grids.set(img, null);
+    createImageBitmap(img, { resizeWidth: 48, resizeQuality: 'low' }).then(bm => { grids.set(img, readGrid(bm, bm.width, bm.height, bm.width)); if (bm.close) bm.close(); }).catch(() => {});
+    return null;
+  };
   let vid = { el: null, t: 0, g: null };                          // a playing recording, re-read four times a second
-  const vidGrid = v => { const now = performance.now(); if (vid.el !== v || now - vid.t > 250) vid = { el: v, t: now, g: readGrid(v, v.videoWidth, v.videoHeight, 32) }; return vid.g; };
+  const vidGrid = v => { const now = performance.now(); if (vid.el !== v || now - vid.t > 500) vid = { el: v, t: now, g: readGrid(v, v.videoWidth, v.videoHeight, 32) }; return vid.g; };
   // the media's own pixels under the logo, through object-fit cover or contain; null over a letterbox
   const mediaTone = (el, natW, natH, g, r) => {
     if (!g) return null;
@@ -605,63 +614,132 @@
   }
 
   /* ------------------------------------------------------------------ systems demonstration: one fictional inquiry through five stages
-     The five stages and the log are plain text in the page; this only lights them in turn. Nothing here talks to a real system. */
+     The five stages and the log are plain text in the page; this only lights them in turn. Nothing here talks to a real system.
+     One progress value drives it, whatever moves it: where the page is scrolled (when it is pinned on a large window), the
+     Previous / Next buttons, a swipe or arrow key, or Run (which plays through at a steady pace). */
+  const sysCtl = { manual: () => false, inside: () => false, pinned: () => false };
   const sys = $('#sys-demo');
   if (sys) {
-    const stages = $$('.sys-stage', sys), logs = $$('.sys-log li, .sys-record > div[data-stage]', sys), N = stages.length;
-    const run = $('#sys-run'), reset = $('#sys-reset'), live = $('#sys-live'), statusEl = $('#sys-status'), hint = $('.sys-hint', sys), track = $('.sys-track', sys), packet = $('.sys-packet', sys);
+    const stages = $$('.sys-stage', sys), rows = $$('.sys-log li, .sys-record > div[data-stage]', sys), N = stages.length;
+    const runB = $('#sys-run'), pauseB = $('#sys-pause'), prevB = $('#sys-prev'), nextB = $('#sys-next'), replayB = $('#sys-replay');
+    const live = $('#sys-live'), statusEl = $('#sys-status'), hint = $('.sys-hint', sys), track = $('.sys-track', sys), pin = $('.sys-pin');
     const STATUS = ['Not started', 'Received', 'Categorized as a kitchen remodel estimate', 'Assigned to residential estimates', 'Follow-up notifications prepared', 'Recorded in the pipeline, next step a site visit'];
     const EVENT = ['New estimate request received. Contact details captured.', 'Request categorized.', 'Assigned to the appropriate workflow.', 'Follow-up notification prepared.', 'Record added to the business pipeline.'];
-    const STEP = 2200;                                   // ms a stage stays lit
-    let mode = reduce ? 'done' : 'idle', elapsed = 0, drawn = '', said = -1, at = 0;   // idle | play | pause | done (reduced motion starts at the end)
-    const LABEL = { idle: 'Run demonstration', play: 'Pause', pause: 'Resume', done: 'Replay' };
-    // the marker sits on the center of the stage that is running (offsets, so the entrance movement doesn't skew it)
-    const place = k => {
-      const li = stages[Math.max(0, Math.min(N - 1, k))], node = $('.sys-node', li);
+    const STEP = 2200;                                                       // ms a stage stays lit when it runs by itself
+    const GEO = { A: 0.25, SEG: 0.5, B: 0.25 };                              // pinned: a quiet lead, half a screen of scroll per stage, a quiet tail
+    let k = reduce ? N : -1, playing = false, elapsed = 0, shownK = null, said = -2, Y = null;   // k: -1 not started, 0..4 the stage running, 5 done
+    const place = i => {                                                     // the marker sits on the center of the running stage (offsets, so entrance movement doesn't skew it)
+      const li = stages[Math.max(0, Math.min(N - 1, i))], node = $('.sys-node', li);
       track.style.setProperty('--px', (li.offsetLeft + node.offsetLeft + node.offsetWidth / 2) + 'px');
       track.style.setProperty('--py', (li.offsetTop + node.offsetTop + node.offsetHeight / 2) + 'px');
     };
-    const paint = () => {
-      const k = mode === 'idle' ? -1 : mode === 'done' ? N : Math.min(N, Math.floor(elapsed / STEP));
-      const key = mode + k;
-      if (key === drawn) return;
-      drawn = key; at = k;
-      sys.dataset.mode = mode;
+    const stopY = j => (j < 0 ? Y.top : Y.top + Y.vh * (GEO.A + Math.min(j, N) * GEO.SEG) + 4);
+    const kAt = y => { const u = (y - Y.top) / Y.vh; return u < GEO.A ? -1 : Math.min(N, Math.floor((u - GEO.A) / GEO.SEG)); };
+    const jumpY = y => (lenis ? lenis.scrollTo(y, { immediate: true, force: true }) : window.scrollTo(0, y));
+    const ctlBtns = [runB, pauseB, prevB, nextB, replayB];
+    const buttons = () => {
+      const had = ctlBtns.find(b => b === doc.activeElement);
+      runB.disabled = playing || k >= N; pauseB.disabled = !playing; prevB.disabled = k < 0; nextB.disabled = k >= N; replayB.disabled = k < 0;
+      runB.textContent = k >= 0 && k < N ? 'Resume' : 'Run demonstration';
+      // a control that has just been used and switched itself off hands the keyboard to the one that takes over
+      if (had && had.disabled) (playing ? pauseB : [runB, nextB, replayB, prevB].find(b => !b.disabled) || replayB).focus({ preventScroll: true });
+    };
+    const follow = () => {                                                   // unpinned (a phone, a small window): bring the running stage into view if it is below the fold
+      const el = k < 0 ? null : k >= N ? $('.sys-lower-in', sys) : stages[k];
+      if (!el) return;
+      const r = el.getBoundingClientRect(), vh = innerHeight, room = 24;
+      if (r.top >= 96 && r.bottom <= vh - room) return;
+      scrollToY(r.top + sy - vh * 0.38, false);
+    };
+    const render = () => {
+      if (k === shownK) return;
+      const changed = shownK !== null;
+      shownK = k;
+      sys.dataset.mode = k < 0 ? 'idle' : 'active';
       stages.forEach((el, i) => {
-        const st = mode === 'idle' ? '' : i < k ? 'done' : i === k ? 'active' : 'waiting';
+        const st = k < 0 ? '' : i < k ? 'done' : i === k ? 'active' : 'waiting';
         el.classList.remove('is-done', 'is-active', 'is-waiting');
         if (st) el.classList.add('is-' + st);
         $('.sys-state', el).textContent = st === 'done' ? 'Done' : st === 'active' ? 'Running' : st === 'waiting' ? 'Waiting' : '';
       });
-      logs.forEach(li => li.classList.toggle('is-pending', mode === 'idle' || (mode !== 'done' && +li.dataset.stage - 1 > k)));
-      statusEl.textContent = STATUS[mode === 'idle' ? 0 : Math.min(N, k + 1)];
+      const now = Math.min(N, k + 1);
+      rows.forEach(li => { const sg = +li.dataset.stage; li.classList.toggle('is-pending', k < 0 || (k < N && sg - 1 > k)); li.classList.toggle('is-now', sg === now); });
+      statusEl.textContent = STATUS[k < 0 ? 0 : now];
       place(k < 0 ? 0 : k);
-      run.textContent = LABEL[mode];
-      reset.hidden = mode === 'idle' || (reduce && mode === 'done' && !elapsed);
-      hint.hidden = mode !== 'idle';
-      if (mode === 'play' && k !== said && k < N) { said = k; live.textContent = `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`; }
-      if (mode === 'done' && said !== N && elapsed) { said = N; live.textContent = 'Demonstration complete. The sample inquiry is recorded in the pipeline.'; }
+      if (!Y && changed) follow();
+      hint.hidden = k >= 0;
+      if (said !== k && said !== -2) live.textContent = k < 0 ? '' : k >= N ? 'Demonstration complete. The sample inquiry is recorded in the pipeline.' : `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`;
+      said = k;
+      buttons();
     };
-    const go = m => { mode = m; paint(); };
-    run.addEventListener('click', () => {
-      if (mode === 'play') go('pause');
-      else if (mode === 'pause') go('play');
-      else { elapsed = 1; said = -1; drawn = ''; go('play'); }          // from idle or the end: start again
-    });
-    reset.addEventListener('click', () => { elapsed = 0; said = -1; drawn = ''; live.textContent = ''; go(reduce ? 'done' : 'idle'); run.focus(); });
+    const goto = j => {                                                      // jump to a stage (-1 .. N): by scroll when pinned, directly otherwise
+      j = Math.max(-1, Math.min(N, j));
+      if (Y) scrollToY(stopY(j), false); else { k = j; elapsed = j < 0 ? 0 : j * STEP + 1; render(); }
+    };
+    const play = on => { playing = on && k < N; buttons(); };
+    runB.addEventListener('click', () => play(true));
+    pauseB.addEventListener('click', () => play(false));
+    prevB.addEventListener('click', () => { play(false); goto(k - 1); });
+    nextB.addEventListener('click', () => { play(false); goto(k + 1); });
+    replayB.addEventListener('click', () => { play(false); if (Y) jumpY(stopY(-1)); else { k = -1; elapsed = 0; render(); } play(true); });
+    // a visitor's own input takes over from the pace the demonstration sets itself
+    ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, e => { if (playing && !(e.target.closest && e.target.closest('.sys-controls'))) play(false); }, { passive: true }));
+    // a swipe, a sideways trackpad gesture or a left/right key on the demonstration, when it is not pinned
+    sysCtl.inside = el => !!(el && el.closest && el.closest('#sys-demo'));
+    sysCtl.pinned = () => !!Y;
+    sysCtl.manual = dir => { const j = k + dir; if (j < -1 || j > N) return false; play(false); goto(j); return true; };
+    let acc = 0, accT = 0, lockT = 0;
+    sys.addEventListener('wheel', e => {
+      if (Y || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;           // only a dominant sideways gesture, never an ordinary scroll
+      const now = performance.now();
+      if (now - accT > 220) acc = 0;
+      accT = now; acc += e.deltaX;
+      if (now < lockT || Math.abs(acc) < 90) return;
+      const moved = sysCtl.manual(acc > 0 ? 1 : -1);
+      acc = 0; lockT = now + 650;
+      if (moved) e.preventDefault();
+    }, { passive: false });
+    // pinned on a large window: the pinned stage lasts GEO.A + 5 * GEO.SEG + GEO.B screens of scroll. It is pinned only if the panel in its
+    // fullest state (the record and log open) fits the screen below the corner logo and menu; otherwise it stays in the page and
+    // is moved by its buttons, keys and swipes instead
+    const reveal = $('.sys-reveal', sys), lowerIn = $('.sys-lower-in', sys), stick = sys.parentNode;
+    const px = v => parseFloat(v) || 0;
+    const fullHeight = () => {                                              // the panel with the record and log open (and without the first-view hint, which is gone by then)
+      const gap = px(getComputedStyle(sys).rowGap);
+      const hintBlock = hint.hidden ? 0 : hint.offsetHeight + gap + px(getComputedStyle(hint).marginTop);
+      return sys.offsetHeight - reveal.offsetHeight - px(getComputedStyle(reveal).marginTop) - hintBlock + lowerIn.offsetHeight;
+    };
+    const unpin = () => { Y = null; pin.style.height = ''; pin.classList.remove('is-pinned'); sys.classList.remove('sys-pinned'); stick.style.removeProperty('--sys-pt'); shownK = null; };
+    measureDemo = () => {
+      const can = pin && !reduce && root.classList.contains('pin') && !narrow && innerHeight >= 600 && innerWidth >= 1100;
+      if (!can) { unpin(); return; }
+      pin.classList.add('is-pinned'); sys.classList.add('sys-pinned'); stick.style.removeProperty('--sys-pt');
+      const was = statusEl.textContent; statusEl.textContent = STATUS[N];                                // measure with the longest status line
+      const full = fullHeight(); statusEl.textContent = was;
+      const cs = getComputedStyle(stick), minTop = parseFloat(cs.paddingTop) || 84, bottom = Math.max(20, parseFloat(cs.paddingBottom) || 0);
+      if (full + minTop + bottom > innerHeight) { unpin(); return; }
+      stick.style.setProperty('--sys-pt', Math.round(Math.max(minTop, (innerHeight - full) / 2)) + 'px');   // the panel keeps one place while it opens
+      const vh = innerHeight, len = vh * (GEO.A + N * GEO.SEG + GEO.B);
+      pin.style.height = (len + vh) + 'px';
+      Y = { top: pin.getBoundingClientRect().top + window.scrollY, len, vh };
+      shownK = null; markDirty();
+    };
+    demoMoved = () => !!Y && Math.abs(pin.getBoundingClientRect().top + window.scrollY - Y.top) > 2;
+    regions.push({ bounds: () => Y && [Y.top, Y.top + Y.len], stops: () => (Y ? [-1, 0, 1, 2, 3, 4, 5].map(stopY).concat(Y.top + Y.len) : []) });
     tasks.add(dt => {
-      if (mode !== 'play') return;
-      elapsed += dt;
-      if (elapsed >= N * STEP) { go('done'); return; }
-      paint();
+      if (Y) {
+        if (playing) { const y = Math.min(stopY(N), sy + dt * (Y.vh * GEO.SEG / STEP)); jumpY(y); if (y >= stopY(N)) play(false); }
+        const nk = kAt(sy); if (nk !== k) { k = nk; } render();
+      } else if (playing) {
+        elapsed += dt; k = Math.min(N, Math.floor(elapsed / STEP)); if (k >= N) play(false); render();
+      }
     });
-    if ('ResizeObserver' in window) new ResizeObserver(() => place(at < 0 ? 0 : at)).observe(track);
-    // the panel arrives once, as it comes into view
-    if (!reduce && 'IntersectionObserver' in window) {
+    if ('ResizeObserver' in window) new ResizeObserver(() => place(k < 0 ? 0 : k)).observe(track);
+    if (!reduce && 'IntersectionObserver' in window) {                     // the panel arrives once, as it comes into view
       const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { sys.classList.add('in'); io.disconnect(); } }, { rootMargin: '0px 0px -12% 0px' });
       io.observe(sys);
     } else sys.classList.add('in');
-    paint();
+    render();
   }
 
   /* ------------------------------------------------------------------ copy the email address */
@@ -689,11 +767,90 @@
     btn._t = setTimeout(() => { btn.textContent = label; btn.classList.remove('is-done'); if (status) status.textContent = ''; }, 2600);
   }));
 
+  /* ------------------------------------------------------------------ input: one progress, any gesture
+     The page's scroll position is the single progress value for the pinned experiences (the opening and the work, the capabilities,
+     the demonstration on a large window). Nothing has its own timeline. What moves it:
+       wheel and trackpad, either axis  Lenis in 'both' mode takes each event's dominant axis only (never deltaX and deltaY together),
+                                        so a diagonal swipe cannot count twice; sideways gestures move forward and back the same way as vertical ones
+       vertical touch                   native scrolling (nothing intercepted)
+       horizontal touch swipe           one stage per swipe, decided when the finger lifts, never from the screen's edge (back gestures stay free)
+       arrow keys, Page Up/Down, Space  one stage per press, with a short lock against key repeat
+     Input is intercepted only while there is a stage to move to; at the first and last stage the event is left alone and the page
+     scrolls on. Outside the pinned areas Lenis smoothing is off, so the rest of the page scrolls natively. */
+  const regionAt = y => regions.find(r => { const b = r.bounds(); return b && y >= b[0] - 3 && y <= b[1] + 3; }) || null;
+  let lockUntil = 0;
+  const stepBy = dir => {
+    const r = regionAt(sy); if (!r) return false;
+    const stops = r.stops(), now = performance.now();
+    let target = null;
+    if (dir > 0) target = stops.find(y => y > sy + 8);
+    else for (let i = stops.length - 1; i >= 0; i--) if (stops[i] < sy - 8) { target = stops[i]; break; }
+    if (target == null) return false;                       // at the edge of the experience: let the page go on
+    if (now < lockUntil) return true;                       // a step is already under way
+    lockUntil = now + 320;
+    scrollToY(target, false);
+    return true;
+  };
+  const zone = y => regions.some(r => { const b = r.bounds(); return b && y > b[0] - innerHeight * 0.6 && y < b[1] + innerHeight * 0.6; });
+  if (lenis) tasks.add(() => { lenis.options.smoothWheel = zone(sy); });
+  // keys
+  const KEYS = { ArrowDown: 1, ArrowRight: 1, PageDown: 1, ArrowUp: -1, ArrowLeft: -1, PageUp: -1 };
+  const usesKey = (el, key) => {
+    if (!el || !el.closest) return false;
+    if (el.closest('input, textarea, select, [contenteditable="true"], [role="slider"], [role="textbox"], iframe')) return true;
+    return key === ' ' && !!el.closest('button, a[href], summary, [role="button"]');
+  };
+  addEventListener('keydown', e => {
+    if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || menu.classList.contains('is-open')) return;
+    let dir = KEYS[e.key];
+    if (e.key === ' ') dir = e.shiftKey ? -1 : 1; else if (e.shiftKey) return;
+    if (!dir || usesKey(e.target, e.key)) return;
+    if (stepBy(dir)) { e.preventDefault(); return; }
+    // the demonstration when it is not pinned: left and right move through its stages while focus is inside it
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !sysCtl.pinned() && sysCtl.inside(e.target) && sysCtl.manual(dir)) e.preventDefault();
+  });
+  // horizontal swipes (passive: they only decide, when the finger lifts, whether to take one step)
+  const EDGE = 24;
+  let ts = null;
+  addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    ts = (e.touches.length === 1 && t.clientX > EDGE && t.clientX < innerWidth - EDGE) ? { x: t.clientX, y: t.clientY, t: performance.now(), h: false, v: false, dx: 0, demo: sysCtl.inside(e.target) } : null;
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (!ts || e.touches.length !== 1) { ts = null; return; }
+    const t = e.touches[0], dx = t.clientX - ts.x, dy = t.clientY - ts.y;
+    if (!ts.h && !ts.v && Math.max(Math.abs(dx), Math.abs(dy)) > 10) { if (Math.abs(dx) > Math.abs(dy) * 1.25) ts.h = true; else ts.v = true; }
+    if (ts.h) ts.dx = dx;
+  }, { passive: true });
+  addEventListener('touchend', () => {
+    const s = ts; ts = null;
+    if (!s || !s.h) return;
+    const v = Math.abs(s.dx) / Math.max(1, performance.now() - s.t);
+    if (Math.abs(s.dx) < 56 && !(Math.abs(s.dx) >= 28 && v > 0.45)) return;
+    const dir = s.dx < 0 ? 1 : -1;                          // leftward swipe advances, rightward goes back
+    if (!stepBy(dir) && s.demo && !sysCtl.pinned()) sysCtl.manual(dir);
+  }, { passive: true });
+  addEventListener('touchcancel', () => { ts = null; }, { passive: true });
+  // the opening hint: visible at once, fades when the visitor starts to explore, back on every load
+  const hushCue = () => root.classList.add('cue-off');
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, hushCue, { once: true, passive: true }));
+  tasks.add(() => { if (sy > 24) hushCue(); });
+  // phones: the owl steps aside while reading downward and returns on the way back up
+  const phone = matchMedia('(max-width: 759px)');
+  let lastY = sy;
+  tasks.add((dt, moved) => {
+    if (!moved) return;
+    const dy = sy - lastY;
+    if (phone.matches && sy > innerHeight * 1.5 && dy > 6) topBar.classList.add('logo-away');
+    else if (!phone.matches || sy <= innerHeight * 1.5 || dy < -6) topBar.classList.remove('logo-away');
+    lastY = sy;
+  });
+
   /* ------------------------------------------------------------------ layout changes */
   function setMode() {
     const m = modeNow();
     if (m.pin !== pin || m.narrow !== narrow) { pin = m.pin; narrow = m.narrow; root.classList.toggle('pin', pin); root.classList.toggle('narrow', narrow); }
-    measureStrip(); measureCaps(); liveFit();
+    measureStrip(); measureCaps(); measureDemo(); liveFit();
     if (lenis) lenis.resize();
   }
   let rt = 0, lastW = innerWidth, lastH = innerHeight;
@@ -710,7 +867,7 @@
   // content above the capabilities can change height (folds opening, fonts): keep the pinned lengths right
   if ('ResizeObserver' in window) {
     let ro = 0;
-    new ResizeObserver(() => { cancelAnimationFrame(ro); ro = requestAnimationFrame(() => { if (C && caps.offsetTop !== C.top) measureCaps(); if (S && strip.offsetTop !== S.top) measureStrip(); }); }).observe(mainEl);
+    new ResizeObserver(() => { cancelAnimationFrame(ro); ro = requestAnimationFrame(() => { if (C && caps.offsetTop !== C.top) measureCaps(); if (S && strip.offsetTop !== S.top) measureStrip(); if (demoMoved()) measureDemo(); }); }).observe(mainEl);
   }
   addEventListener('load', setMode);
   fontsReady.then(setMode);
