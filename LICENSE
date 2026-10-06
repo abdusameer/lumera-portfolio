@@ -1,17 +1,19 @@
-Copyright (c) 2026 Lumera Creative. All rights reserved.
+Copyright (c) 2026 Lumera Creative LLC. All rights reserved.
 
 This repository contains the Lumera Creative portfolio website: its design,
-layouts, code, written copy, motion and interaction design, 3D work, images,
-screen recordings and video.
+layouts, source code, written copy, motion and interaction design, photography,
+video, visualizations and other original media.
 
 No license is granted. You may not copy, modify, distribute, republish, sell,
 or otherwise use any part of this repository or the website it produces, in
 whole or in part, including to train machine-learning models, without prior
-written permission from Lumera Creative. Viewing the website and sharing links
-to it is welcome.
+written permission from Lumera Creative LLC. Viewing the website and sharing
+links to it is welcome.
 
-Business names, logos, trademarks, photography and menu content belonging to
-rōk coffee and tea, Lenny's Casita, BB's Bakery, or any other third party
-appear in the portfolio only to show Lumera Creative's design work. They
-remain the property of their respective owners and are not covered or licensed
-by this notice.
+All third-party names, trademarks, product designs, identifying marks, menus
+and photography belonging to rōk coffee and tea, Fellow, Lenny's Casita,
+BB's Bakery, or any other third party remain the property of their respective
+owners. They appear in the portfolio only to identify the subject of an
+independent concept study, and are not covered or licensed by this notice.
+Open-source components keep their own licenses (see assets/vendor/ and
+assets/fonts/).

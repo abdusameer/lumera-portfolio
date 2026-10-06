@@ -170,6 +170,15 @@
   /* ------------------------------------------------------------------ capabilities: panels push in from the right */
   const caps = $('#capabilities'), capPanels = $$('.cap', caps), capNav = $$('.cap-nav span', caps), capBar = $('.cap-bar i', caps);
   let C = null, capOn = -1;
+  // keyboard: a focused panel pushes in, so focus is never on something sitting off screen
+  caps.addEventListener('focusin', e => {
+    const stageEl = e.target.closest('.caps-stage'); if (stageEl) { stageEl.scrollLeft = 0; stageEl.scrollTop = 0; }
+    if (!C) return;
+    const i = capPanels.indexOf(e.target.closest('.cap'));
+    if (i < 0) return;
+    const y = C.top + (0.25 + i) * C.vh;
+    if (Math.abs(sy - y) > 4) scrollToY(y, false);
+  });
   function measureCaps() {
     if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
     const vh = innerHeight, n = capPanels.length;
@@ -451,10 +460,11 @@
   let live = null;
   const liveBtns = $$('.live-btn');
   const screenOf = b => $(b.dataset.live === 'desk' ? '.site-desk' : '.phone-screen', b.closest('.site'));
+  const liveStatus = $('#live-status');
   const nameBtn = (b, on) => {
-    const word = LIVE[b.dataset.live].word, text = on ? 'Back to the recording' : 'Scroll it yourself';
-    $('.live-label', b).textContent = text;
-    b.setAttribute('aria-label', `${text}, on a ${word}`);
+    const word = LIVE[b.dataset.live].word, name = b.dataset.name;
+    $('.live-label', b).textContent = on ? 'Close live view' : 'Scroll it yourself';
+    b.setAttribute('aria-label', on ? `Close the live ${name} site and return to the recording, on a ${word}` : `Scroll it yourself, on a ${word}`);
     b.setAttribute('aria-expanded', on ? 'true' : 'false');
   };
   const fitLive = () => {
@@ -464,7 +474,7 @@
     Object.assign(live.frame.style, { width: bw + 'px', height: bh + 'px', transform: `scale(${(w / bw).toFixed(5)})` });
   };
   const liveRO = 'ResizeObserver' in window ? new ResizeObserver(fitLive) : null;
-  const closeLive = () => {
+  const closeLive = (back) => {
     if (!live) return;
     const L = live; live = null;
     clearTimeout(L.slowT);
@@ -472,9 +482,12 @@
     if (liveRO) liveRO.unobserve(L.box);
     L.frame.remove();
     L.box.classList.remove('is-live', 'is-loaded');
+    L.box.removeAttribute('role'); L.box.removeAttribute('aria-label'); L.box.removeAttribute('tabindex');
     nameBtn(L.btn, false);
     const v = $('video', L.box);
     if (v && !reduce && canPlay(v)) startWalk(v);
+    if (back && !L.btn.hidden) L.btn.focus();                                // closing by hand or with Escape returns to the control that opened it
+    if (liveStatus) liveStatus.textContent = back ? `The live ${L.btn.dataset.name} site is closed.` : '';
   };
   const openLive = b => {
     closeLive();
@@ -483,7 +496,9 @@
     frame.className = 'live-frame';
     frame.title = `The live ${b.dataset.name} site, on a ${LIVE[kind].word}. Scroll it here.`;
     // the study can't navigate the portfolio away; its links open in new tabs or inside the screen
-    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+    // the minimum a study needs: its scripts and its links that open in new tabs. Without allow-same-origin the study runs as its own origin,
+    // so it can't reach this page, its storage, or the other studies hosted at the same address.
+    frame.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox');
     frame.setAttribute('allow', 'autoplay; fullscreen');
     frame.referrerPolicy = 'no-referrer';
     frame.addEventListener('load', () => {
@@ -497,6 +512,10 @@
     box.classList.add('is-live');
     box.appendChild(frame);
     live = { box, kind, frame, btn: b, slow: null };
+    // focus moves to the viewer, which is named; Tab goes on into the study, Shift+Tab back to the close control, Escape closes it
+    box.setAttribute('role', 'group'); box.setAttribute('aria-label', `Live ${b.dataset.name} site, on a ${LIVE[kind].word}`); box.tabIndex = -1;
+    box.focus({ preventScroll: true });
+    if (liveStatus) liveStatus.textContent = `The live ${b.dataset.name} site is open. Press Escape to close it, Tab to move into it, or use Close live view.`;
     // ten seconds is longer than these sites ever take; say so, take the blame, and offer another way in
     live.slowT = setTimeout(() => {
       if (!live || live.frame !== frame || box.classList.contains('is-loaded')) return;
@@ -505,7 +524,7 @@
       note.setAttribute('role', 'status');
       const msg = doc.createElement('p'); msg.textContent = 'This is taking longer than it should. Sorry about that.';
       const link = doc.createElement('a');
-      link.href = b.dataset.src; link.target = '_blank'; link.rel = 'noopener';
+      link.href = b.dataset.src; link.target = '_blank'; link.rel = 'noopener noreferrer';
       link.textContent = 'Open it in a new tab';
       note.append(msg, link);
       box.appendChild(note);
@@ -518,12 +537,13 @@
   const liveFit = () => {
     liveBtns.forEach(b => { b.hidden = screenOf(b).clientWidth < LIVE[b.dataset.live].min; });
     $$('.site-live').forEach(row => { row.hidden = $$('.live-btn', row).every(b => b.hidden); });
-    if (live && live.btn.hidden) closeLive();
+    if (live && live.btn.hidden) closeLive(false);
   };
   liveBtns.forEach(b => {
     nameBtn(b, false);
-    b.addEventListener('click', () => (live && live.btn === b ? closeLive() : openLive(b)));
+    b.addEventListener('click', () => (live && live.btn === b ? closeLive(true) : openLive(b)));
   });
+  doc.addEventListener('keydown', e => { if (e.key === 'Escape' && live && !menu.classList.contains('is-open')) { e.preventDefault(); closeLive(true); } });
 
   /* ------------------------------------------------------------------ rōk: scroll scrubs the pour */
   const scrub = $('.scrub-video');

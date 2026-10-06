@@ -1,0 +1,15 @@
+# Security headers for Cloudflare Pages (the lumeracreative.agency deployment).
+# GitHub Pages ignores this file, which is why each page also carries its policy in a meta tag.
+# These are not secrets. Test them on the deployed site before relying on them.
+#
+# The inline-script hash below is kept in step with index.html by scripts/apply-config.mjs.
+# frame-src lists where the concept studies are hosted; update it if they move.
+
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-JtaCpHIbZ1nWWqwE4agHEbuhiQQtW+GQIjEVaTpzID0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://abdusameer.github.io; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  # Add this line only after the custom domain is fully served over HTTPS and has been checked:
+  # Strict-Transport-Security: max-age=31536000; includeSubDomains

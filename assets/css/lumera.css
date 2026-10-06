@@ -284,8 +284,8 @@ ul, ol { list-style: none; padding: 0; }
 .stream figure { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--paper-2); }
 .stream img { width: 100%; height: 100%; object-fit: cover; }
 .stream .on-white img { mix-blend-mode: multiply; }
-.pin .stream-pill { display: inline-flex; position: absolute; left: 50%; bottom: 3.2vh; z-index: 3; transform: translateX(-50%); opacity: 0; pointer-events: none; transition: opacity .4s, color .45s var(--ease); }
-.pin .stream-pill.on { opacity: 1; pointer-events: auto; }
+.pin .stream-pill { display: inline-flex; position: absolute; left: 50%; bottom: 3.2vh; z-index: 3; transform: translateX(-50%); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .4s, color .45s var(--ease), visibility 0s linear .4s; }   /* hidden means out of the tab order too */
+.pin .stream-pill.on { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .4s, color .45s var(--ease), visibility 0s; }
 .pin .panel--bbs .p-info { transition: opacity .3s; }
 
 /* phones and portrait tablets: the same stage, drawn for a tall window. The hero rests at 80% with the projects as
@@ -362,6 +362,10 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 
 /* the whole site on a laptop and a phone, at equal heights. The phone is drawn as an iPhone whose bezel is 3.5% of
    the screen's width, so the device is 1.07 × 2.2341 and its column is .2993 of the laptop's. */
+.site { display: flex; flex-direction: column; }
+.site > .site-screens { order: 1; }
+.site > .site-live { order: 2; }                          /* the toggles come first in the page order (before the screens they open) and sit under them on screen */
+.site > figcaption { order: 3; }
 .site-screens { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .2993fr); column-gap: 2rem; align-items: start; }
 .site--phone-left .site-screens { grid-template-columns: minmax(0, .2993fr) minmax(0, 1fr); }
 .site--phone-left .site-phone { order: -1; }
@@ -380,6 +384,7 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .site--phone-left .site-live { grid-template-columns: minmax(0, .2993fr) minmax(0, 1fr); }
 .site--phone-left .site-live [data-live="phone"] { order: -1; }
 .live-btn { justify-self: start; }
+.site-desk:focus-visible, .phone-screen:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .live-btn[hidden] { display: none; }
 .live-btn::after { display: none; }
 .live-frame { position: absolute; left: 0; top: 0; z-index: 3; border: 0; background: #fff; transform-origin: 0 0; }
@@ -585,7 +590,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
 .contact-sub { margin-top: 2.4rem; font-size: max(2rem, 17px); opacity: .78; }
 .contact-actions { display: grid; justify-items: center; gap: 2rem; margin-top: 5.6rem; }
 .contact-mail { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem 1.6rem; font-size: max(1.6rem, 15px); }
-.contact-mail a { padding: 1.2rem 0; text-decoration: underline; text-underline-offset: 3px; }
+.contact-mail a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
 .copy { min-height: 44px; padding: 0 1.6rem; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(238, 234, 227, .45); font: 600 12px/1 var(--text); letter-spacing: .04em; text-transform: uppercase; transition: box-shadow .3s, transform .45s var(--ease); }
 @media (hover: hover) { .copy:hover { box-shadow: inset 0 0 0 1px var(--paper); } }
 .copy.is-done { box-shadow: inset 0 0 0 1px var(--gold); color: var(--gold); }
@@ -593,7 +598,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
 
 .foot { overflow: hidden; padding: 4rem var(--m) 0; background: var(--ink); color: var(--paper); }
 .foot-info { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; padding: 3rem 0; border-top: 1px solid rgba(238, 234, 227, .3); border-bottom: 1px solid rgba(238, 234, 227, .3); }
-.foot-info a { display: inline-block; padding: max(.6rem, 6px) 0; }
+.foot-info a { display: inline-flex; align-items: center; min-height: 44px; }
 .foot-info nav { display: grid; justify-items: start; }
 @media (hover: hover) { .foot-info a:hover { opacity: .6; } }
 .foot-info > p:last-child { text-align: right; }
@@ -710,7 +715,7 @@ html:not(.js) .hero-nav a { display: flex; align-items: center; gap: 1rem; min-h
 .legal .foot { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 36px; align-items: start; padding: 22px var(--m) 36px; font-size: 13px; line-height: 1.5; }
 .legal .foot-copy, .legal .foot-note { padding-top: 12px; margin: 0; }
 .legal .foot-links { display: flex; flex-wrap: wrap; gap: 0 22px; }
-.legal .foot-links a { display: inline-block; padding: 12px 0; }
+.legal .foot-links a { display: inline-flex; align-items: center; min-height: 44px; }
 @media (hover: hover) { .legal .foot-links a:hover { text-decoration: underline; text-underline-offset: 3px; } }
 @media (max-width: 1023px) {
   .legal-toc { grid-column: 1 / -1; position: static; margin-bottom: 44px; }

@@ -1,5 +1,30 @@
 # Lumera Creative
 
-The portfolio site for Lumera Creative: https://abdusameer.github.io/lumera-portfolio/
+The portfolio website of Lumera Creative LLC, a creative technology and automation agency. It presents independent concept studies and a capability demonstration. The projects are not paid client work, and none of them is an official website of the business it concerns.
 
-© 2026 Lumera Creative. All rights reserved. This repository is public so the site can be hosted on GitHub Pages; that does not grant any right to copy or reuse it. See [LICENSE](LICENSE) and the site's [Legal & credits](https://abdusameer.github.io/lumera-portfolio/legal.html) page. Business names, logos and third-party photography shown in the projects belong to their owners. Geist and Archivo are used under the SIL Open Font License, and Lenis under the MIT License.
+Live: https://abdusameer.github.io/lumera-portfolio/
+
+## Local preview
+
+The site is plain HTML, CSS and JavaScript with no build step. From this folder:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open http://localhost:8000/.
+
+## Configuration
+
+The public contact address and the site's own address are set in `site.config.json`. After changing either, run:
+
+```bash
+node scripts/apply-config.mjs          # write the values into the pages, sitemap.xml and robots.txt
+node scripts/apply-config.mjs --check  # report anything out of date, change nothing
+```
+
+## Deployment
+
+The site is static. GitHub Pages serves the repository root. `_headers` holds the security headers for Cloudflare Pages and is ignored by GitHub Pages.
+
+© 2026 Lumera Creative LLC. All rights reserved. See [LICENSE](LICENSE).
