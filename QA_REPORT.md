@@ -1,6 +1,10 @@
 # QA report
 
-## Latest: the light edition (2026-09-30)
+## Latest: case studies, accessibility and privacy pass (2026-10-05)
+
+`qa/check.mjs`: **0 problems** after three rounds of fixes (the first full run found faint focus outlines on colored panels, now fixed). New checks cover the six case-study headings in order, the locked hero wording, banned phrases and old headings on every page, no outside hosts, cookies or frames on load, storage matching the Privacy page, the content security policy hash, the pause control, a full Tab walk and contrast at 1440, 390 and 320, and the legal pages; two more viewports (375×667, 320×640). axe-core 4.14, WCAG 2.2 AA and best-practice rules: 0 violations on all five pages at five sizes. Not done: screen-reader testing, real devices, Safari. No claim of certification or legal compliance.
+
+## The light edition (2026-09-30)
 
 `qa/check.mjs` (rewritten for the new page): **0 problems** at 1440×900, 1280×800, 1024×768, 768×1024, 430×932, 390×844, 360×800 and 844×390, plus the opening, the sideways strip, keyboard focus, capabilities, navigation, folds, contrast (lowest 5.98:1), rōk's scrub, Lenny's colors, BB's window, copy, tab order, reload, resize, the phone menu, reduced motion, no JavaScript, Scroll it yourself and the legal page.
 

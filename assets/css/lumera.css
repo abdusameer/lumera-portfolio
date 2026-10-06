@@ -58,7 +58,7 @@ ul, ol { list-style: none; padding: 0; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .skip { position: fixed; left: 12px; top: -100px; z-index: 100; padding: 14px 18px; background: var(--ink); color: var(--paper); font: 600 14px/1 var(--text); }
 .skip:focus { top: 12px; }
-.small { font-size: max(1.1rem, 11px); font-weight: 600; line-height: 1.35; letter-spacing: .03em; text-transform: uppercase; }
+.small { font-size: max(1.1rem, 12px); font-weight: 600; line-height: 1.35; letter-spacing: .03em; text-transform: uppercase; }
 .dim { opacity: .62; }
 .num { font-variant-numeric: tabular-nums; }
 .i { width: max(1.4rem, 14px); height: max(1.4rem, 14px); flex: none; }
@@ -70,7 +70,7 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- small parts ---------- */
 .chip { display: inline-block; padding: .45em 1em; border: 1px solid currentColor; border-radius: 99px; }
-.tag { position: absolute; left: 1rem; bottom: 1rem; z-index: 2; padding: .5em .8em; border-radius: 99px; background: rgba(238, 234, 227, .9); color: var(--ink); font: 600 max(.95rem, 10px)/1 var(--text); letter-spacing: .04em; text-transform: uppercase; }
+.tag { position: absolute; left: 1rem; bottom: 1rem; z-index: 2; padding: .5em .8em; border-radius: 99px; background: rgba(238, 234, 227, .9); color: var(--ink); font: 600 max(1.1rem, 12px)/1 var(--text); letter-spacing: .04em; text-transform: uppercase; }
 .tag--inline { position: static; display: inline-block; margin-right: .6rem; background: none; border: 1px solid currentColor; color: inherit; vertical-align: 1px; }
 
 /* pill: the label and a dot; ink rises through it on hover */
@@ -312,32 +312,43 @@ ul, ol { list-style: none; padding: 0; }
 .study-q .small { display: block; margin-bottom: 1.2rem; }
 .study-body { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; align-items: center; margin-top: 9rem; }
 .study--bbs .study-body { margin: 0 0 9rem; }
-.study-body--row { align-items: start; }
-.study-body--row > :nth-child(1) { grid-column: 1 / span 4; }
-.study-body--row > :nth-child(2) { grid-column: 5 / span 3; }
-.study-body--row > :nth-child(3) { grid-column: 9 / span 4; }
+.study-body--case { align-items: start; }
 .rok-media { grid-column: 1 / span 5; }
-.study--rok .study-facts { grid-column: 7 / span 6; }
 .bbs-stage { grid-column: 1 / span 6; }
-.study--bbs .study-facts { grid-column: 8 / span 5; }
-.study-facts .pill { margin-top: 3.2rem; }
-.facts { display: grid; gap: 2.4rem; }
-.facts dt { margin-bottom: .8rem; color: var(--fg-2); }
-.facts dd { max-width: 52ch; font-size: max(1.8rem, 16px); line-height: 1.4; }
-.facts ul { font-size: max(1.6rem, 15px); }
-.facts li { padding: .8rem 0; border-top: 1px solid var(--rule); }
-.facts li:last-child { border-bottom: 1px solid var(--rule); }
+
+/* the case study: the overview introduces it, then objective and response with equal weight, the scope as one line,
+   the context in full-size ink, and how we built it in a fold */
+.case-overview { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; margin-bottom: 9rem; }
+.case-overview > * { grid-column: 1 / span 9; }
+.case-h { margin: 0 0 1.2rem; color: var(--fg-2); }
+.case-lede { max-width: 46ch; font-size: max(2.8rem, 20px); line-height: 1.18; letter-spacing: -.02em; }
+.case-detail { display: grid; gap: 4rem; align-content: start; }
+.case-detail p { max-width: 56ch; font-size: max(1.8rem, 16px); line-height: 1.45; }
+.case-cols { display: grid; gap: 4rem; }
+.case-scope p { font-weight: 500; }
+.case-context p { max-width: 60ch; font-size: max(1.5rem, 15px); }
+.case-end { display: grid; gap: 3.2rem; justify-items: start; }
+.case-end .build { justify-self: stretch; }
+.study--rok .case-detail { grid-column: 7 / span 6; }
+.study--bbs .case-detail { grid-column: 8 / span 5; }
+.study--lennys .case-detail { grid-column: 1 / -1; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; row-gap: 5rem; }
+.study--lennys .case-cols { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
+.study--lennys .case-scope { grid-column: 1 / span 4; }
+.study--lennys .case-context { grid-column: 5 / span 4; }
+.study--lennys .case-end { grid-column: 9 / span 4; }
 figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); line-height: 1.45; color: var(--fg-2); }
 
 /* how we built it */
 .build { margin-top: 3.2rem; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .build summary { display: flex; align-items: center; justify-content: space-between; gap: 1.6rem; min-height: max(5.6rem, 48px); list-style: none; cursor: pointer; font: 600 max(1.1rem, 11px)/1 var(--text); letter-spacing: .04em; text-transform: uppercase; }
 .build summary::-webkit-details-marker { display: none; }
+.build-h { margin: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; }
 .build summary i { position: relative; flex: none; width: 1.4rem; height: 1.4rem; min-width: 12px; min-height: 12px; }
 .build summary i::before, .build summary i::after { content: ""; position: absolute; left: 0; top: 50%; width: 100%; height: 1.5px; background: currentColor; transition: transform .45s var(--ease); }
 .build summary i::after { transform: rotate(90deg); }
 .build[open] summary i::after { transform: rotate(0deg); }
-.build > .facts { padding-bottom: 2.4rem; }
+.build-body { display: grid; gap: 1.6rem; padding-bottom: 2.4rem; }
+.build-body p { max-width: 56ch; font-size: max(1.6rem, 15px); line-height: 1.45; }
 .build::details-content { block-size: 0; overflow-y: clip; transition: block-size .6s var(--ease), content-visibility .6s allow-discrete; }
 .build[open]::details-content { block-size: auto; }
 
@@ -368,7 +379,10 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .is-live:not(.is-loaded)::after { content: attr(data-wait); position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; font: 500 12px/1 var(--text); letter-spacing: .08em; color: #EEE8DD; background: #0D0C0A; pointer-events: none; }
 .live-slow { position: absolute; inset: 0; z-index: 5; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 16px; background: #0D0C0A; color: #EEEAE3; text-align: center; font: 500 13px/1.45 var(--text); }
 .live-slow a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(238, 234, 227, .5); font-weight: 600; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
-.play { position: absolute; left: 12px; bottom: 12px; z-index: 4; min-height: 44px; padding: 0 16px; border-radius: 99px; background: rgba(14, 13, 11, .8); color: #EEEAE3; font: 600 12px/1 var(--text); letter-spacing: .04em; text-transform: uppercase; }
+.play { position: absolute; right: 12px; bottom: 12px; z-index: 4; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(14, 13, 11, .82); color: #EEEAE3; box-shadow: 0 0 0 1px rgba(238, 234, 227, .4); }
+.play::before { content: ""; width: 12px; height: 14px; background: linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px, currentColor 8px 12px); }   /* pause */
+.play[data-state="paused"]::before { width: 0; height: 0; background: none; border-left: 12px solid currentColor; border-top: 7px solid transparent; border-bottom: 7px solid transparent; margin-left: 3px; }   /* play */
+@media (hover: hover) { .play:hover { background: #0E0D0B; } }
 
 /* rōk: the pour, scrubbed by scroll */
 .crop { position: relative; width: min(100%, calc(76vh * 780 / 1050)); aspect-ratio: 780 / 1050; overflow: hidden; background: #1b1f14; border-radius: .6rem; }
@@ -465,6 +479,17 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .foot-mark { height: 46vh; margin-top: 4rem; }
 .foot-mark .wm svg { transform-origin: 50% 100%; }
 
+/* ---------- focus: an outline you can see on every surface ---------- */
+/* pills and round buttons swap their colors when focused, so the outline is set to the surface instead of the text */
+.pill:focus-visible, .round:focus-visible, .copy:focus-visible, .live-btn:focus-visible { outline-color: var(--ink); }
+.study--lennys :focus-visible, .approach :focus-visible, .contact :focus-visible, .foot :focus-visible, .menu :focus-visible { outline-color: var(--paper); }
+/* controls that float over anything (photos, recordings, every color) carry a two-tone ring */
+.burger:focus-visible, .logo:focus-visible, .menu-close:focus-visible, .play:focus-visible, .skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 2px #0E0D0B; }
+/* on Lenny's night the pills fill with paper, as they do in the other dark rooms */
+.study--lennys .pill::before { background: var(--paper); }
+.study--lennys .pill:focus-visible { color: var(--ink); }
+@media (hover: hover) { .study--lennys .pill:hover { color: var(--ink); } }
+
 /* ---------- words that rise into place ---------- */
 .rise .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
 .rise .w > span { display: inline-block; transform: translateY(108%); transition: transform 1.05s var(--ease); transition-delay: calc(var(--i) * 45ms); }
@@ -474,8 +499,13 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 @media (max-width: 1023px) {
   .big { font-size: max(7.2rem, 42px); }
   .study-meta, .study-q { grid-column: 1 / -1; }
-  .study-body, .study-body--row { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
-  .study-body > *, .study-body--row > :nth-child(n), .study--rok .study-facts, .study--bbs .study-facts { grid-column: 1 / -1; }
+  .study-body { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
+  .study-body > *, .study--rok .case-detail, .study--bbs .case-detail { grid-column: 1 / -1; }
+  .case-overview { margin-bottom: 6rem; }
+  .case-overview > * { grid-column: 1 / -1; }
+  .study--lennys .case-detail { grid-template-columns: minmax(0, 1fr); row-gap: 4rem; }
+  .study--lennys .case-cols, .study--lennys .case-scope, .study--lennys .case-context, .study--lennys .case-end { grid-column: 1 / -1; }
+  .study--lennys .case-cols { grid-template-columns: minmax(0, 1fr); row-gap: 4rem; }
   .crop { width: min(100%, 44rem); margin-inline: auto; }
   .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 2rem; justify-items: center; }
   .site-desk { width: 100%; }

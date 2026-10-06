@@ -397,7 +397,7 @@
   const nearIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { loadVideo(e.target); nearIO.unobserve(e.target); } }), { rootMargin: '500px 0px' });
   // each walkthrough rests on the site's first screen before it scrolls, every time it starts from the top
   const HOLD = 2200;
-  const canPlay = v => v._inView && !v.closest('.is-live');
+  const canPlay = v => v._inView && !v._userPaused && !doc.hidden && !v.closest('.is-live');   // a visitor's own pause stands
   const startWalk = v => {
     clearTimeout(v._hold);
     if (v.currentTime > 0.05) { v.play().catch(() => {}); return; }
@@ -409,21 +409,31 @@
     if (e.isIntersecting) { loadVideo(v); if (!reduce && canPlay(v)) startWalk(v); }
     else { clearTimeout(v._hold); v.pause(); }
   }), { threshold: 0.3 });
+  // every recording has a visible pause and play control (WCAG 2.2.2), reachable by keyboard and touch
   const addPlayButton = v => {
+    const study = ($('.study-title', v.closest('.study')) || {}).textContent || 'project';
+    const device = v.closest('.phone-screen') ? 'phone' : 'laptop';
     const b = doc.createElement('button');
     b.type = 'button'; b.className = 'play';
-    const label = () => { b.textContent = v.paused ? 'Play recording' : 'Pause'; };
+    const label = () => { const on = !v.paused; b.dataset.state = on ? 'playing' : 'paused'; b.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} the ${study.trim()} recording, ${device}`); };
     label();
-    b.addEventListener('click', () => { loadVideo(v); if (v.paused) v.play().catch(() => {}); else v.pause(); });
+    b.addEventListener('click', () => {
+      loadVideo(v);
+      if (v.paused) { v._userPaused = false; v.play().catch(() => {}); }
+      else { v._userPaused = true; clearTimeout(v._hold); v.pause(); }
+    });
     v.addEventListener('play', label); v.addEventListener('pause', label);
     v.parentElement.appendChild(b);
   };
   videos.forEach(v => {
     v.addEventListener('ended', () => { v.currentTime = 0; if (!reduce && canPlay(v)) startWalk(v); });
     posterIO.observe(v);
-    if (reduce) { addPlayButton(v); playIO.observe(v); return; }
+    addPlayButton(v);
+    if (reduce) { playIO.observe(v); return; }
     nearIO.observe(v); playIO.observe(v);
   });
+  // a hidden tab pauses the recordings; coming back resumes only those a visitor hasn't paused
+  doc.addEventListener('visibilitychange', () => videos.forEach(v => { if (doc.hidden) v.pause(); else if (!reduce && canPlay(v)) startWalk(v); }));
 
   /* ------------------------------------------------------------------ scroll it yourself: the live site inside a screen
      The site is laid out at a real laptop (1280 wide) or phone (390 wide) viewport and scaled to the screen.

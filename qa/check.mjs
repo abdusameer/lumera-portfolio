@@ -25,6 +25,8 @@ const VIEWPORTS = [
   { name: '390x844', width: 390, height: 844, touch: true, dpr: 3 },
   { name: '360x800', width: 360, height: 800, touch: true, dpr: 2 },
   { name: '844x390-landscape', width: 844, height: 390, touch: true, dpr: 2 },
+  { name: '375x667', width: 375, height: 667, touch: true, dpr: 2 },
+  { name: '320x640', width: 320, height: 640, touch: true, dpr: 2 },
 ];
 
 const report = { base: BASE, when: new Date().toISOString(), viewports: {}, interactions: {}, problems: [] };
@@ -256,13 +258,13 @@ const stripState = page => page.evaluate(() => ({
     I.bbs = { early: await win(bbY - 800), later: await win(bbY - 150), end: await win(bbY + 300) };
     if (!(parseFloat(I.bbs.later) > parseFloat(I.bbs.early) && parseFloat(I.bbs.end) >= parseFloat(I.bbs.later))) problem("BB's", 'window does not grow with scroll: ' + JSON.stringify(I.bbs));
     // folds: closed by default, open by click and by keyboard; the credits stay outside them
-    I.folds = await page.evaluate(() => [...document.querySelectorAll('.build')].map(d => ({ open: d.open, credits: [...d.closest('.study').querySelectorAll('dt')].some(dt => /Credits/.test(dt.textContent) && !dt.closest('.build')) })));
+    I.folds = await page.evaluate(() => [...document.querySelectorAll('.build')].map(d => ({ open: d.open, context: !!d.closest('.study').querySelector('.case-context') && !d.closest('.study').querySelector('.case-context').closest('.build') })));
     if (I.folds.length !== 3 || I.folds.some(f => f.open)) problem('folds', 'expected three closed folds: ' + JSON.stringify(I.folds));
-    if (I.folds.some(f => !f.credits)) problem('folds', 'credits folded away in a study');
+    if (I.folds.some(f => !f.context)) problem('folds', 'the project context is folded away or missing in a study');
     await page.evaluate(() => { const s = document.querySelector('#rok .build summary'); window.scrollTo(0, s.getBoundingClientRect().top + scrollY - 300); });
     await sleep(700);
     await page.click('#rok .build summary'); await sleep(900);
-    I.foldClick = await page.evaluate(() => { const d = document.querySelector('#rok .build'); const li = d.querySelector('li'); return { open: d.open, shown: li.getBoundingClientRect().height > 0 }; });
+    I.foldClick = await page.evaluate(() => { const d = document.querySelector('#rok .build'); const p = d.querySelector('.build-body p'); return { open: d.open, shown: p.getBoundingClientRect().height > 0 }; });
     await page.focus('#bbs .build summary'); await page.keyboard.press('Enter'); await sleep(900);
     I.foldKey = await page.evaluate(() => document.querySelector('#bbs .build').open);
     if (!I.foldClick.open || !I.foldClick.shown) problem('folds', 'click did not open the rōk fold: ' + JSON.stringify(I.foldClick));
@@ -273,7 +275,7 @@ const stripState = page => page.evaluate(() => ({
       const lum = s => { const [r, g, b] = s.match(/[\d.]+/g).map(Number); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
       const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return +((x + 0.05) / (y + 0.05)).toFixed(2); };
       const bgOf = el => { for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) return c; } return 'rgb(238, 234, 227)'; };
-      const sel = ['.p-name', '.p-meta', '.hero-sub', '.list-text', '#rok .study-q', '#rok .facts dt', '#bbs .study-q', '#bbs .facts dt', '#lennys .study-q', '#lennys .facts dt', '.ap-rows p', '.cap-list', '.cap-note', '.contact-sub', '.foot-note', '.foot-info .dim'];
+      const sel = ['.p-name', '.p-meta', '.hero-sub', '.list-text', '#rok .study-q', '#rok .case-h', '#rok .case-detail p', '#bbs .study-q', '#bbs .case-h', '#bbs .case-detail p', '#lennys .study-q', '#lennys .case-h', '#lennys .case-detail p', '.case-lede', '.ap-rows p', '.cap-list', '.cap-note', '.contact-sub', '.foot-note', '.foot-info .dim'];
       return sel.flatMap(s => [...document.querySelectorAll(s)].map(el => ({ s, r: ratio(getComputedStyle(el).color, bgOf(el)), op: +getComputedStyle(el).opacity })));
     });
     I.contrast.forEach(c => { if (c.op === 1 && c.r < 4.5) problem('contrast', `${c.s}: ${c.r}`); });
@@ -541,6 +543,175 @@ const stripState = page => page.evaluate(() => ({
     if (a.hscroll || L.bg !== 'rgb(238, 234, 227)' || L.links < 4) problem('404 ' + vp.name, JSON.stringify(L));
     if (vp.touch && a.targetsUnder24.length) problem('404 ' + vp.name, 'small touch targets ' + a.targetsUnder24.join(' | '));
     if (log.console.length || log.pageErrors.length || log.http.length) problem('404 ' + vp.name, [...log.console, ...log.pageErrors, ...log.http].join(' | '));
+    await page.close();
+  }
+
+  /* ---------- content integrity: structure, locked wording, nothing banned, nothing third-party ---------- */
+  {
+    const page = await browser.newPage();
+    const hosts = new Set();
+    page.on('request', r => { const u = new URL(r.url()); if (u.protocol.startsWith('http')) hosts.add(u.host); });
+    const cspErrors = [];
+    page.on('console', m => { if (/Content Security Policy/i.test(m.text())) cspErrors.push(m.text().slice(0, 160)); });
+    await page.setViewport({ width: 1440, height: 900 });
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(2500);
+    const C = report.interactions.content = {};
+    C.thirdPartyHosts = [...hosts].filter(h => h !== `localhost:${PORT}`);
+    C.storage = await page.evaluate(() => ({ local: Object.keys(localStorage), session: Object.keys(sessionStorage), cookie: document.cookie, iframes: document.querySelectorAll('iframe').length, forms: document.forms.length }));
+    if (C.thirdPartyHosts.length) problem('privacy', 'the home page contacts other hosts on load: ' + C.thirdPartyHosts.join(', '));
+    if (C.storage.local.length || C.storage.session.join() !== 'lumera-opened' || C.storage.cookie || C.storage.iframes || C.storage.forms) problem('privacy', 'browser storage, cookies, frames or forms do not match the Privacy page: ' + JSON.stringify(C.storage));
+    // the locked statement
+    C.locked = await page.evaluate(() => ({ tag: document.querySelector('.hero-tag').textContent.trim(), sub: document.querySelector('.hero-sub').textContent.trim() }));
+    if (C.locked.tag !== 'Where design meets innovation.' || C.locked.sub !== 'We design and build the technology the problem calls for.') problem('locked statement', JSON.stringify(C.locked));
+    // each case study: the six parts in order, equal weight for objective and response, the link, the label
+    C.studies = await page.evaluate(() => ['rok', 'lennys', 'bbs'].map(id => {
+      const a = document.getElementById(id), hs = [...a.querySelectorAll('h3, h4')];
+      const cta = [...a.querySelectorAll('a.pill')].find(x => /View live concept/i.test(x.textContent));
+      const ob = a.querySelector('.case-cols > div:nth-child(1) p'), re = a.querySelector('.case-cols > div:nth-child(2) p');
+      return { id, order: hs.map(h => h.textContent.trim()), label: a.querySelector('.study-meta .chip').textContent.trim(), cta: cta ? { rel: cta.rel, target: cta.target } : null,
+        equal: !!ob && !!re && getComputedStyle(ob).fontSize === getComputedStyle(re).fontSize, ctxSize: parseFloat(getComputedStyle(a.querySelector('.case-context p')).fontSize) };
+    }));
+    const WANT = ['Project overview', 'Objective', "Lumera's response", 'Project scope', 'Project context', 'How we built it'];
+    C.studies.forEach(st => {
+      if (st.order.slice(1).join('|') !== WANT.join('|')) problem('case study ' + st.id, 'headings out of order: ' + st.order.join(' > '));
+      if (st.label !== 'Independent concept study') problem('case study ' + st.id, 'label: ' + st.label);
+      if (!st.cta || st.cta.target !== '_blank' || !/noopener/.test(st.cta.rel) || !/noreferrer/.test(st.cta.rel)) problem('case study ' + st.id, 'live concept link: ' + JSON.stringify(st.cta));
+      if (!st.equal) problem('case study ' + st.id, 'objective and response differ in size');
+      if (st.ctxSize < 14.9) problem('case study ' + st.id, 'context text is too small: ' + st.ctxSize + 'px');
+    });
+    // the policy's hash matches the one inline script, and the policy blocked nothing
+    C.csp = await page.evaluate(async () => {
+      const meta = document.querySelector('meta[http-equiv="Content-Security-Policy"]'); if (!meta) return null;
+      const src = [...document.scripts].find(x => !x.src && !x.type).textContent;
+      const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(src));
+      const b64 = btoa(String.fromCharCode(...new Uint8Array(d)));
+      return { hashOk: meta.content.includes(`'sha256-${b64}'`), unsafeScript: /script-src[^;]*unsafe/.test(meta.content) };
+    });
+    if (!C.csp || !C.csp.hashOk || C.csp.unsafeScript) problem('security', 'content security policy missing or its script hash does not match: ' + JSON.stringify(C.csp));
+    if (cspErrors.length) problem('security', 'the policy blocked something: ' + cspErrors.join(' | '));
+    // the case studies' own wording has no em dashes
+    C.caseDashes = await page.evaluate(() => [...document.querySelectorAll('.case-overview, .case-detail')].map(e => (e.innerText.match(/—/g) || []).length).reduce((a, b) => a + b, 0));
+    if (C.caseDashes) problem('content', `${C.caseDashes} em dashes in the case studies`);
+    // pause control: a visitor's pause stands, by keyboard, until they press play
+    await page.evaluate(() => { const e = document.querySelector('#lennys .site'); window.scrollTo(0, e.getBoundingClientRect().top + scrollY - 120); });
+    await sleep(5500);
+    C.pause = await page.evaluate(async () => {
+      const v = document.querySelector('#lennys .site-desk video'), b = document.querySelector('#lennys .site-desk .play');
+      const out = { name: b.getAttribute('aria-label'), playing: !v.paused };
+      b.focus(); b.click(); await new Promise(r => setTimeout(r, 400)); out.afterPause = v.paused; out.nameAfter = b.getAttribute('aria-label');
+      window.scrollBy(0, 2400); await new Promise(r => setTimeout(r, 900)); window.scrollBy(0, -2400); await new Promise(r => setTimeout(r, 3500));
+      out.stillPaused = v.paused; b.click(); await new Promise(r => setTimeout(r, 600)); out.resumed = !v.paused;
+      return out;
+    });
+    if (!C.pause.playing || !C.pause.afterPause || !C.pause.stillPaused || !C.pause.resumed || !/Pause/.test(C.pause.name) || !/Play/.test(C.pause.nameAfter)) problem('pause control', JSON.stringify(C.pause));
+    await page.close();
+    // every page: status, one h1, footer links, a policy, nothing banned, no sideways overflow
+    const BANNED = /AI[- ]generated|AI[- ]made|made with AI|stand-ins?|concept imagery|Blender|Higgsfield|Claude|ffmpeg|Visit the live study|cutting-edge|seamless|elevate|transformative|innovative solutions|revolutioni|award-winning|trusted by|testimonial/i;
+    C.pages = {};
+    for (const [name, url] of [['home', BASE], ['legal', BASE + 'legal.html'], ['privacy', BASE + 'privacy.html'], ['accessibility', BASE + 'accessibility.html'], ['404', BASE + '404.html']]) {
+      const pg = await browser.newPage(); await pg.setViewport({ width: 1280, height: 800 });
+      const res = await pg.goto(url, { waitUntil: 'networkidle0' });
+      const t = await pg.evaluate(() => ({ text: document.body.innerText, attrs: [...document.querySelectorAll('[alt],[aria-label],[title]')].map(e => [e.alt, e.getAttribute('aria-label'), e.title].join(' ')).join(' '), links: [...document.querySelectorAll('footer a')].map(a => a.textContent.trim()), h1: document.querySelectorAll('h1').length, hscroll: document.documentElement.scrollWidth > innerWidth + 1, csp: !!document.querySelector('meta[http-equiv="Content-Security-Policy"]'), emDashes: (document.body.innerText.match(/—/g) || []).length }));
+      C.pages[name] = { status: res.status(), footer: t.links, h1: t.h1 };
+      const hit = (t.text + ' ' + t.attrs).match(BANNED);
+      if (res.status() !== 200) problem('pages', `${name} returned ${res.status()}`);
+      if (hit) problem('content', `${name} contains "${hit[0]}"`);
+      const oldHeads = await pg.evaluate(() => [...document.querySelectorAll('dt, h1, h2, h3, h4, h5, h6, summary')].map(e => e.textContent.trim()).filter(x => /^(direction|credits|built with|what we built)$/i.test(x)));
+      if (oldHeads.length) problem('content', `${name} still has the old headings: ${oldHeads.join(', ')}`);
+      if (!/Privacy/.test(t.links.join('|')) || !/Accessibility/.test(t.links.join('|'))) problem('footer', `${name} footer lacks Privacy or Accessibility: ${t.links.join(', ')}`);
+      if (/Refund|Cookie|Do Not Sell/i.test(t.links.join('|'))) problem('footer', `${name} footer lists a policy that does not apply`);
+      if (!t.csp) problem('security', `${name} has no content security policy`);
+      if (name !== 'home' && name !== '404' && t.h1 !== 1) problem('pages', `${name} h1 count ${t.h1}`);
+      if (t.hscroll) problem('pages', `${name} overflows sideways`);
+      if (name !== 'home' && name !== '404' && t.emDashes > 0) problem('content', `${name} has ${t.emDashes} em dashes`);
+      await pg.close();
+    }
+  }
+
+  /* ---------- keyboard, focus and contrast on the stacked page (no motion), at three sizes ---------- */
+  for (const vp of [VIEWPORTS[0], VIEWPORTS[5], VIEWPORTS[9]]) {
+    const { page } = await newPage(browser, vp, { reduce: true });
+    await page.goto(BASE, { waitUntil: 'networkidle0' }); await sleep(1000);
+    const K = report.interactions['keyboard-' + vp.name] = {};
+    K.tabs = [];
+    await page.keyboard.press('Tab');
+    for (let k = 0; k < 160; k++) {
+      const d = await page.evaluate(() => {
+        const a = document.activeElement; if (!a || a === document.body) return { lost: true };
+        const cs = getComputedStyle(a), r = a.getBoundingClientRect();
+        const name = (a.getAttribute('aria-label') || (a.getAttribute('aria-labelledby') ? document.getElementById(a.getAttribute('aria-labelledby')).textContent : '') || a.innerText || a.getAttribute('title') || '').trim();
+        const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+        const parse = s => (s.match(/[\d.]+/g) || []).map(Number);
+        const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        let bg = null; for (let e = a.parentElement; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] > 0.5)) { bg = c; break; } }
+        const oc = parse(cs.outlineColor), over = !!a.closest('.site-screens, .p-media, .crop') || (cs.boxShadow.includes('rgb(14, 13, 11)') && oc.slice(0, 3).join() === '255,255,255');   // a two-tone ring works on any surface
+        const L = bg ? [lum(oc), lum(bg)].sort((x, y) => y - x) : null;
+        return { tag: a.tagName.toLowerCase(), name: name.slice(0, 40), visible: cs.visibility !== 'hidden' && cs.display !== 'none' && r.width > 0 && r.height > 0, outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2, ratio: L && !over ? +((L[0] + 0.05) / (L[1] + 0.05)).toFixed(2) : null, tabindex: a.getAttribute('tabindex') };
+      });
+      if (d.lost) break;
+      K.tabs.push(d);
+      await page.keyboard.press('Tab');
+    }
+    K.count = K.tabs.length;
+    const bad = K.tabs.filter(t => !t.name || !t.visible || (t.tabindex && +t.tabindex > 0));
+    const noOutline = K.tabs.filter(t => !t.outline && !/summary/.test(t.tag));
+    const weak = K.tabs.filter(t => t.ratio !== null && t.ratio < 3);
+    if (K.count < 30) problem('keyboard ' + vp.name, `only ${K.count} focus stops reached`);
+    if (bad.length) problem('keyboard ' + vp.name, 'focus stops without a name, hidden, or with a positive tabindex: ' + bad.slice(0, 4).map(t => `${t.tag}:${t.name}`).join(' | '));
+    if (noOutline.length) problem('keyboard ' + vp.name, 'no visible outline: ' + noOutline.slice(0, 4).map(t => `${t.tag}:${t.name}`).join(' | '));
+    if (weak.length) problem('keyboard ' + vp.name, 'focus outline under 3:1 against its surface: ' + weak.slice(0, 4).map(t => `${t.name} ${t.ratio}`).join(' | '));
+    // an accordion opens and closes by keyboard
+    K.fold = await page.evaluate(() => { const d = document.querySelector('#bbs .build'); d.scrollIntoView(); d.querySelector('summary').focus(); return { open0: d.open }; });
+    await page.keyboard.press('Enter'); await sleep(500);
+    K.fold.open1 = await page.evaluate(() => document.querySelector('#bbs .build').open);
+    await page.keyboard.press('Space'); await sleep(500);
+    K.fold.open2 = await page.evaluate(() => document.querySelector('#bbs .build').open);
+    if (K.fold.open0 || !K.fold.open1 || K.fold.open2) problem('keyboard ' + vp.name, 'accordion by Enter and Space: ' + JSON.stringify(K.fold));
+    // contrast of every text on a flat surface (text over photos is checked by its own rules above)
+    K.contrast = await page.evaluate(() => {
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const parse = s => (s.match(/[\d.]+/g) || []).map(Number);
+      const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      const blend = (f, b) => f.length > 3 && f[3] < 1 ? [0, 1, 2].map(i => f[i] * f[3] + b[i] * (1 - f[3])) : f.slice(0, 3);
+      const surface = el => { for (let e = el; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] > 0.5)) return c.slice(0, 3); } return [238, 234, 227]; };
+      const out = [];
+      document.querySelectorAll('body *').forEach(el => {
+        if (el.closest('.sprite, .menu, .site-screens, .p-media, .crop, .stream, .cap-media, noscript, [hidden]')) return;
+        if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
+        const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || cs.display === 'none') return;
+        const r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
+        const bg = surface(el), fg = blend(parse(cs.color), bg), L = [lum(fg), lum(bg)].sort((a, b) => b - a), ratio = (L[0] + 0.05) / (L[1] + 0.05);
+        const px = parseFloat(cs.fontSize), large = px >= 24 || (px >= 18.66 && +cs.fontWeight >= 700);
+        if (ratio < (large ? 3 : 4.5) && +cs.opacity === 1) out.push(`${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0]} ${ratio.toFixed(2)}`);
+      });
+      return [...new Set(out)].slice(0, 12);
+    });
+    if (K.contrast.length) problem('contrast ' + vp.name, K.contrast.join(' | '));
+    await page.close();
+  }
+
+  /* ---------- the legal pages: skip link and contrast ---------- */
+  for (const path_ of ['legal.html', 'privacy.html', 'accessibility.html', '404.html']) {
+    const { page } = await newPage(browser, VIEWPORTS[0], { reduce: true });
+    await page.goto(BASE + path_, { waitUntil: 'networkidle0' });
+    const bad = await page.evaluate(() => {
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const parse = s => (s.match(/[\d.]+/g) || []).map(Number);
+      const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      const surface = el => { for (let e = el; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] > 0.5)) return c.slice(0, 3); } return [238, 234, 227]; };
+      const out = [];
+      document.querySelectorAll('body *').forEach(el => {
+        if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
+        const cs = getComputedStyle(el), bg = surface(el), fg = parse(cs.color).slice(0, 3), L = [lum(fg), lum(bg)].sort((a, b) => b - a), ratio = (L[0] + 0.05) / (L[1] + 0.05);
+        const px = parseFloat(cs.fontSize), large = px >= 24 || (px >= 18.66 && +cs.fontWeight >= 700);
+        if (ratio < (large ? 3 : 4.5)) out.push(`${el.tagName.toLowerCase()} ${ratio.toFixed(2)} "${el.textContent.trim().slice(0, 20)}"`);
+      });
+      return out.slice(0, 6);
+    });
+    await page.keyboard.press('Tab');
+    const skip = await page.evaluate(() => { const a = document.activeElement, r = a.getBoundingClientRect(); return { skip: a.classList.contains('skip'), onScreen: r.top >= 0 && r.left >= 0 && r.width > 0 }; });
+    if (bad.length) problem('contrast ' + path_, bad.join(' | '));
+    if (!skip.skip || !skip.onScreen) problem('skip link ' + path_, 'the first Tab is not a visible skip link: ' + JSON.stringify(skip));
     await page.close();
   }
 
