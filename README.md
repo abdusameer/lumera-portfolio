@@ -46,7 +46,7 @@ Plain HTML, CSS and JavaScript. No framework, no build step, and nothing is requ
 - `assets/img/work/`: the project panels and the photographs in the column (WebP). rōk's drink and scene images and all of BB's product images are AI-generated and labeled "Concept image"; the storefront is rōk's photo and Lenny's photographs are its own.
 - `assets/video/`: a whole-site walkthrough of each study at 60 fps, recorded top to bottom: `<name>-site.mp4` on a laptop, `<name>-site-sm.mp4` a lighter laptop copy, `<name>-site-m.mp4` on a phone. `rok-scrub.mp4` is rōk's pour, keyframed every 6 frames so scrolling can seek it. WebP posters.
 - `assets/img/bbs/`: the BB's loaf as a pencil sketch and as a photograph (concept images).
-- `assets/og.jpg`, `assets/favicon.svg`: share image and icon.
+- `assets/og.jpg`, `assets/favicon.svg`, `assets/apple-touch-icon.png`: the share image, and our owl as the icon in browser tabs and on phone home screens.
 
 Videos load only when they come near the screen and pause when they leave it. With reduced motion, nothing plays by itself: each recording gets a Play button, and rōk shows a still.
 

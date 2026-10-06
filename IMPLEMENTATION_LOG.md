@@ -164,3 +164,7 @@ A pass on felt states rather than features: arriving, finding your way, waiting,
 - The approach rows no longer invert like buttons they aren't; light passes over them and the number turns gold.
 - A 404 page in the site's design that owns the broken link and offers the way back.
 - QA: new checks for hover rules outside the hover query, a panel click, the copy button's round trip, the opening not repeating, a live site left hanging (the note and the new-tab link), and the 404 page; QA takes its port from `PORT`. 0 problems. Lighthouse: mobile 97–98 / 100 / 100 / 100, desktop 99 / 100 / 100 / 100, CLS 0.
+
+## The owl as the site icon (2026-10-05, owner request)
+
+The owner chose to keep the site exactly as it is and show their owl mark only as its icon: in the browser tab (`assets/favicon.svg`, the owl alone in flat silver on near-black, 6 KB) and on phone home screens (`assets/apple-touch-icon.png`, 180 px, linked from all three pages). Nothing on the page changed. The owl was traced flat from the owner's logo; the tracing kit is in `.claude/recording/mark/` (git-ignored). Two larger treatments were tried locally and set aside at the owner's request: a dark opening with the logo throughout, and a scroll-film opening.
