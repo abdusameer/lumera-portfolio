@@ -1,5 +1,4 @@
 .DS_Store
 _drafts/
+_internal/
 .claude/
-qa/node_modules/
-qa/results/

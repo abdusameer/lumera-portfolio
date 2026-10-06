@@ -604,6 +604,52 @@
     }
   }
 
+  /* ------------------------------------------------------------------ systems demonstration: one fictional inquiry through five stages
+     The five stages and the log are plain text in the page; this only lights them in turn. Nothing here talks to a real system. */
+  const sys = $('#sys-demo');
+  if (sys) {
+    const stages = $$('.sys-stage', sys), logs = $$('.sys-log li', sys), N = stages.length;
+    const run = $('#sys-run'), reset = $('#sys-reset'), live = $('#sys-live'), statusEl = $('#sys-status'), hint = $('.sys-hint', sys);
+    const STATUS = ['Not started', 'Received', 'Categorized as a kitchen remodel estimate', 'Assigned to residential estimates', 'Follow-up notifications prepared', 'Recorded in the pipeline, next step a site visit'];
+    const EVENT = ['New estimate request received. Contact details captured.', 'Request categorized.', 'Assigned to the appropriate workflow.', 'Follow-up notification prepared.', 'Record added to the business pipeline.'];
+    const STEP = 2200;                                   // ms a stage stays lit
+    let mode = reduce ? 'done' : 'idle', elapsed = 0, drawn = '', said = -1;   // idle | play | pause | done (reduced motion starts at the end)
+    const LABEL = { idle: 'Run demonstration', play: 'Pause', pause: 'Resume', done: 'Replay' };
+    const paint = () => {
+      const k = mode === 'idle' ? -1 : mode === 'done' ? N : Math.min(N, Math.floor(elapsed / STEP));
+      const key = mode + k;
+      if (key === drawn) return;
+      drawn = key;
+      stages.forEach((el, i) => {
+        const st = mode === 'idle' ? '' : i < k ? 'done' : i === k ? 'active' : 'waiting';
+        el.classList.remove('is-done', 'is-active', 'is-waiting');
+        if (st) el.classList.add('is-' + st);
+        $('.sys-state', el).textContent = st === 'done' ? 'Done' : st === 'active' ? 'Running' : st === 'waiting' ? 'Waiting' : '';
+      });
+      logs.forEach(li => li.classList.toggle('is-pending', mode === 'idle' || (mode !== 'done' && +li.dataset.stage - 1 > k)));
+      statusEl.textContent = STATUS[mode === 'idle' ? 0 : Math.min(N, k + 1)];
+      run.textContent = LABEL[mode];
+      reset.hidden = mode === 'idle' || (reduce && mode === 'done' && !elapsed);
+      hint.hidden = mode !== 'idle';
+      if (mode === 'play' && k !== said && k < N) { said = k; live.textContent = `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`; }
+      if (mode === 'done' && said !== N && elapsed) { said = N; live.textContent = 'Demonstration complete. The sample inquiry is recorded in the pipeline.'; }
+    };
+    const go = m => { mode = m; paint(); };
+    run.addEventListener('click', () => {
+      if (mode === 'play') go('pause');
+      else if (mode === 'pause') go('play');
+      else { elapsed = 1; said = -1; drawn = ''; go('play'); }          // from idle or the end: start again
+    });
+    reset.addEventListener('click', () => { elapsed = 0; said = -1; drawn = ''; live.textContent = ''; go(reduce ? 'done' : 'idle'); run.focus(); });
+    tasks.add(dt => {
+      if (mode !== 'play') return;
+      elapsed += dt;
+      if (elapsed >= N * STEP) { go('done'); return; }
+      paint();
+    });
+    paint();
+  }
+
   /* ------------------------------------------------------------------ copy the email address */
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   $$('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
