@@ -949,6 +949,11 @@
 
   // touch and pen: the gesture's intent decides what happens (vertical: the browser scrolls; horizontal: one stage)
   const EDGE = 24, SLOP = 10;
+  // iPhone Safari: its back/forward swipe reaches further in than 24 px and it cancels drags it wants for itself, and redrawing the
+  // pinned stage under the finger every frame is heavy there. So the edge is wider, a swipe still counts if Safari cancels it
+  // part-way, and a swipe takes its step as one smooth glide instead of following the finger.
+  const IOS = !!(window.CSS && CSS.supports && CSS.supports('-webkit-touch-callout', 'none'));
+  const edgeL = IOS ? 40 : EDGE;
   let g = null, followY = null, noClickUntil = 0, zoomed = false;
   // pinch-zoomed in: sideways movement pans the zoomed view, so the stages hand it back to the browser (touch-action: auto) until zoomed out
   const vv = window.visualViewport;
@@ -963,7 +968,7 @@
     if (!e.isPrimary) { if (g) cancelDrag(); touchOwned = false; return; }   // a second finger (a pinch) ends any drag
     touchOwned = false;
     if (menu.classList.contains('is-open')) return;
-    if (e.clientX < EDGE || e.clientX > innerWidth - EDGE) return;                    // the system's back and forward gestures
+    if (e.clientX < edgeL || e.clientX > innerWidth - edgeL) return;                    // the system's back and forward gestures
     if (!e.target.closest || e.target.closest('iframe, input, textarea, select, [contenteditable="true"]')) return;
     // only on the stages that leave sideways movement to the page (touch-action: pan-y); elsewhere the browser would take it anyway.
     // Zoomed in, sideways is the browser's too: it pans the zoomed view (see the zoom watch below)
@@ -989,7 +994,7 @@
         g.sy0 = sy; g.dx0 = dx;
       }
       try { if (g.el) { g.el.setPointerCapture(g.id); g.cap = true; } } catch (err) { /* capture is optional: the window still hears every move */ }
-      g.scale = g.r && g.r.scale ? g.r.scale(Math.round(g.from), dx < 0 ? 1 : -1) : 0;
+      g.scale = !IOS && g.r && g.r.scale ? g.r.scale(Math.round(g.from), dx < 0 ? 1 : -1) : 0;
     }
     g.dx = dx;
     g.samples.push([e.clientX, e.timeStamp]); if (g.samples.length > 6) g.samples.shift();
@@ -1013,7 +1018,8 @@
   }
   const endDrag = e => {
     if (!g || (e && e.pointerId !== g.id)) return;
-    if (e && e.type === 'pointercancel') { touchOwned = false; cancelDrag(); return; }   // the browser has taken the touch
+    const cancelled = !!e && e.type === 'pointercancel';
+    if (cancelled) { touchOwned = false; if (!(IOS && g.axis === 'x' && Math.abs(g.dx) >= 30)) { cancelDrag(); return; } }   // the browser has taken the touch (on iPhone a clear sideways swipe still counts)
     const s = g; letGo();
     if (s.axis !== 'x') return;
     const a = s.samples[0], b = s.samples[s.samples.length - 1];
