@@ -963,12 +963,10 @@
   });
   tasks.add(() => { if (followY != null) { jump(followY); followY = null; } });   // the follow is written once per frame
   const letGo = () => { if (g && g.cap && g.el) { try { if (g.el.hasPointerCapture(g.id)) g.el.releasePointerCapture(g.id); } catch (err) { /* already released */ } } g = null; };
-  addEventListener('pointerdown', e => {
-    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
-    if (!e.isPrimary) { if (g) cancelDrag(); touchOwned = false; return; }   // a second finger (a pinch) ends any drag
+  const begin = (e, id, x, y, ts, touch) => {          // e: the event (its target); the same for pointer and touch input
     touchOwned = false;
     if (menu.classList.contains('is-open')) return;
-    if (e.clientX < edgeL || e.clientX > innerWidth - edgeL) return;                    // the system's back and forward gestures
+    if (x < edgeL || x > innerWidth - edgeL) return;                    // the system's back and forward gestures
     if (!e.target.closest || e.target.closest('iframe, input, textarea, select, [contenteditable="true"]')) return;
     // only on the stages that leave sideways movement to the page (touch-action: pan-y); elsewhere the browser would take it anyway.
     // Zoomed in, sideways is the browser's too: it pans the zoomed view (see the zoom watch below)
@@ -978,15 +976,15 @@
     const manual = !r && sysCtl.manualMode() && sysCtl.inside(e.target);
     if (!r && !manual) return;
     // a step still on its way keeps going: a tap doesn't stop it, a vertical drag hands the page to the browser, a sideways one takes over
-    g = { id: e.pointerId, el: e.target instanceof Element ? e.target : null, x0: e.clientX, y0: e.clientY, r, manual, axis: null, cap: false, dx: 0, samples: [[e.clientX, e.timeStamp]], from: 0, sy0: sy, dx0: 0 };
-    touchOwned = e.pointerType === 'touch';            // until the gesture shows itself vertical, its touches don't stop a moving step
-  }, { passive: true });
-  addEventListener('pointermove', e => {
-    if (!g || e.pointerId !== g.id) return;
-    const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+    g = { id, el: e.target instanceof Element ? e.target : null, x0: x, y0: y, r, manual, axis: null, cap: false, dx: 0, samples: [[x, ts]], from: 0, sy0: sy, dx0: 0 };
+    touchOwned = touch;                                // until the gesture shows itself vertical, its touches don't stop a moving step
+  };
+  const move = (id, x, y, ts) => {
+    if (!g || id !== g.id) return;
+    const dx = x - g.x0, dy = y - g.y0;
     if (!g.axis) {
-      if (Math.hypot(dx, dy) < SLOP) return;
-      g.axis = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'x' : 'y';
+      if (Math.hypot(dx, dy) < (IOS ? 5 : SLOP)) return;
+      g.axis = Math.abs(dx) > Math.abs(dy) * (IOS ? 1 : 1.15) ? 'x' : 'y';
       if (g.axis === 'y') { g = null; touchOwned = false; return; }   // vertical: the browser scrolls the page (touch-action: pan-y)
       if (g.r) {                                       // counted from the stage a moving step was heading to, followed from where the page is
         g.from = flight && flight.r === g.r && flight.i != null ? flight.i : pos(g.r.stops(), sy);
@@ -997,7 +995,7 @@
       g.scale = !IOS && g.r && g.r.scale ? g.r.scale(Math.round(g.from), dx < 0 ? 1 : -1) : 0;
     }
     g.dx = dx;
-    g.samples.push([e.clientX, e.timeStamp]); if (g.samples.length > 6) g.samples.shift();
+    g.samples.push([x, ts]); if (g.samples.length > 6) g.samples.shift();
     if (g.r && g.scale) {                              // the stage follows the finger, one stage either way at most
       const stops = g.r.stops(), i0 = clamp(Math.round(g.from), 0, stops.length - 1);
       const lo = Math.min(g.sy0, stops[Math.max(0, i0 - 1)]), hi = Math.max(g.sy0, stops[Math.min(stops.length - 1, i0 + 1)]);
@@ -1006,7 +1004,31 @@
       if (y > hi) y = hi + (y - hi) * 0.25;            // beyond the reachable stages it only gives a little
       followY = clamp(y, 0, maxY());
     }
+  };
+  // pointer events everywhere but iPhone Safari
+  addEventListener('pointerdown', e => {
+    if (IOS || (e.pointerType !== 'touch' && e.pointerType !== 'pen')) return;
+    if (!e.isPrimary) { if (g) cancelDrag(); touchOwned = false; return; }   // a second finger (a pinch) ends any drag
+    begin(e, e.pointerId, e.clientX, e.clientY, e.timeStamp, e.pointerType === 'touch');
   }, { passive: true });
+  addEventListener('pointermove', e => { if (!IOS) move(e.pointerId, e.clientX, e.clientY, e.timeStamp); }, { passive: true });
+  // iPhone Safari: touch events. Safari decides whether the page scrolls from the first moves, and takes the gesture (cancelling
+  // pointer events) if it isn't claimed then, so a sideways swipe is claimed (preventDefault) as soon as it shows itself
+  // sideways; a vertical one is never touched. A second finger (a pinch) hands everything back.
+  if (IOS) {
+    addEventListener('touchstart', e => {
+      if (e.touches.length > 1) { if (g) cancelDrag(); touchOwned = false; return; }
+      const t = e.changedTouches[0]; begin(e, t.identifier, t.clientX, t.clientY, e.timeStamp, true);
+    }, { passive: true });
+    addEventListener('touchmove', e => {
+      if (!g || e.touches.length !== 1) return;
+      const t = [...e.changedTouches].find(c => c.identifier === g.id); if (!t) return;
+      move(t.identifier, t.clientX, t.clientY, e.timeStamp);
+      if (g && g.axis === 'x' && e.cancelable) e.preventDefault();
+    }, { passive: false });
+    addEventListener('touchend', e => { const t = [...e.changedTouches].find(c => g && c.identifier === g.id); if (t) endDrag({ pointerId: g.id, type: 'pointerup' }); }, { passive: true });
+    addEventListener('touchcancel', e => { const t = [...e.changedTouches].find(c => g && c.identifier === g.id); if (t) endDrag({ pointerId: g.id, type: 'pointercancel' }); }, { passive: true });
+  }
   function cancelDrag() {                              // no step: a step the finger took over goes on; otherwise back to where the finger took the page
     const s = g; letGo();
     if (!s || s.axis !== 'x') return;
@@ -1034,8 +1056,8 @@
       else if (!nav.step(dir, { r: s.r, from: s.from, talk: true })) { g = s; cancelDrag(); }   // nowhere to go (the top of the page): back into place
     } else { g = s; cancelDrag(); }
   };
-  addEventListener('pointerup', endDrag, { passive: true });
-  addEventListener('pointercancel', endDrag, { passive: true });
+  addEventListener('pointerup', e => { if (!IOS) endDrag(e); }, { passive: true });
+  addEventListener('pointercancel', e => { if (!IOS) endDrag(e); }, { passive: true });
   addEventListener('lostpointercapture', e => { if (g && e.pointerId === g.id) g.cap = false; }, { passive: true });   // only bookkeeping: the gesture ends on pointerup or pointercancel
   addEventListener('click', e => { if (performance.now() < noClickUntil) { e.preventDefault(); e.stopPropagation(); } }, true);
 
