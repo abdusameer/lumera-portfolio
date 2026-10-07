@@ -19,10 +19,23 @@
   const $ = (s, el = doc) => el.querySelector(s);
   const $$ = (s, el = doc) => Array.from(el.querySelectorAll(s));
   const dtK = (k, dt) => 1 - Math.pow(1 - k, dt / 16.667);  // frame-rate independent easing factor
+  // the large viewport height (a phone's screen with its toolbars tucked away). It stays the same while the toolbars come and go,
+  // so pinned lengths measured from it never shift under the reader; the pinned stages themselves are 100lvh tall in CSS.
+  const vhProbe = doc.createElement('div');
+  vhProbe.setAttribute('aria-hidden', 'true');
+  vhProbe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+  doc.body.appendChild(vhProbe);
+  const VH = () => vhProbe.offsetHeight || innerHeight;
 
   /* ------------------------------------------------------------------ scroll + one loop */
   let lenis = null;
-  if (!reduce && window.Lenis) lenis = new window.Lenis({ lerp: 0.09, wheelMultiplier: 0.95, smoothWheel: true, gestureOrientation: 'both' });   // 'both': each wheel or trackpad event moves the page by its dominant axis only
+  let touchOwned = false;                                       // a sideways touch gesture the page is handling itself (see the input section)
+  if (!reduce && window.Lenis) lenis = new window.Lenis({
+    lerp: 0.09, wheelMultiplier: 0.95, smoothWheel: true, gestureOrientation: 'both',   // 'both': each wheel or trackpad event moves the page by its dominant axis only
+    // Lenis reads every touch as the browser's own scrolling and stops whatever it is animating. The touch events of a sideways drag
+    // (including the touchend that comes just after the release starts its step) are left out, so they can't cut that step short.
+    virtualScroll: d => !(touchOwned && d.event.type.startsWith('touch')),
+  });
 
   const tasks = new Set();
   const regions = [];                                           // the pinned experiences: { bounds(), stops() }, in page order (see the input section)
@@ -63,6 +76,7 @@
   // scroll lengths, in screen heights: a rest on the opening, one per project, the column closing, the stream.
   // Narrow screens have no column: the project list is a fourth step instead.
   const G = { hold: 0.3, step: 1, close: 0.8, stream: 1.7, tail: 0.15 };
+  const hold = () => (narrow ? 0.08 : G.hold);              // phones: the opening answers the first scroll at once
   const steps = () => (narrow ? 4 : 3);
   let S = null, introK = 1, introT = 0;
 
@@ -77,8 +91,8 @@
       if (rio) stripRise.forEach(el => { if (!el.classList.contains('in')) rio.observe(el); });   // stacked: rise on sight
       return;
     }
-    const vw = innerWidth, vh = innerHeight;
-    const len = vh * (G.hold + steps() * G.step + (narrow ? 0 : G.close + G.stream) + G.tail);
+    const vw = innerWidth, vh = VH();
+    const len = vh * (hold() + steps() * G.step + (narrow ? 0 : G.close + G.stream) + G.tail);
     strip.style.height = (len + vh) + 'px';
     const COL = 0.26 * vw, tileH = COL * 10 / 16;
     S = {
@@ -92,8 +106,17 @@
     markDirty();
   }
   // the scroll position at which a panel is open at the left edge
-  const stripY = i => S.top + S.vh * (i <= 0 ? 0 : (i <= 3 || narrow) ? G.hold + i * G.step : G.hold + 3 * G.step + G.close);
-  regions.push({ bounds: () => S && [S.top, S.top + S.len], stops: () => (S ? [0, 1, 2, 3, 4].map(stripY).concat(S.top + S.len) : []) });
+  const stripY = i => S.top + S.vh * (i <= 0 ? 0 : (i <= 3 || narrow) ? hold() + i * G.step : hold() + 3 * G.step + G.close);
+  const stripNames = () => panels.map((p, i) => (i === 0 ? 'Lumera Creative' : i === 4 ? 'Projects' : (p.getAttribute('aria-label') || '').replace(/^\d+,\s*/, '')));
+  regions.push({
+    id: 'strip', label: 'Opening and selected work',
+    bounds: () => S && [S.top, S.top + S.len],
+    // only stops that change what is on screen (on wide screens the last one is the end of the stream)
+    stops: () => (S ? (narrow ? [0, 1, 2, 3, 4].map(stripY) : [0, 1, 2, 3, 4].map(stripY).concat(S.top + S.len)) : []),
+    names: () => (narrow ? stripNames() : stripNames().concat('The rest of the work')),
+    // the panel under the finger moves with it: one stage of scroll for the width that panel travels
+    scale: (i, dir) => (S ? S.vh / Math.max(1, openW(clamp(dir > 0 ? i : i - 1, 0, 3))) : 0),
+  });
   const openW = i => (i === 0 ? S.HERO : i === 4 ? S.vw : S.OPEN);
   const widthAt = (i, f) => {
     const d = i - f, o = openW(i);
@@ -111,7 +134,7 @@
 
   function drawStrip() {
     const s = clamp(sy - S.top, 0, S.len), u = s / S.vh, n = steps();
-    const A0 = G.hold, A1 = A0 + n * G.step, B1 = A1 + G.close;
+    const A0 = hold(), A1 = A0 + n * G.step, B1 = A1 + G.close;
     let f = 0, q = 0, r = 0;
     if (u > A0 && u < A1) { const x = (u - A0) / G.step, k = Math.floor(x); f = k + settle(x - k); }
     else if (u >= A1) { f = n; if (!narrow) { q = smooth(clamp((u - A1) / G.close, 0, 1)); r = clamp((u - B1) / G.stream, 0, 1); } }
@@ -147,7 +170,7 @@
     if (introK < 1) { introK = clamp((performance.now() - introT) / 1500, 0, 1); dirty = true; }
     if (!S) { if (moved || dirty) root.classList.toggle('past-hero', sy > panels[0].offsetHeight * 0.5); return; }
     if (!moved && !dirty) return;
-    if (sy > S.top + S.len + S.vh * 1.5 && !dirty) return;   // well past the strip: nothing to move
+    if (sy > S.top + S.len + S.vh * 1.5 && !dirty) { root.classList.add('past-hero'); return; }   // well past the strip: nothing to move (a jump straight here still brings the header in)
     drawStrip();
   });
 
@@ -176,22 +199,28 @@
     if (!C) return;
     const i = capPanels.indexOf(e.target.closest('.cap'));
     if (i < 0) return;
-    const y = C.top + (0.25 + i) * C.vh;
+    const y = C.top + (C.lead + i) * C.vh;
     if (Math.abs(sy - y) > 4) scrollToY(y, false);
   });
   function measureCaps() {
     if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
-    const vh = innerHeight, n = capPanels.length;
-    const len = vh * ((n - 1) + 0.5);                      // a quarter-screen rest before the first move and after the last
+    const vh = VH(), n = capPanels.length, lead = narrow ? 0.08 : 0.25;   // a rest before the first move and after the last (short on phones)
+    const len = vh * ((n - 1) + 2 * lead);
     caps.style.height = (len + vh) + 'px';
-    C = { vh, vw: innerWidth, n, len, top: caps.offsetTop };
+    C = { vh, vw: innerWidth, n, len, lead, top: caps.offsetTop };
     markDirty();
   }
-  regions.push({ bounds: () => C && [C.top, C.top + C.len], stops: () => (C ? [C.top].concat(capPanels.map((p, i) => C.top + (0.25 + i) * C.vh), [C.top + C.len]) : []) });
+  regions.push({
+    id: 'caps', label: 'What we build',
+    bounds: () => C && [C.top, C.top + C.len],
+    stops: () => (C ? capPanels.map((p, i) => C.top + (C.lead + i) * C.vh) : []),
+    names: () => capPanels.map(p => ($('h3', p) || {}).textContent || ''),
+    scale: () => (C ? C.vh / Math.max(1, C.vw * 0.92) : 0),
+  });
   tasks.add((dt, moved) => {
     if (!C || (!moved && !dirty)) return;
     if (sy < C.top - C.vh * 1.5 || sy > C.top + C.len + C.vh * 1.5) return;
-    const u = clamp((sy - C.top) / C.vh - 0.25, 0, C.n - 1), k = Math.floor(u);
+    const u = clamp((sy - C.top) / C.vh - C.lead, 0, C.n - 1), k = Math.floor(u);
     const sC = Math.min(C.n - 1, k + settle(u - k));
     const P1 = C.vw * 0.08, P2 = C.vw * 0.03;              // the next panels wait at the edge as strips
     capPanels.forEach((p, i) => {
@@ -608,9 +637,13 @@
 
   /* ------------------------------------------------------------------ systems demonstration: one fictional inquiry through five stages
      The five stages and the log are plain text in the page; this only lights them in turn. Nothing here talks to a real system.
-     One progress value drives it, whatever moves it: where the page is scrolled (when it is pinned on a large window), the
-     Previous / Next buttons, a swipe or arrow key, or Run (which plays through at a steady pace). */
-  const sysCtl = { manual: () => false, inside: () => false, pinned: () => false };
+     One progress value drives it: where the page is scrolled. Pinned on a large window, each stage is half a screen of scroll; where the
+     stages stand in a column (phones, tablets, narrow windows), a stage runs once it reaches a reading line 42% down the screen, so
+     scrolling (or swiping) down advances it and scrolling up goes back. Previous / Next, swipes and the arrow keys move to the next
+     stage's place on the page, and Run plays through at a steady pace. In a column the controls above the stages scroll away as it
+     moves on, so a pager with the same Previous / Next and Run / Pause / Replay rides the bottom of the screen. Only a short, wide
+     window with the stages in a row has no column to follow; there the controls set the stage directly. */
+  const sysCtl = { manual: () => false, inside: () => false, manualMode: () => false, transport: () => 'run', press: () => {}, halt: () => {} };
   const sys = $('#sys-demo');
   if (sys) {
     const stages = $$('.sys-stage', sys), rows = $$('.sys-log li, .sys-record > div[data-stage]', sys), N = stages.length;
@@ -621,13 +654,27 @@
     const STEP = 2200;                                                       // ms a stage stays lit when it runs by itself
     const GEO = { A: 0.25, SEG: 0.5, B: 0.25 };                              // pinned: a quiet lead, half a screen of scroll per stage, a quiet tail
     let k = reduce ? N : -1, playing = false, elapsed = 0, shownK = null, said = -2, Y = null;   // k: -1 not started, 0..4 the stage running, 5 done
+    let D = null;                                                            // where each state sits on the page: { pinned, stops: [state -1 .. N] }
+    const stopY = j => D.stops[clamp(j, -1, N) + 1];
+    const kAt = y => { let j = -1; for (let i = 0; i <= N; i++) if (y >= D.stops[i + 1] - 6) j = i; return j; };
+    const along = y => {                                                     // fractional state at a scroll position (extended beyond both ends)
+      const t = D.stops, gap = (t[t.length - 1] - t[0]) / (t.length - 1) || 1;
+      if (y <= t[0]) return -1 + (y - t[0]) / gap;
+      for (let i = 0; i < t.length - 1; i++) if (y < t[i + 1]) return i - 1 + (y - t[i]) / Math.max(1, t[i + 1] - t[i]);
+      return N + (y - t[t.length - 1]) / gap;
+    };
+    const at = p => {                                                        // scroll position of a fractional state
+      const t = D.stops, gap = (t[t.length - 1] - t[0]) / (t.length - 1) || 1;
+      if (p <= -1) return t[0] + (p + 1) * gap;
+      if (p >= N) return t[t.length - 1];
+      const i = Math.floor(p) + 1, f = p - Math.floor(p);
+      return t[i] + (t[i + 1] - t[i]) * f;
+    };
     const place = i => {                                                     // the marker sits on the center of the running stage (offsets, so entrance movement doesn't skew it)
       const li = stages[Math.max(0, Math.min(N - 1, i))], node = $('.sys-node', li);
       track.style.setProperty('--px', (li.offsetLeft + node.offsetLeft + node.offsetWidth / 2) + 'px');
       track.style.setProperty('--py', (li.offsetTop + node.offsetTop + node.offsetHeight / 2) + 'px');
     };
-    const stopY = j => (j < 0 ? Y.top : Y.top + Y.vh * (GEO.A + Math.min(j, N) * GEO.SEG) + 4);
-    const kAt = y => { const u = (y - Y.top) / Y.vh; return u < GEO.A ? -1 : Math.min(N, Math.floor((u - GEO.A) / GEO.SEG)); };
     const jumpY = y => (lenis ? lenis.scrollTo(y, { immediate: true, force: true }) : window.scrollTo(0, y));
     const ctlBtns = [runB, pauseB, prevB, nextB, replayB];
     const buttons = () => {
@@ -636,17 +683,10 @@
       runB.textContent = k >= 0 && k < N ? 'Resume' : 'Run demonstration';
       // a control that has just been used and switched itself off hands the keyboard to the one that takes over
       if (had && had.disabled) (playing ? pauseB : [runB, nextB, replayB, prevB].find(b => !b.disabled) || replayB).focus({ preventScroll: true });
-    };
-    const follow = () => {                                                   // unpinned (a phone, a small window): bring the running stage into view if it is below the fold
-      const el = k < 0 ? null : k >= N ? $('.sys-lower-in', sys) : stages[k];
-      if (!el) return;
-      const r = el.getBoundingClientRect(), vh = innerHeight, room = 24;
-      if (r.top >= 96 && r.bottom <= vh - room) return;
-      scrollToY(r.top + sy - vh * 0.38, false);
+      markDirty();                                                           // the pager's run / pause button follows
     };
     const render = () => {
       if (k === shownK) return;
-      const changed = shownK !== null;
       shownK = k;
       sys.dataset.mode = k < 0 ? 'idle' : 'active';
       stages.forEach((el, i) => {
@@ -659,42 +699,60 @@
       rows.forEach(li => { const sg = +li.dataset.stage; li.classList.toggle('is-pending', k < 0 || (k < N && sg - 1 > k)); li.classList.toggle('is-now', sg === now); });
       statusEl.textContent = STATUS[k < 0 ? 0 : now];
       place(k < 0 ? 0 : k);
-      if (!Y && changed) follow();
-      hint.hidden = k >= 0;
-      if (said !== k && said !== -2) live.textContent = k < 0 ? '' : k >= N ? 'Demonstration complete. The sample inquiry is recorded in the pipeline.' : `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`;
-      said = k;
+      // the first-view hint: gone once it runs; in a column it keeps its space, so the stages don't move under the reading line
+      if (D && !D.pinned) { hint.hidden = false; hint.style.visibility = k >= 0 ? 'hidden' : ''; }
+      else { hint.style.visibility = ''; hint.hidden = k >= 0; }
       buttons();
     };
-    const goto = j => {                                                      // jump to a stage (-1 .. N): by scroll when pinned, directly otherwise
-      j = Math.max(-1, Math.min(N, j));
-      if (Y) scrollToY(stopY(j), false); else { k = j; elapsed = j < 0 ? 0 : j * STEP + 1; render(); }
+    // the live line: said once the demonstration has rested on a state, not for every state a glide or a quick scroll passes through
+    let heldK = k, heldAt = 0;
+    const speak = now => {
+      if (k !== heldK) { heldK = k; heldAt = now; }
+      if (said === k || now - heldAt < 250 || (flight && flight.r === region)) return;
+      if (said !== -2) live.textContent = k < 0 ? 'Not started.' : k >= N ? 'Demonstration complete. The sample inquiry is recorded in the pipeline.' : `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`;
+      said = k;
     };
-    const play = on => { playing = on && k < N; buttons(); };
+    let playP = null;
+    const play = on => {
+      playing = on && k < N; playP = null;
+      if (playing && D && k < 0) nav.to(region, 1);                          // from the start, the first stage lights at once; the pace runs from there
+      buttons();
+    };
+    const region = {
+      id: 'demo', label: 'Capability demonstration', speaks: true,          // its own live region names each stage
+      entry: 1,                                                              // coming in from above, a step lands on the first stage (not the idle state, which looks the same)
+      paged: () => !!D && !D.pinned,                                         // its pager shows while the stages stand in a column (the controls above them scroll away)
+      count: i => [i <= 0 ? '–' : i > N ? '✓' : String(i).padStart(2, '0'), String(N).padStart(2, '0')],
+      bounds: () => D && [D.stops[0] - D.gap / 2, D.stops[N + 1] + D.gap / 2],    // half a stage of slack at either end, so resting just past one still counts
+      stops: () => (D ? D.stops.slice() : []),
+      names: () => ['Not started', ...stages.map(li => $('h4', li).textContent), 'Done'],
+      scale: () => 0,                                                        // the stages stand still under a finger; a swipe takes one step
+    };
+    const goto = j => {                                                      // to a state (-1 .. N): by scroll where the page holds it, directly otherwise
+      j = clamp(j, -1, N);
+      if (D) nav.to(region, j + 1); else { k = j; elapsed = j < 0 ? 0 : j * STEP + 1; render(); }
+    };
     runB.addEventListener('click', () => play(true));
     pauseB.addEventListener('click', () => play(false));
-    prevB.addEventListener('click', () => { play(false); goto(k - 1); });
-    nextB.addEventListener('click', () => { play(false); goto(k + 1); });
-    replayB.addEventListener('click', () => { play(false); if (Y) jumpY(stopY(-1)); else { k = -1; elapsed = 0; render(); } play(true); });
+    prevB.addEventListener('click', () => { play(false); if (D) nav.step(-1, { r: region, stay: true }); else goto(k - 1); });
+    nextB.addEventListener('click', () => { play(false); if (D) nav.step(1, { r: region, stay: true }); else goto(k + 1); });
+    replayB.addEventListener('click', () => {
+      play(false);
+      if (!D) { k = -1; elapsed = 0; render(); play(true); return; }
+      if (D.pinned) { jumpY(stopY(0)); k = 0; render(); play(true); return; }   // pinned: straight back to the first stage, running
+      playing = true; playP = null; nav.to(region, 1); buttons();           // in a column: running at once; the pace starts when the glide back arrives
+    });
     // a visitor's own input takes over from the pace the demonstration sets itself
-    ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, e => { if (playing && !(e.target.closest && e.target.closest('.sys-controls'))) play(false); }, { passive: true }));
-    // a swipe, a sideways trackpad gesture or a left/right key on the demonstration, when it is not pinned
+    ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, e => { if (playing && !(e.target.closest && e.target.closest('.sys-controls, .pager--demo'))) play(false); }, { passive: true }));
     sysCtl.inside = el => !!(el && el.closest && el.closest('#sys-demo'));
-    sysCtl.pinned = () => !!Y;
+    sysCtl.manualMode = () => !D && !reduce;
     sysCtl.manual = dir => { const j = k + dir; if (j < -1 || j > N) return false; play(false); goto(j); return true; };
-    let acc = 0, accT = 0, lockT = 0;
-    sys.addEventListener('wheel', e => {
-      if (Y || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;           // only a dominant sideways gesture, never an ordinary scroll
-      const now = performance.now();
-      if (now - accT > 220) acc = 0;
-      accT = now; acc += e.deltaX;
-      if (now < lockT || Math.abs(acc) < 90) return;
-      const moved = sysCtl.manual(acc > 0 ? 1 : -1);
-      acc = 0; lockT = now + 650;
-      if (moved) e.preventDefault();
-    }, { passive: false });
+    // the pager's one button: Run (or Resume), Pause while it runs, Replay once it has finished; the same as the buttons in the panel
+    sysCtl.transport = () => (playing ? 'pause' : k >= N ? 'replay' : 'run');
+    sysCtl.press = () => { const t = sysCtl.transport(); (t === 'pause' ? pauseB : t === 'replay' ? replayB : runB).click(); };
+    sysCtl.halt = () => { if (playing) play(false); };
     // pinned on a large window: the pinned stage lasts GEO.A + 5 * GEO.SEG + GEO.B screens of scroll. It is pinned only if the panel in its
-    // fullest state (the record and log open) fits the screen below the corner logo and menu; otherwise it stays in the page and
-    // is moved by its buttons, keys and swipes instead
+    // fullest state (the record and log open) fits the screen below the corner logo and menu; otherwise it stays in the page
     const reveal = $('.sys-reveal', sys), lowerIn = $('.sys-lower-in', sys), stick = sys.parentNode;
     const px = v => parseFloat(v) || 0;
     const fullHeight = () => {                                              // the panel with the record and log open (and without the first-view hint, which is gone by then)
@@ -703,29 +761,51 @@
       return sys.offsetHeight - reveal.offsetHeight - px(getComputedStyle(reveal).marginTop) - hintBlock + lowerIn.offsetHeight;
     };
     const unpin = () => { Y = null; pin.style.height = ''; pin.classList.remove('is-pinned'); sys.classList.remove('sys-pinned'); stick.style.removeProperty('--sys-pt'); shownK = null; };
-    measureDemo = () => {
-      const can = pin && !reduce && root.classList.contains('pin') && !narrow && innerHeight >= 600 && innerWidth >= 1100;
-      if (!can) { unpin(); return; }
-      pin.classList.add('is-pinned'); sys.classList.add('sys-pinned'); stick.style.removeProperty('--sys-pt');
-      const was = statusEl.textContent; statusEl.textContent = STATUS[N];                                // measure with the longest status line
-      const full = fullHeight(); statusEl.textContent = was;
-      const cs = getComputedStyle(stick), minTop = parseFloat(cs.paddingTop) || 84, bottom = Math.max(20, parseFloat(cs.paddingBottom) || 0);
-      if (full + minTop + bottom > innerHeight) { unpin(); return; }
-      stick.style.setProperty('--sys-pt', Math.round(Math.max(minTop, (innerHeight - full) / 2)) + 'px');   // the panel keeps one place while it opens
-      const vh = innerHeight, len = vh * (GEO.A + N * GEO.SEG + GEO.B);
-      pin.style.height = (len + vh) + 'px';
-      Y = { top: pin.getBoundingClientRect().top + window.scrollY, len, vh };
+    const nodeYs = () => stages.map(li => { const r = $('.sys-node', li).getBoundingClientRect(); return r.top + window.scrollY + r.height / 2; });
+    const measureColumn = () => {                                            // the stages in a column: their places on the page, from a reading line
+      D = null;
+      if (reduce) return;
+      const ys = nodeYs();
+      if (!(ys[N - 1] - ys[0] > 40 * (N - 1))) return;                       // the stages stand in a row: nothing to follow
+      const line = VH() * 0.42, s = ys.map(v => Math.round(v - line)), gap = Math.round((s[N - 1] - s[0]) / (N - 1));
+      D = { pinned: false, stops: [s[0] - gap, ...s, s[N - 1] + gap], first: ys[0], gap };
       shownK = null; markDirty();
     };
-    demoMoved = () => !!Y && Math.abs(pin.getBoundingClientRect().top + window.scrollY - Y.top) > 2;
-    regions.push({ bounds: () => Y && [Y.top, Y.top + Y.len], stops: () => (Y ? [-1, 0, 1, 2, 3, 4, 5].map(stopY).concat(Y.top + Y.len) : []) });
+    measureDemo = () => {
+      const can = pin && !reduce && root.classList.contains('pin') && !narrow && innerHeight >= 600 && innerWidth >= 1100;
+      if (can) {
+        pin.classList.add('is-pinned'); sys.classList.add('sys-pinned'); stick.style.removeProperty('--sys-pt');
+        const was = statusEl.textContent; statusEl.textContent = STATUS[N];                              // measure with the longest status line
+        const full = fullHeight(); statusEl.textContent = was;
+        const cs = getComputedStyle(stick), minTop = parseFloat(cs.paddingTop) || 84, bottom = Math.max(20, parseFloat(cs.paddingBottom) || 0);
+        if (full + minTop + bottom <= innerHeight) {
+          stick.style.setProperty('--sys-pt', Math.round(Math.max(minTop, (innerHeight - full) / 2)) + 'px');   // the panel keeps one place while it opens
+          const vh = innerHeight, len = vh * (GEO.A + N * GEO.SEG + GEO.B);
+          pin.style.height = (len + vh) + 'px';
+          Y = { top: pin.getBoundingClientRect().top + window.scrollY, len, vh };
+          D = { pinned: true, stops: [-1, 0, 1, 2, 3, 4, 5].map(j => (j < 0 ? Y.top : Y.top + vh * (GEO.A + j * GEO.SEG) + 4)), gap: vh * GEO.SEG };
+          shownK = null; markDirty();
+          return;
+        }
+      }
+      unpin(); measureColumn();
+    };
+    demoMoved = () => !!D && (D.pinned ? Math.abs(pin.getBoundingClientRect().top + window.scrollY - Y.top) > 2 : Math.abs(nodeYs()[0] - D.first) > 2);
+    regions.push(region);
     tasks.add(dt => {
-      if (Y) {
-        if (playing) { const y = Math.min(stopY(N), sy + dt * (Y.vh * GEO.SEG / STEP)); jumpY(y); if (y >= stopY(N)) play(false); }
-        const nk = kAt(sy); if (nk !== k) { k = nk; } render();
+      if (D) {
+        if (playing && !flight) {                                            // Run: the page moves through the states at a steady pace
+          if (playP == null) playP = along(sy);
+          playP = Math.min(N, playP + dt / STEP);
+          jumpY(at(playP));
+          if (playP >= N) play(false);
+        }
+        const nk = kAt(sy); if (nk !== k) k = nk;
+        render();
       } else if (playing) {
         elapsed += dt; k = Math.min(N, Math.floor(elapsed / STEP)); if (k >= N) play(false); render();
       }
+      speak(performance.now());
     });
     if ('ResizeObserver' in window) new ResizeObserver(() => place(k < 0 ? 0 : k)).observe(track);
     if (!reduce && 'IntersectionObserver' in window) {                     // the panel arrives once, as it comes into view
@@ -761,31 +841,94 @@
   }));
 
   /* ------------------------------------------------------------------ input: one progress, any gesture
-     The page's scroll position is the single progress value for the pinned experiences (the opening and the work, the capabilities,
-     the demonstration on a large window). Nothing has its own timeline. What moves it:
-       wheel and trackpad, either axis  Lenis in 'both' mode takes each event's dominant axis only (never deltaX and deltaY together),
-                                        so a diagonal swipe cannot count twice; sideways gestures move forward and back the same way as vertical ones
-       vertical touch                   native scrolling (nothing intercepted)
-       horizontal touch swipe           one stage per swipe, decided when the finger lifts, never from the screen's edge (back gestures stay free)
-       arrow keys, Page Up/Down, Space  one stage per press, with a short lock against key repeat
-     Input is intercepted only while there is a stage to move to; at the first and last stage the event is left alone and the page
-     scrolls on. Outside the pinned areas Lenis smoothing is off, so the rest of the page scrolls natively. */
-  const regionAt = y => regions.find(r => { const b = r.bounds(); return b && y >= b[0] - 3 && y <= b[1] + 3; }) || null;
-  let lockUntil = 0;
-  const stepBy = dir => {
-    const r = regionAt(sy); if (!r) return false;
-    const stops = r.stops(), now = performance.now();
-    let target = null;
-    if (dir > 0) target = stops.find(y => y > sy + 8);
-    else for (let i = stops.length - 1; i >= 0; i--) if (stops[i] < sy - 8) { target = stops[i]; break; }
-    if (target == null) return false;                       // at the edge of the experience: let the page go on
-    if (now < lockUntil) return true;                       // a step is already under way
-    lockUntil = now + 320;
-    scrollToY(target, false);
-    return true;
+     The page's scroll position is the single progress value for every pinned experience (the opening and the work, the capabilities,
+     the demonstration). Nothing has its own timeline. Each experience is a region with a list of stops, one per stage that looks
+     different on screen; every input moves between those stops or scrolls the page:
+       vertical touch, wheel, trackpad   the browser's own scrolling, never prevented (Lenis smooths wheels near the pinned areas; 'both'
+                                         mode reads one axis per event, so a diagonal gesture never counts twice). After a touch scroll
+                                         comes to rest between two stages of a pinned area, the page glides to the nearer stage in the
+                                         direction it moved. (A hard flick's momentum is the browser's, and can carry past a stage.)
+       horizontal touch or pen drag      only on a pinned stage (touch-action: pan-y), decided after 10 px of movement and then locked to
+                                         that axis. The stage follows the finger (at most one stage either way) and settles on release:
+                                         one gesture, one stage. A tap never stops a step that is moving. Gestures that start within
+                                         24 px of the screen's edges are left to the system (back and forward); pinch-zoomed in, sideways
+                                         movement pans the zoomed view instead.
+       arrow keys, Page Up/Down, Space   one stage per press; holding a key doesn't race through stages.
+       Previous / Next (touch screens)   the same steps.
+     Steps chain: a step taken while another is still moving goes one past that one's target, so quick gestures are never lost.
+     At either end of a region a further step lets go: the page moves on by most of a screen, and the opposite step comes back in.
+     Input is only taken over while a region can respond; everywhere else the page scrolls natively. */
+  const REL = () => VH() * 0.85;
+  const maxY = () => Math.max(0, root.scrollHeight - innerHeight);
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  const jump = y => (lenis ? lenis.scrollTo(y, { immediate: true, force: true }) : window.scrollTo(0, y));
+  const glide = (y, ms, done) => {
+    if (lenis) lenis.scrollTo(y, { duration: ms / 1000, easing: easeOutCubic, force: true, onComplete: () => { if (done) done(); } });
+    else { window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); if (done) setTimeout(done, reduce ? 0 : ms); }
   };
+  const glideMs = y => clamp(360 + Math.abs(y - sy) / VH() * 260, 420, 900);
+  const within = (r, y, pad = 3) => { const b = r.bounds(); return !!b && y >= b[0] - pad && y <= b[1] + pad; };
+  const pos = (stops, y) => {                              // fractional stop index of a scroll position (below 0 before the first, above n-1 after the last)
+    const n = stops.length; if (!n) return 0;
+    const gap = n > 1 ? (stops[n - 1] - stops[0]) / (n - 1) : VH();
+    if (y <= stops[0]) return (y - stops[0]) / gap;
+    for (let i = 0; i < n - 1; i++) if (y < stops[i + 1]) return i + (y - stops[i]) / Math.max(1, stops[i + 1] - stops[i]);
+    return n - 1 + (y - stops[n - 1]) / gap;
+  };
+  let flight = null;                                       // a step on its way: { r, i (stop index, or null when letting go), y }
+  let released = null;                                     // where the last step past an end landed: { r, dir, y }
+  const seqStatus = $('#seq-status');
+  const announce = (r, i) => {                             // one short line for screen readers, only after a deliberate step
+    if (!seqStatus || i == null || r.speaks) return;
+    const names = r.names ? r.names() : [];
+    seqStatus.textContent = `${r.label}, ${i + 1} of ${r.stops().length}${names[i] ? ': ' + names[i] : ''}`;
+  };
+  const nav = {
+    regionFor(y, dir) {
+      if (released && dir === -released.dir && Math.abs(y - released.y) < 12) return released.r;
+      return regions.find(r => within(r, y)) || null;
+    },
+    to(r, i, done, talk) {                                 // glide to one stop of a region
+      const stops = r.stops(); if (!stops.length) return false;
+      i = clamp(i, 0, stops.length - 1);
+      const y = clamp(stops[i], 0, maxY());
+      flight = { r, i, y }; released = null;
+      glide(y, glideMs(y), () => { if (flight && flight.y === y) flight = null; if (talk) announce(r, i); if (done) done(); });
+      return true;
+    },
+    // one step forward (+1) or back (-1). opts: r (a region to use), from (a fractional stop to count from), talk, stay (never let go)
+    step(dir, opts = {}) {
+      const r = opts.r || (flight && flight.r) || nav.regionFor(sy, dir);
+      if (!r) return false;
+      const stops = r.stops(), n = stops.length; if (!n) return false;
+      let p;
+      if (flight && flight.r === r && flight.i != null) p = flight.i;
+      else if (released && released.r === r && Math.abs(sy - released.y) < 12) p = released.dir > 0 ? n - 0.5 : -0.5;
+      else p = opts.from != null ? opts.from : pos(stops, sy);
+      const near = Math.round(p), onStop = Math.abs(p - near) < 0.03;   // (resting a fraction of a pixel off a stage counts as on it)
+      let i;
+      if (onStop) i = near + dir;
+      else if (p < 0) i = dir > 0 ? (r.entry || 0) : -1;   // coming in from before the first stage
+      else if (p > n - 1) i = dir < 0 ? n - 1 : n;         // coming back from after the last
+      else i = dir > 0 ? Math.ceil(p) : Math.floor(p);
+      if (i >= 0 && i < n) return nav.to(r, i, null, opts.talk);
+      if (opts.stay) return false;
+      // past the first or last stage: let go, and the page moves on
+      const b = r.bounds(), y = clamp(dir > 0 ? b[1] + REL() : b[0] - REL(), 0, maxY());
+      if (Math.abs(y - sy) < 8) return false;
+      flight = { r, i: null, y }; released = { r, dir, y };
+      glide(y, glideMs(y), () => { if (flight && flight.y === y) flight = null; });
+      return true;
+    },
+  };
+  // a wheel, or a click somewhere other than a step control, ends any step on its way (the page is the visitor's again)
+  addEventListener('wheel', () => { flight = null; }, { passive: true });
+  // so does anything else that stops its glide (the browser's own touch scrolling, an immediate jump), once no gesture is deciding
+  if (lenis) tasks.add(() => { if (flight && !g && lenis.isScrolling !== 'smooth') flight = null; });
+  addEventListener('pointerdown', e => { if (e.pointerType === 'mouse' && !(e.target.closest && e.target.closest('.pager, .sys-controls'))) flight = null; }, { passive: true });
   const zone = y => regions.some(r => { const b = r.bounds(); return b && y > b[0] - innerHeight * 0.6 && y < b[1] + innerHeight * 0.6; });
   if (lenis) tasks.add(() => { lenis.options.smoothWheel = zone(sy); });
+
   // keys
   const KEYS = { ArrowDown: 1, ArrowRight: 1, PageDown: 1, ArrowUp: -1, ArrowLeft: -1, PageUp: -1 };
   const usesKey = (el, key) => {
@@ -798,36 +941,158 @@
     let dir = KEYS[e.key];
     if (e.key === ' ') dir = e.shiftKey ? -1 : 1; else if (e.shiftKey) return;
     if (!dir || usesKey(e.target, e.key)) return;
-    if (stepBy(dir)) { e.preventDefault(); return; }
-    // the demonstration when it is not pinned: left and right move through its stages while focus is inside it
-    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !sysCtl.pinned() && sysCtl.inside(e.target) && sysCtl.manual(dir)) e.preventDefault();
+    if (e.repeat) { if (flight || nav.regionFor(sy, dir)) e.preventDefault(); return; }   // a held key takes one step, not a run of them
+    if (nav.step(dir, { talk: true })) { e.preventDefault(); return; }
+    // the demonstration in a short wide window (stages in a row): left and right move it while focus is inside it
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && sysCtl.manualMode() && sysCtl.inside(e.target) && sysCtl.manual(dir)) e.preventDefault();
   });
-  // horizontal swipes (passive: they only decide, when the finger lifts, whether to take one step)
-  const EDGE = 24;
-  let ts = null;
-  addEventListener('touchstart', e => {
-    const t = e.touches[0];
-    ts = (e.touches.length === 1 && t.clientX > EDGE && t.clientX < innerWidth - EDGE) ? { x: t.clientX, y: t.clientY, t: performance.now(), h: false, v: false, dx: 0, demo: sysCtl.inside(e.target) } : null;
+
+  // touch and pen: the gesture's intent decides what happens (vertical: the browser scrolls; horizontal: one stage)
+  const EDGE = 24, SLOP = 10;
+  let g = null, followY = null, noClickUntil = 0, zoomed = false;
+  // pinch-zoomed in: sideways movement pans the zoomed view, so the stages hand it back to the browser (touch-action: auto) until zoomed out
+  const vv = window.visualViewport;
+  if (vv) vv.addEventListener('resize', () => {
+    const z = vv.scale > 1.02;
+    if (z !== zoomed) { zoomed = z; root.classList.toggle('zoomed', z); if (z && g) cancelDrag(); }
+  });
+  tasks.add(() => { if (followY != null) { jump(followY); followY = null; } });   // the follow is written once per frame
+  const letGo = () => { if (g && g.cap && g.el) { try { if (g.el.hasPointerCapture(g.id)) g.el.releasePointerCapture(g.id); } catch (err) { /* already released */ } } g = null; };
+  addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+    if (!e.isPrimary) { if (g) cancelDrag(); touchOwned = false; return; }   // a second finger (a pinch) ends any drag
+    touchOwned = false;
+    if (menu.classList.contains('is-open')) return;
+    if (e.clientX < EDGE || e.clientX > innerWidth - EDGE) return;                    // the system's back and forward gestures
+    if (!e.target.closest || e.target.closest('iframe, input, textarea, select, [contenteditable="true"]')) return;
+    // only on the stages that leave sideways movement to the page (touch-action: pan-y); elsewhere the browser would take it anyway.
+    // Zoomed in, sideways is the browser's too: it pans the zoomed view (see the zoom watch below)
+    if (zoomed || !e.target.closest('.pin .stage, .pin .caps-stage, .sys-demo')) return;
+    // a region the page is in, the one a step is still travelling through, or the one just let go of
+    const r = nav.regionFor(sy, 0) || (flight && flight.r) || (released && Math.abs(sy - released.y) < 12 ? released.r : null);
+    const manual = !r && sysCtl.manualMode() && sysCtl.inside(e.target);
+    if (!r && !manual) return;
+    // a step still on its way keeps going: a tap doesn't stop it, a vertical drag hands the page to the browser, a sideways one takes over
+    g = { id: e.pointerId, el: e.target instanceof Element ? e.target : null, x0: e.clientX, y0: e.clientY, r, manual, axis: null, cap: false, dx: 0, samples: [[e.clientX, e.timeStamp]], from: 0, sy0: sy, dx0: 0 };
+    touchOwned = e.pointerType === 'touch';            // until the gesture shows itself vertical, its touches don't stop a moving step
   }, { passive: true });
-  addEventListener('touchmove', e => {
-    if (!ts || e.touches.length !== 1) { ts = null; return; }
-    const t = e.touches[0], dx = t.clientX - ts.x, dy = t.clientY - ts.y;
-    if (!ts.h && !ts.v && Math.max(Math.abs(dx), Math.abs(dy)) > 10) { if (Math.abs(dx) > Math.abs(dy) * 1.25) ts.h = true; else ts.v = true; }
-    if (ts.h) ts.dx = dx;
+  addEventListener('pointermove', e => {
+    if (!g || e.pointerId !== g.id) return;
+    const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+    if (!g.axis) {
+      if (Math.hypot(dx, dy) < SLOP) return;
+      g.axis = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'x' : 'y';
+      if (g.axis === 'y') { g = null; touchOwned = false; return; }   // vertical: the browser scrolls the page (touch-action: pan-y)
+      if (g.r) {                                       // counted from the stage a moving step was heading to, followed from where the page is
+        g.from = flight && flight.r === g.r && flight.i != null ? flight.i : pos(g.r.stops(), sy);
+        if (flight) { g.took = flight; jump(sy); flight = null; }
+        g.sy0 = sy; g.dx0 = dx;
+      }
+      try { if (g.el) { g.el.setPointerCapture(g.id); g.cap = true; } } catch (err) { /* capture is optional: the window still hears every move */ }
+      g.scale = g.r && g.r.scale ? g.r.scale(Math.round(g.from), dx < 0 ? 1 : -1) : 0;
+    }
+    g.dx = dx;
+    g.samples.push([e.clientX, e.timeStamp]); if (g.samples.length > 6) g.samples.shift();
+    if (g.r && g.scale) {                              // the stage follows the finger, one stage either way at most
+      const stops = g.r.stops(), i0 = clamp(Math.round(g.from), 0, stops.length - 1);
+      const lo = Math.min(g.sy0, stops[Math.max(0, i0 - 1)]), hi = Math.max(g.sy0, stops[Math.min(stops.length - 1, i0 + 1)]);
+      let y = g.sy0 - (dx - g.dx0) * g.scale;
+      if (y < lo) y = lo - (lo - y) * 0.25;
+      if (y > hi) y = hi + (y - hi) * 0.25;            // beyond the reachable stages it only gives a little
+      followY = clamp(y, 0, maxY());
+    }
   }, { passive: true });
-  addEventListener('touchend', () => {
-    const s = ts; ts = null;
-    if (!s || !s.h) return;
-    const v = Math.abs(s.dx) / Math.max(1, performance.now() - s.t);
-    if (Math.abs(s.dx) < 56 && !(Math.abs(s.dx) >= 28 && v > 0.45)) return;
-    const dir = s.dx < 0 ? 1 : -1;                          // leftward swipe advances, rightward goes back
-    if (!stepBy(dir) && s.demo && !sysCtl.pinned()) sysCtl.manual(dir);
-  }, { passive: true });
-  addEventListener('touchcancel', () => { ts = null; }, { passive: true });
-  // the opening hint: visible at once, fades when the visitor starts to explore, back on every load
-  const hushCue = () => root.classList.add('cue-off');
-  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, hushCue, { once: true, passive: true }));
-  tasks.add(() => { if (sy > 24) hushCue(); });
+  function cancelDrag() {                              // no step: a step the finger took over goes on; otherwise back to where the finger took the page
+    const s = g; letGo();
+    if (!s || s.axis !== 'x') return;
+    followY = null;
+    if (s.took) {
+      const f = flight = s.took;
+      glide(f.y, glideMs(f.y), () => { if (flight === f) flight = null; });
+    } else if (Math.abs(sy - s.sy0) > 1) glide(s.sy0, 320);
+  }
+  const endDrag = e => {
+    if (!g || (e && e.pointerId !== g.id)) return;
+    if (e && e.type === 'pointercancel') { touchOwned = false; cancelDrag(); return; }   // the browser has taken the touch
+    const s = g; letGo();
+    if (s.axis !== 'x') return;
+    const a = s.samples[0], b = s.samples[s.samples.length - 1];
+    const v = (b[0] - a[0]) / Math.max(1, b[1] - a[1]);                             // px per ms over the last few moves
+    const far = Math.abs(s.dx) >= Math.max(40, innerWidth * 0.1), quick = Math.abs(s.dx) >= 18 && Math.abs(v) >= 0.3;
+    const reversed = Math.abs(v) >= 0.3 && Math.sign(v) !== Math.sign(s.dx);         // flicked back the other way: the visitor changed their mind
+    const dir = (far || quick) && !reversed ? (s.dx < 0 ? 1 : -1) : 0;               // leftward advances, rightward goes back
+    followY = null;
+    if (dir) {
+      noClickUntil = performance.now() + 400;                                        // a swipe that ends on a link doesn't also follow it
+      if (s.manual) sysCtl.manual(dir);
+      else if (!nav.step(dir, { r: s.r, from: s.from, talk: true })) { g = s; cancelDrag(); }   // nowhere to go (the top of the page): back into place
+    } else { g = s; cancelDrag(); }
+  };
+  addEventListener('pointerup', endDrag, { passive: true });
+  addEventListener('pointercancel', endDrag, { passive: true });
+  addEventListener('lostpointercapture', e => { if (g && e.pointerId === g.id) g.cap = false; }, { passive: true });   // only bookkeeping: the gesture ends on pointerup or pointercancel
+  addEventListener('click', e => { if (performance.now() < noClickUntil) { e.preventDefault(); e.stopPropagation(); } }, true);
+
+  // after a touch scroll comes to rest between two stages of a pinned area, glide to the nearer one in the direction it was moving
+  let fingerDown = false, liftedAt = 0, stillSince = 0, lastDir = 0, prevY = sy;
+  addEventListener('touchstart', () => { fingerDown = true; liftedAt = 0; }, { passive: true });
+  addEventListener('touchend', e => { if (!e.touches.length) { fingerDown = false; liftedAt = performance.now(); } }, { passive: true });
+  addEventListener('touchcancel', () => { fingerDown = false; liftedAt = performance.now(); }, { passive: true });
+  tasks.add((dt, moved) => {
+    const now = performance.now();
+    if (moved) { stillSince = now; if (sy !== prevY) lastDir = Math.sign(sy - prevY); }
+    prevY = sy;
+    if (!liftedAt || fingerDown || g || flight || now - stillSince < 160) return;
+    if (now - liftedAt > 6000) { liftedAt = 0; return; }
+    liftedAt = 0;
+    const r = regions.find(x => x.id !== 'demo' && within(x, sy, 0));               // only the pinned stages; the demonstration reads like a page
+    if (!r) return;
+    const stops = r.stops(), n = stops.length, p = pos(stops, sy), near = Math.round(p);
+    if (p < -0.02 || p > n - 0.98) return;                                           // beyond either end, the page stays free
+    if (Math.abs(p - near) < 0.02) { if (Math.abs(sy - stops[near]) > 1) nav.to(r, near); return; }   // a few pixels off a stage: onto it
+    const i = Math.floor(p), f = p - i;
+    nav.to(r, lastDir >= 0 ? (f > 0.2 ? i + 1 : i) : (f < 0.8 ? i : i + 1));
+  });
+
+  // the opening hint: visible at once, back on every load, and gone once the visitor has actually moved the opening
+  tasks.add(() => { if (!root.classList.contains('cue-off') && sy > (S ? S.top + S.vh * 0.18 : VH() * 0.18)) root.classList.add('cue-off'); });
+
+  // previous / next where the screen is touched (phones and tablets): the counter shows the current stage
+  const coarse = matchMedia('(pointer: coarse)');
+  const pad2 = x => String(x).padStart(2, '0');
+  const pagers = $$('.pager').map(el => ({ el, seq: el.dataset.seq, r: regions.find(x => x.id === el.dataset.seq), prev: $('[data-dir="-1"]', el), next: $('[data-dir="1"]', el), play: $('.pager-play', el), num: $('.pager-num', el), total: $('.pager-total', el), shown: null, at: -1, n: 0, ps: '' }));
+  const PLAY = { run: ['Run demonstration', '#i-play'], pause: ['Pause demonstration', '#i-pause'], replay: ['Replay demonstration', '#i-replay'] };
+  const syncPagers = () => pagers.forEach(P => {
+    // the strip's and the capabilities' show on pinned stages where the screen is touched (or the layout is narrow);
+    // a region can decide for itself (the demonstration: while its stages stand in a column)
+    const on = !!(P.r && !reduce && P.r.bounds() && (P.r.paged ? P.r.paged() : pin && (narrow || coarse.matches)));
+    if (on !== P.shown) { P.el.hidden = !on; P.shown = on; root.classList.toggle('has-pager-' + P.seq, on); }
+    if (!on) return;
+    if (P.play) {
+      const t = sysCtl.transport();
+      if (t !== P.ps) { P.ps = t; P.play.setAttribute('aria-label', PLAY[t][0]); $('use', P.play).setAttribute('href', PLAY[t][1]); }
+    }
+    const stops = P.r.stops(), n = stops.length, y = flight && flight.r === P.r && flight.i != null ? flight.y : sy;
+    const i = clamp(Math.round(pos(stops, y)), 0, n - 1);
+    if (i === P.at && n === P.n) return;
+    P.at = i; P.n = n;
+    const [num, total] = P.r.count ? P.r.count(i, n) : [pad2(i + 1), pad2(n)];
+    P.num.textContent = num; P.total.textContent = total;
+    const names = P.r.names ? P.r.names() : [];
+    P.prev.setAttribute('aria-label', i > 0 ? `Previous: ${names[i - 1] || 'stage ' + i}` : 'Previous: back up the page');
+    P.next.setAttribute('aria-label', i < n - 1 ? `Next: ${names[i + 1] || 'stage ' + (i + 2)}` : 'Next: continue down the page');
+    P.prev.disabled = i === 0 && P.r.bounds()[0] < 8;   // nothing above the top of the page
+  });
+  pagers.forEach(P => {
+    [P.prev, P.next].forEach(b => b.addEventListener('click', () => {
+      if (P.seq === 'demo') sysCtl.halt();                                           // a step by hand takes over from Run
+      nav.step(+b.dataset.dir, { r: P.r, talk: true });
+    }));
+    if (P.play) P.play.addEventListener('click', () => sysCtl.press());
+  });
+  tasks.add((dt, moved) => { if (moved || dirty || flight) syncPagers(); });
+  coarse.addEventListener && coarse.addEventListener('change', syncPagers);
+
   // phones: the owl steps aside while reading downward and returns on the way back up
   const phone = matchMedia('(max-width: 759px)');
   let lastY = sy;
@@ -843,7 +1108,8 @@
   function setMode() {
     const m = modeNow();
     if (m.pin !== pin || m.narrow !== narrow) { pin = m.pin; narrow = m.narrow; root.classList.toggle('pin', pin); root.classList.toggle('narrow', narrow); }
-    measureStrip(); measureCaps(); measureDemo(); liveFit();
+    root.style.setProperty('--menu-w', menuBtn.offsetWidth + 'px');   // the wide pager sits beside the menu button
+    measureStrip(); measureCaps(); measureDemo(); liveFit(); syncPagers();
     if (lenis) lenis.resize();
   }
   let rt = 0, lastW = innerWidth, lastH = innerHeight;

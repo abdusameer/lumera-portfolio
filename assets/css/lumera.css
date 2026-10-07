@@ -24,7 +24,7 @@
   --c-terra: #DE966B;
   --c-lilac: #C4BCD2;
 
-  --m: 3.2rem;
+  --m: max(3.2rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));   /* clear of a notch on a phone held sideways */
   --text: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --ease: cubic-bezier(.165, .84, .44, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
@@ -35,7 +35,7 @@
    Reading sizes never go below their px floor (max()), so zoom still enlarges text. */
 html { font-size: clamp(7.2px, .6944vw, 12.5px); }
 @media (max-width: 1023px) { html { font-size: clamp(8.4px, 1.3021vw, 11px); } }
-@media (max-width: 759px) { html { font-size: clamp(8.4px, 2.5641vw, 11px); } :root { --m: 1.6rem; } }
+@media (max-width: 759px) { html { font-size: clamp(8.4px, 2.5641vw, 11px); } :root { --m: max(1.6rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); } }
 
 /* ---------- base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -217,7 +217,7 @@ ul, ol { list-style: none; padding: 0; }
 @keyframes cue-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 2px); } }
 .cue-off .cue { opacity: 0; transform: translateY(.6rem); pointer-events: none; }
 .hero-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 2rem; margin-top: 3.6rem; padding-top: 1.2rem; border-top: 1px solid var(--ink); }
-.hero-foot a { padding: .6rem 0; margin: -.6rem 0; }
+.hero-foot a { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; margin: -14px 0; }   /* a 44 px target in the same place */
 @media (hover: hover) { .hero-foot a:hover { opacity: .6; } }
 
 .panel--proj { display: flex; flex-direction: column; background: var(--pc); }
@@ -257,6 +257,7 @@ ul, ol { list-style: none; padding: 0; }
 /* ---------- the strip on wide screens: one pinned stage; the script sets every panel's width and position ---------- */
 .pin .strip { position: relative; }
 .pin .stage, .pin .caps-stage, .sys-demo { touch-action: pan-y pinch-zoom; }
+.pin.zoomed .stage, .pin.zoomed .caps-stage, .zoomed .sys-demo, .pin.narrow.zoomed .list-in { touch-action: auto; }   /* zoomed in: sideways pans the view */
 .pin .stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
 .pin .panel { position: absolute; top: 0; left: 0; height: 100%; will-change: transform, width; }
 .pin .panel--hero { width: 50vw; min-height: 0; padding: 2.4rem 3.2rem 2.4rem; }
@@ -298,6 +299,7 @@ ul, ol { list-style: none; padding: 0; }
 .pin.narrow .panel:nth-child(5) { width: 0; transform: translate3d(100vw, 0, 0); }
 .pin.narrow .hero-nav { display: none; }
 .pin.narrow .hero-mark { height: 34svh; min-height: 0; }
+.pin.narrow .hero-h { min-height: 0; }   /* on a short phone the wordmark gives up height, so the opening's last line clears the pager */
 .pin.narrow .hero-foot { flex-direction: column; margin-top: 2.4rem; }
 .pin.narrow .p-media { height: 50svh; }
 .pin.narrow .p-info { top: 50svh; height: auto; width: 84vw; padding: 1.6rem 1.6rem calc(1.6rem + 100lvh - 100svh); }
@@ -308,6 +310,39 @@ ul, ol { list-style: none; padding: 0; }
 .pin.narrow .list-rows a { padding: .6rem 0; }
 .pin.narrow .list-text { grid-column: 1; font-size: max(1.9rem, 17px); }
 .pin.narrow .stream, .pin.narrow .stream-pill { display: none; }
+/* phones: the project list keeps every row and its closing words. Each row reads name over kind; if a short screen still can't hold
+   it all, the panel scrolls on its own before the page moves on (nothing is cut off) */
+.pin.narrow .list-in { padding-top: 8.4rem; gap: 1.6rem; overflow-y: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; }   /* a scroller re-enables every pan inside it: sideways stays the stage's */
+.pin.narrow .list-h { font-size: max(4.4rem, 34px); }
+.pin.narrow .list-rows a { grid-template-columns: 3.2rem minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 1.2rem; row-gap: .3rem; padding: .7rem 0; }
+.pin.narrow .lr-kind { grid-column: 2; grid-row: 2; justify-content: flex-start; text-align: left; }
+.pin.narrow .list-text { font-size: 16px; line-height: 1.45; letter-spacing: 0; }
+
+/* previous / next on touch screens: a small pill with two round buttons and the current stage, inside the pinned stage */
+.pager { display: none; }
+.pager:not([hidden]) { z-index: 30; display: flex; align-items: center; gap: .2rem; padding: 4px; border-radius: 99px; background: rgba(238, 234, 227, .94); color: var(--ink); box-shadow: 0 0 0 1px rgba(14, 13, 11, .14), 0 10px 26px -16px rgba(14, 13, 11, .5); }
+.pin .stage .pager, .pin .caps-stage .pager { position: absolute; }
+.pin.narrow .stage .pager, .pin.narrow .caps-stage .pager { left: 50%; transform: translateX(-50%); bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px) + 100lvh - 100svh); }
+/* wide layouts on touch screens: beside the menu button, where no panel puts its words (the script measures the button into --menu-w) */
+.pin:not(.narrow) .stage .pager, .pin:not(.narrow) .caps-stage .pager { top: calc(2rem + (max(5.2rem, 44px) - 52px) / 2); right: calc(var(--m) + var(--menu-w, 10rem) + 1.2rem); }
+@media (pointer: coarse) { .pin .hero-nav a { min-height: 44px; margin-block: -8px; } }   /* full-size touch targets in the same place */
+/* the demonstration's: rides along the bottom of the screen while the stages stand in a column, and rests at the panel's foot */
+.pager--demo { position: sticky; bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px)); width: max-content; margin: calc(-52px - 1.6rem) auto 1.6rem; }
+.has-pager-demo .sys-demo { padding-bottom: calc(52px + 4rem); }
+.pager-btn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: inherit; transition: background-color .3s var(--ease), opacity .3s; }
+.pager-btn .i { width: 16px; height: 16px; }
+.pager-btn:active { background: rgba(14, 13, 11, .1); }
+@media (hover: hover) { .pager-btn:hover { background: rgba(14, 13, 11, .08); } }
+.pager-btn:disabled { opacity: .3; }
+.pager-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pager-now { display: flex; align-items: baseline; gap: .5rem; min-width: 6.2em; justify-content: center; padding: 0 .4rem; font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.pager-now b { font-weight: 600; }
+.pager-sep { opacity: .5; }
+/* phones: the panels keep their words above the controls */
+.pin.narrow.has-pager-strip .panel--hero { padding-bottom: calc(2.4rem + 6.6rem + 100lvh - 100svh); }
+.pin.narrow.has-pager-strip .p-info { padding-bottom: calc(1.6rem + 6.6rem + 100lvh - 100svh); }
+.pin.narrow.has-pager-strip .list-in { padding-bottom: calc(2.4rem + 6.6rem + 100lvh - 100svh); }
+.pin.narrow.has-pager-caps .cap-nav { display: none; }
 
 /* ---------- the studies ---------- */
 .study { position: relative; padding: 14rem var(--m) 12rem; background: var(--sc, var(--paper)); color: var(--ink); --fg-2: rgba(14, 13, 11, .72); --rule: var(--line); }
@@ -643,6 +678,14 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .menu-nav { padding-left: 0; }
   .menu-info { grid-column: 1; padding-top: 3rem; }
   .menu-mark { grid-column: 1; height: 22vh; }
+}
+/* running text never under 16 px on phones, tablets and other touch screens, captions and fine print never under 14 px;
+   each keeps its own scale above that (a desktop with a mouse keeps its type as designed) */
+@media (max-width: 1023px), (pointer: coarse) {
+  .case-context p, .sys-note, .sys-stage p, .ap-rows p { font-size: max(1.5rem, 16px); }
+  .build-body p, .hero-sub, .contact-mail { font-size: max(1.6rem, 16px); }
+  .sys-log li { font-size: max(1.7rem, 16px); }
+  figcaption, .foot-note { font-size: max(1.3rem, 14px); }
 }
 @media (max-width: 759px) {
   .panel--hero { padding-top: 11rem; }

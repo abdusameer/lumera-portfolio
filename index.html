@@ -51,6 +51,11 @@
     <path id="g-A" d="M0 688 145 0H354L499 688H340L317 561H177L156 688ZM197 434H297L267 249Q266 242 264 229Q262 216 260 199Q257 182 256 167Q254 152 251 137H243Q242 153 239 174Q236 195 234 216Q231 236 228 249Z"/>
   </defs>
   <symbol id="i-ne" viewBox="0 0 16 16"><path d="M3.5 12.5 12.5 3.5M5 3.5h7.5V11" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-left" viewBox="0 0 16 16"><path d="M14 8H2.5M7 3 2 8l5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-right" viewBox="0 0 16 16"><path d="M2 8h11.5M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 16 16"><path d="M4.5 2.5v11L13 8z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 16 16"><path d="M5 2.5v11M11 2.5v11" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.6M4.2 1.5v3.2h3.2" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
   <symbol id="i-down" viewBox="0 0 16 16"><path d="M8 1.5v12.5M3 9l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
   <symbol id="i-laptop" viewBox="0 0 16 16"><path d="M3 3.5h10v7.5H3zM1 13.5h14" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
   <symbol id="i-phone" viewBox="0 0 16 16"><path d="M4.5 1.5h7v13h-7zM7 12.5h2" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
@@ -184,6 +189,12 @@
         </div>
       </div>
 
+      <!-- previous / next for touch screens and phones (hidden elsewhere and without the script); the same steps as a swipe or an arrow key -->
+      <div class="pager" data-seq="strip" role="group" aria-label="Opening and selected work" hidden>
+        <button class="pager-btn" type="button" data-dir="-1" aria-label="Previous"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <p class="pager-now small" aria-hidden="true"><b class="pager-num">01</b><span class="pager-sep">/</span><span class="pager-total">05</span></p>
+        <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
     </div>
   </section>
 
@@ -471,6 +482,12 @@
         <span><b>01</b>Interactive web</span><span><b>02</b>Systems and automation</span><span><b>03</b>Custom systems</span>
         <i class="cap-bar"><i></i></i>
       </div>
+      <!-- previous / next for touch screens and phones (hidden elsewhere and without the script); the same steps as a swipe or an arrow key -->
+      <div class="pager" data-seq="caps" role="group" aria-label="What we build" hidden>
+        <button class="pager-btn" type="button" data-dir="-1" aria-label="Previous"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <p class="pager-now small" aria-hidden="true"><b class="pager-num">01</b><span class="pager-sep">/</span><span class="pager-total">03</span></p>
+        <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
     </div>
   </section>
 
@@ -543,6 +560,14 @@
       </div>
       <p class="visually-hidden" id="sys-live" role="status" aria-live="polite"></p>
       <p class="visually-hidden" id="live-status" role="status" aria-live="polite"></p>
+      <p class="visually-hidden" id="seq-status" role="status" aria-live="polite"></p>
+    </div>
+    <!-- where the stages stand in a column, the controls above them scroll away as the demonstration moves on: these stay at the bottom of the screen -->
+    <div class="pager pager--demo" data-seq="demo" role="group" aria-label="Demonstration controls" hidden>
+      <button class="pager-btn pager-play" type="button" aria-label="Run demonstration"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>
+      <button class="pager-btn" type="button" data-dir="-1" aria-label="Previous"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
+      <p class="pager-now small" aria-hidden="true"><b class="pager-num">–</b><span class="pager-sep">/</span><span class="pager-total">05</span></p>
+      <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
     </div>
   </div></div>
   </section>
