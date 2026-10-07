@@ -247,7 +247,7 @@
       let t = null;
       if (el.tagName === 'IMG' && el.complete && el.naturalWidth) t = mediaTone(el, el.naturalWidth, el.naturalHeight, imgGrid(el), r);
       else if (el.tagName === 'VIDEO' && el.readyState >= 2 && el.videoWidth && getComputedStyle(el).visibility !== 'hidden') t = mediaTone(el, el.videoWidth, el.videoHeight, vidGrid(el), r);
-      else if (el.tagName === 'IFRAME') return /lennys/.test(el.src) ? 0.02 : 0.8;   // a live study: Lenny's is a night site
+      else if (el.tagName === 'IFRAME') return 0.8;   // a live study inside a screen: treated as light
       else {
         const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
         if (m && (m.length < 4 || +m[3] > 0.5)) return lumOf(+m[0], +m[1], +m[2]);
@@ -571,33 +571,6 @@
         if (!seeking && Math.abs(scrub.currentTime - want) > 0.012) { seeking = true; scrub.currentTime = want; }
       });
     }
-  }
-
-  /* ------------------------------------------------------------------ Lenny's: the section takes the color of the page on screen */
-  // 10 samples per second of each recording's page color (sampled from the frames, darkened to keep text contrast);
-  // the laptop recording leads on wide screens, the phone recording on phones
-  const LENNYS = window.LUMERA_LENNYS_COLORS || null;
-  const lennys = $('#lennys'), lv = lennys && $(`video[data-colors="${phoneLayout ? 'm' : 'd'}"]`, lennys);
-  if (lennys && lv && LENNYS && !reduce) {
-    const seq = (phoneLayout ? LENNYS.m : LENNYS.d).match(/.{6}/g).map(h => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
-    const drinkSeq = (phoneLayout ? LENNYS.mDrink : LENNYS.dDrink) || '';   // which cocktail is on screen, per sample
-    const drinks = $$('.drinks li', lennys);
-    let col = seq[0].slice(), shownKey = '', on = -1, playing = false;
-    lv.addEventListener('playing', () => { playing = true; });
-    lv.addEventListener('pause', () => { playing = false; });
-    tasks.add(dt => {
-      if (!playing) return;
-      const f = lv.currentTime * 10, i = Math.floor(f), fr = f - i;
-      const a = seq[Math.min(i, seq.length - 1)], b = seq[Math.min(i + 1, seq.length - 1)];
-      const target = a.map((v, c) => lerp(v, b[c], fr));
-      col = col.map((v, c) => lerp(v, target[c], dtK(0.2, dt)));
-      const key = col.map(v => Math.round(v)).join(',');
-      if (key !== shownKey) { lennys.style.backgroundColor = `rgb(${key})`; lennys.style.setProperty('--bg', `rgb(${key})`); shownKey = key; }
-      // which cocktail is on screen (decided from the recording's own page colors when it was sampled)
-      const ch = drinkSeq[Math.min(i, drinkSeq.length - 1)];
-      const best = ch && ch !== '-' ? +ch : -1;
-      if (best !== on) { drinks.forEach((li, k) => li.classList.toggle('is-on', k === best)); on = best; }
-    });
   }
 
   /* ------------------------------------------------------------------ BB's Bakery: a window between the pencil sketch and the photograph */

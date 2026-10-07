@@ -17,7 +17,8 @@
 
   /* each project's color, and the capability panels' */
   --c-rok: #A9B58B;
-  --c-lennys: #C49C9D;
+  --c-rose: #C49C9D;
+  --c-tirzahs: #D9897A;
   --c-bbs: #D8C095;
   --c-slate: #BDC9D4;
   --c-terra: #DE966B;
@@ -310,7 +311,6 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- the studies ---------- */
 .study { position: relative; padding: 14rem var(--m) 12rem; background: var(--sc, var(--paper)); color: var(--ink); --fg-2: rgba(14, 13, 11, .72); --rule: var(--line); }
-.study--lennys { --bg: #0B0E0B; background: var(--bg); color: var(--paper); --fg-2: rgba(238, 234, 227, .72); --rule: rgba(238, 234, 227, .22); }
 .study-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; row-gap: 2.4rem; margin-bottom: 8rem; }
 .study-num { grid-column: 1 / -1; }
 .study-num span { font-size: 1.3em; }
@@ -339,11 +339,7 @@ ul, ol { list-style: none; padding: 0; }
 .case-end .build { justify-self: stretch; }
 .study--rok .case-detail { grid-column: 7 / span 6; }
 .study--bbs .case-detail { grid-column: 8 / span 5; }
-.study--lennys .case-detail { grid-column: 1 / -1; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2rem; row-gap: 5rem; }
-.study--lennys .case-cols { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
-.study--lennys .case-scope { grid-column: 1 / span 4; }
-.study--lennys .case-context { grid-column: 5 / span 4; }
-.study--lennys .case-end { grid-column: 9 / span 4; }
+.study--tirzahs .case-detail { grid-column: 8 / span 5; }
 figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); line-height: 1.45; color: var(--fg-2); }
 
 /* how we built it */
@@ -402,11 +398,14 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .scrub-meter { position: absolute; top: 14px; bottom: 14px; right: 14px; z-index: 2; width: 2px; background: rgba(255, 255, 255, .25); }
 .scrub-meter i { position: absolute; inset: 0; background: #E9F0C4; transform-origin: 50% 0; transform: scaleY(var(--p, 0)); }
 
-/* Lenny's: the cocktails, lit while their chapter plays */
-.drinks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: 2rem; margin-top: 3.2rem; color: var(--fg-2); }
-.drinks li { display: flex; gap: 1rem; align-items: flex-start; padding-top: 1.2rem; border-top: 1px solid var(--rule); transition: color .4s var(--ease), border-color .4s var(--ease); }
-.drinks li::before { content: ""; flex: none; width: 1.1rem; height: 1.1rem; min-width: 10px; min-height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px rgba(238, 234, 227, .55); }
-.drinks li.is-on { color: var(--paper); border-top-color: var(--paper); }
+/* Tirzahs: the two kitchens, side by side */
+.study--tirzahs .study-title { font-size: max(10rem, 40px); }
+.study--tirzahs .study-body { margin: 0 0 9rem; }
+.tz-stage { grid-column: 1 / span 6; }
+.tz-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.tz-pane { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: .6rem; background: var(--paper-2); }
+.tz-pane img { width: 100%; height: 100%; object-fit: cover; }
+.tz-label { position: absolute; left: 1.2rem; bottom: 1.2rem; max-width: calc(100% - 2.4rem); padding: .7rem 1.3rem; border-radius: 99px; background: var(--paper); color: var(--ink); font: 600 12px/1.2 var(--text); letter-spacing: .06em; text-transform: uppercase; }
 
 /* BB's: inside the window the photograph, outside it the pencil sketch */
 .bbs-art { position: relative; aspect-ratio: 1; overflow: hidden; background: #F7F2E8; border-radius: .6rem; }
@@ -609,13 +608,9 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
 /* ---------- focus: an outline you can see on every surface ---------- */
 /* pills and round buttons swap their colors when focused, so the outline is set to the surface instead of the text */
 .pill:focus-visible, .round:focus-visible, .copy:focus-visible, .live-btn:focus-visible { outline-color: var(--ink); }
-.study--lennys :focus-visible, .approach :focus-visible, .contact :focus-visible, .foot :focus-visible, .menu :focus-visible, .sys-demo :focus-visible { outline-color: var(--paper); }
+.approach :focus-visible, .contact :focus-visible, .foot :focus-visible, .menu :focus-visible, .sys-demo :focus-visible { outline-color: var(--paper); }
 /* controls that float over anything (photos, recordings, every color) carry a two-tone ring */
 .burger:focus-visible, .logo:focus-visible, .menu-close:focus-visible, .play:focus-visible, .skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 2px #0E0D0B; }
-/* on Lenny's night the pills fill with paper, as they do in the other dark rooms */
-.study--lennys .pill::before { background: var(--paper); }
-.study--lennys .pill:focus-visible { color: var(--ink); }
-@media (hover: hover) { .study--lennys .pill:hover { color: var(--ink); } }
 
 /* ---------- words that rise into place ---------- */
 .rise .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
@@ -627,13 +622,10 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .big { font-size: max(7.2rem, 42px); }
   .study-meta, .study-q { grid-column: 1 / -1; }
   .study-body { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
-  .study-body > *, .study--rok .case-detail, .study--bbs .case-detail { grid-column: 1 / -1; }
+  .study-body > *, .study--rok .case-detail, .study--bbs .case-detail, .study--tirzahs .case-detail { grid-column: 1 / -1; }
   .case-overview { margin-bottom: 6rem; }
   .case-lede { font-size: max(2.3rem, 19px); line-height: 1.22; }
   .case-overview > * { grid-column: 1 / -1; }
-  .study--lennys .case-detail { grid-template-columns: minmax(0, 1fr); row-gap: 4rem; }
-  .study--lennys .case-cols, .study--lennys .case-scope, .study--lennys .case-context, .study--lennys .case-end { grid-column: 1 / -1; }
-  .study--lennys .case-cols { grid-template-columns: minmax(0, 1fr); row-gap: 4rem; }
   .crop { width: min(100%, 44rem); margin-inline: auto; }
   .site-screens, .site--phone-left .site-screens { grid-template-columns: minmax(0, 1fr); row-gap: 2rem; justify-items: center; }
   .site-desk { width: 100%; }
@@ -660,6 +652,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .study { padding: 9rem var(--m) 8rem; }
   .study-head { margin-bottom: 4.8rem; }
   .study-title { font-size: max(6.4rem, 44px); }
+  .study--tirzahs .study-title { font-size: max(4.6rem, 34px); }
   .drinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ap-rows li { grid-template-columns: 4rem minmax(0, 1fr); row-gap: 1rem; padding-inline: .4rem; }
   .ap-rows p { grid-column: 2; }
