@@ -212,6 +212,7 @@
   }
   regions.push({
     id: 'caps', label: 'What we build',
+    entry: () => (C && sy >= C.top - 3 ? 1 : 0),   // arriving at the section's top (a link): its first panel already shows, so the first step is the second
     bounds: () => C && [C.top, C.top + C.len],
     stops: () => (C ? capPanels.map((p, i) => C.top + (C.lead + i) * C.vh) : []),
     names: () => capPanels.map(p => ($('h3', p) || {}).textContent || ''),
@@ -908,7 +909,7 @@
       const near = Math.round(p), onStop = Math.abs(p - near) < 0.03;   // (resting a fraction of a pixel off a stage counts as on it)
       let i;
       if (onStop) i = near + dir;
-      else if (p < 0) i = dir > 0 ? (r.entry || 0) : -1;   // coming in from before the first stage
+      else if (p < 0) i = dir > 0 ? (typeof r.entry === 'function' ? r.entry() : (r.entry || 0)) : -1;   // coming in from before the first stage
       else if (p > n - 1) i = dir < 0 ? n - 1 : n;         // coming back from after the last
       else i = dir > 0 ? Math.ceil(p) : Math.floor(p);
       if (i >= 0 && i < n) return nav.to(r, i, null, opts.talk);
