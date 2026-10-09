@@ -2,7 +2,7 @@
 
 The portfolio website of Lumera Creative LLC, a creative technology and automation agency. It presents independent concept studies and a capability demonstration. The projects are not paid client work, and none of them is an official website of the business it concerns.
 
-Live: https://abdusameer.github.io/lumera-portfolio/
+Live: https://lumeracreative.agency/
 
 ## Local preview
 

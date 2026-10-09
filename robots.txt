@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abdusameer.github.io/lumera-portfolio/sitemap.xml
+Sitemap: https://lumeracreative.agency/sitemap.xml
