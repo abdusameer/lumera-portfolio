@@ -19,6 +19,7 @@
   --c-rok: #A9B58B;
   --c-rose: #C49C9D;
   --c-tirzahs: #D9897A;
+  --c-voice: #A9B7E2;
   --c-bbs: #D8C095;
   --c-slate: #BDC9D4;
   --c-terra: #DE966B;
@@ -375,6 +376,7 @@ ul, ol { list-style: none; padding: 0; }
 .study--rok .case-detail { grid-column: 7 / span 6; }
 .study--bbs .case-detail { grid-column: 8 / span 5; }
 .study--tirzahs .case-detail { grid-column: 8 / span 5; }
+.study--voice .case-detail { grid-column: 8 / span 5; }
 figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); line-height: 1.45; color: var(--fg-2); }
 
 /* how we built it */
@@ -441,6 +443,14 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .tz-pane { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: .6rem; background: var(--paper-2); }
 .tz-pane img { width: 100%; height: 100%; object-fit: cover; }
 .tz-label { position: absolute; left: 1.2rem; bottom: 1.2rem; max-width: calc(100% - 2.4rem); padding: .7rem 1.3rem; border-radius: 99px; background: var(--paper); color: var(--ink); font: 600 12px/1.2 var(--text); letter-spacing: .06em; text-transform: uppercase; }
+
+/* Voice Receptionist: the receiver on its own dark ground, linked to the live demo */
+.study--voice .study-title { font-size: max(10rem, 40px); }
+.study--voice .study-body { margin: 0 0 9rem; }
+.vr-stage { grid-column: 1 / span 6; }
+.vr-frame { aspect-ratio: 16 / 10; overflow: hidden; border-radius: .6rem; background: #06080D; }
+.vr-frame img { width: 100%; height: 100%; object-fit: cover; }
+.panel--voice .p-name { text-wrap: balance; }
 
 /* BB's: inside the window the photograph, outside it the pencil sketch */
 .bbs-art { position: relative; aspect-ratio: 1; overflow: hidden; background: #F7F2E8; border-radius: .6rem; }
@@ -657,7 +667,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .big { font-size: max(7.2rem, 42px); }
   .study-meta, .study-q { grid-column: 1 / -1; }
   .study-body { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
-  .study-body > *, .study--rok .case-detail, .study--bbs .case-detail, .study--tirzahs .case-detail { grid-column: 1 / -1; }
+  .study-body > *, .study--rok .case-detail, .study--bbs .case-detail, .study--tirzahs .case-detail, .study--voice .case-detail { grid-column: 1 / -1; }
   .case-overview { margin-bottom: 6rem; }
   .case-lede { font-size: max(2.3rem, 19px); line-height: 1.22; }
   .case-overview > * { grid-column: 1 / -1; }
@@ -695,7 +705,7 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .study { padding: 9rem var(--m) 8rem; }
   .study-head { margin-bottom: 4.8rem; }
   .study-title { font-size: max(6.4rem, 44px); }
-  .study--tirzahs .study-title { font-size: max(4.6rem, 34px); }
+  .study--tirzahs .study-title, .study--voice .study-title { font-size: max(4.6rem, 34px); }
   .drinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ap-rows li { grid-template-columns: 4rem minmax(0, 1fr); row-gap: 1rem; padding-inline: .4rem; }
   .ap-rows p { grid-column: 2; }
