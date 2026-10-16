@@ -91,6 +91,8 @@ ul, ol { list-style: none; padding: 0; }
 .pill:focus-visible, .pill[aria-expanded="true"] { color: var(--paper); }
 @media (hover: hover) { .pill:hover { color: var(--paper); } }
 .pill .i { margin-left: -.4rem; }
+.pill--go::after { display: none; }   /* an arrow instead of the dot: this one leaves for the showcase */
+.pill--go .i { margin-left: 0; }
 .pill--light::before { background: var(--paper); }
 .pill--light:focus-visible { color: var(--ink); }
 @media (hover: hover) { .pill--light:hover { color: var(--ink); } }
@@ -257,8 +259,8 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- the strip on wide screens: one pinned stage; the script sets every panel's width and position ---------- */
 .pin .strip { position: relative; }
-.pin .stage, .pin .caps-stage, .sys-demo { touch-action: pan-y pinch-zoom; }
-.pin.zoomed .stage, .pin.zoomed .caps-stage, .zoomed .sys-demo, .pin.narrow.zoomed .list-in { touch-action: auto; }   /* zoomed in: sideways pans the view */
+.pin .stage, .pin .caps:not(.caps-flow) .caps-stage, .sys-demo { touch-action: pan-y pinch-zoom; }
+.pin.zoomed .stage, .pin.zoomed .caps:not(.caps-flow) .caps-stage, .zoomed .sys-demo, .pin.narrow.zoomed .list-in { touch-action: auto; }   /* zoomed in: sideways pans the view */
 .pin .stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
 .pin .panel { position: absolute; top: 0; left: 0; height: 100%; will-change: transform, width; }
 .pin .panel--hero { width: 50vw; min-height: 0; padding: 2.4rem 3.2rem 2.4rem; }
@@ -322,10 +324,10 @@ ul, ol { list-style: none; padding: 0; }
 /* previous / next on touch screens: a small pill with two round buttons and the current stage, inside the pinned stage */
 .pager { display: none; }
 .pager:not([hidden]) { z-index: 30; display: flex; align-items: center; gap: .2rem; padding: 4px; border-radius: 99px; background: rgba(238, 234, 227, .94); color: var(--ink); box-shadow: 0 0 0 1px rgba(14, 13, 11, .14), 0 10px 26px -16px rgba(14, 13, 11, .5); }
-.pin .stage .pager, .pin .caps-stage .pager { position: absolute; }
-.pin.narrow .stage .pager, .pin.narrow .caps-stage .pager { left: 50%; transform: translateX(-50%); bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px) + 100lvh - 100svh); }
+.pin .stage .pager, .pin .caps:not(.caps-flow) .caps-stage .pager { position: absolute; }
+.pin.narrow .stage .pager, .pin.narrow .caps:not(.caps-flow) .caps-stage .pager { left: 50%; transform: translateX(-50%); bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px) + 100lvh - 100svh); }
 /* wide layouts on touch screens: beside the menu button, where no panel puts its words (the script measures the button into --menu-w) */
-.pin:not(.narrow) .stage .pager, .pin:not(.narrow) .caps-stage .pager { top: calc(2rem + (max(5.2rem, 44px) - 52px) / 2); right: calc(var(--m) + var(--menu-w, 10rem) + 1.2rem); }
+.pin:not(.narrow) .stage .pager, .pin:not(.narrow) .caps:not(.caps-flow) .caps-stage .pager { top: calc(2rem + (max(5.2rem, 44px) - 52px) / 2); right: calc(var(--m) + var(--menu-w, 10rem) + 1.2rem); }
 @media (pointer: coarse) { .pin .hero-nav a { min-height: 44px; margin-block: -8px; } }   /* full-size touch targets in the same place */
 /* the demonstration's: rides along the bottom of the screen while the stages stand in a column, and rests at the panel's foot */
 .pager--demo { position: sticky; bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px)); width: max-content; margin: calc(-52px - 1.6rem) auto 1.6rem; }
@@ -343,7 +345,7 @@ ul, ol { list-style: none; padding: 0; }
 .pin.narrow.has-pager-strip .panel--hero { padding-bottom: calc(2.4rem + 6.6rem + 100lvh - 100svh); }
 .pin.narrow.has-pager-strip .p-info { padding-bottom: calc(1.6rem + 6.6rem + 100lvh - 100svh); }
 .pin.narrow.has-pager-strip .list-in { padding-bottom: calc(2.4rem + 6.6rem + 100lvh - 100svh); }
-.pin.narrow.has-pager-caps .cap-nav { display: none; }
+.pin.narrow.has-pager-caps .caps:not(.caps-flow) .cap-nav { display: none; }
 
 /* ---------- the studies ---------- */
 .study { position: relative; padding: 14rem var(--m) 12rem; background: var(--sc, var(--paper)); color: var(--ink); --fg-2: rgba(14, 13, 11, .72); --rule: var(--line); }
@@ -452,6 +454,44 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .vr-frame img { width: 100%; height: 100%; object-fit: cover; }
 .panel--voice .p-name { text-wrap: balance; }
 
+/* Voice Receptionist: the automation preview in What we build (02) */
+.cap--auto .cap-in { grid-template-areas: "text" "prev" "cta"; }
+.cap--auto .cap-text { grid-area: text; }
+.cap--auto .cap-cta { grid-area: cta; }
+.cap--auto .cap-list { margin-bottom: 0; }
+.vr-prev { grid-area: prev; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: 2.4rem; align-items: center; max-width: 64rem; min-width: 0; }
+.vr-prev-art { position: relative; aspect-ratio: 3 / 4; border-radius: .6rem; background: radial-gradient(70% 60% at 50% 45%, #1A2C78 0%, #0B1022 62%, #06080D 100%); overflow: hidden; }
+.vr-prev-art img { position: absolute; inset: 9% 6%; width: 88%; height: 82%; object-fit: contain; }   /* the whole receiver, at its own proportions */
+.vr-prev-text { display: grid; gap: 1.2rem; justify-items: start; min-width: 0; }
+.vr-prev-h { font-size: max(2.8rem, 22px); line-height: 1.1; letter-spacing: -.02em; }
+.vr-prev-p { max-width: 38ch; font-size: max(1.6rem, 15px); line-height: 1.4; }
+.vr-biz { letter-spacing: .06em; }
+.vr-label { color: rgba(14, 13, 11, .82); }
+.vr-prev .pill { margin-top: .8rem; }
+@media (max-width: 759px) { .vr-prev { grid-template-columns: minmax(0, 30%) minmax(0, 1fr); column-gap: 1.6rem; align-items: start; } }
+.pin .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; grid-template-areas: "text prev" "cta prev"; align-content: start; }
+.pin .caps:not(.caps-flow) .cap--auto .cap-cta { align-self: start; margin-top: 3.6rem; }
+.pin .caps:not(.caps-flow) .cap--auto .vr-prev { align-self: center; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: "text" "prev" "cta"; row-gap: 2.4rem; height: auto; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-cta { margin-top: 0; }
+.pin.narrow .caps:not(.caps-flow) .vr-prev { grid-template-columns: minmax(0, 24%) minmax(0, 1fr); column-gap: 1.6rem; align-items: start; }
+.pin.narrow .caps:not(.caps-flow) .vr-prev-text { gap: .8rem; }
+.pin.narrow .caps:not(.caps-flow) .vr-prev-h { font-size: max(2rem, 19px); }
+.pin.narrow .caps:not(.caps-flow) .vr-prev-p { font-size: max(1.4rem, 14px); }
+.pin.narrow .caps:not(.caps-flow) .vr-prev .pill { margin-top: 0; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-list { margin-bottom: 0; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-in { row-gap: 2rem; }
+.pin.narrow .caps:not(.caps-flow) .vr-prev-text { gap: .6rem; }
+
+/* Voice Receptionist: the recording beside an invitation to the full showcase */
+.vr-media { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: clamp(3.2rem, 4vw, 8rem); align-items: center; }
+.vr-site .site-screens { grid-template-columns: minmax(0, 1fr); }
+.vr-invite { display: grid; gap: 2rem; justify-items: start; align-content: center; min-width: 0; }
+.vr-eyebrow { letter-spacing: .06em; }
+.vr-invite-h { font-size: max(3.8rem, 30px); line-height: 1.06; letter-spacing: -.03em; text-wrap: balance; }
+.vr-invite-p { max-width: 36ch; font-size: max(1.7rem, 16px); line-height: 1.45; }
+.vr-invite .pill { margin-top: .8rem; }
+
 /* BB's: inside the window the photograph, outside it the pencil sketch */
 .bbs-art { position: relative; aspect-ratio: 1; overflow: hidden; background: #F7F2E8; border-radius: .6rem; }
 .bbs-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
@@ -484,30 +524,30 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .cap-media img { align-self: start; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: .4rem; }
 .cap-note { align-self: end; font-size: max(2.4rem, 19px); line-height: 1.2; letter-spacing: -.015em; }
 .cap-nav { display: none; }
-.pin .caps-stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
-.pin .caps-h { position: absolute; top: 10vh; left: 16rem; z-index: 10; padding: 0; }
-.pin .cap { position: absolute; inset: 0; padding: 30vh 16rem 16vh; will-change: transform; }
-.pin .cap-in { grid-template-columns: 1fr 1fr; column-gap: 8rem; height: 100%; }
-.pin .cap-media { display: block; height: 100%; }
+.pin .caps:not(.caps-flow) .caps-stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; }
+.pin .caps:not(.caps-flow) .caps-h { position: absolute; top: 10vh; left: 16rem; z-index: 10; padding: 0; }
+.pin .caps:not(.caps-flow) .cap { position: absolute; inset: 0; padding: 30vh 16rem 16vh; will-change: transform; }
+.pin .caps:not(.caps-flow) .cap-in { grid-template-columns: 1fr 1fr; column-gap: 8rem; height: 100%; }
+.pin .caps:not(.caps-flow) .cap-media { display: block; height: 100%; }
 /* the three sites, fanned */
-.pin .cap-media img { position: absolute; width: 64%; box-shadow: 0 30px 60px -30px rgba(14, 13, 11, .45); }
-.pin .cap-media img:nth-child(1) { left: 0; top: 0; }
-.pin .cap-media img:nth-child(2) { left: 18%; top: 20%; }
-.pin .cap-media img:nth-child(3) { left: 36%; top: 40%; }
-.pin .cap-nav { position: absolute; left: 16rem; right: 16rem; bottom: 5vh; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 1.6rem; }
+.pin .caps:not(.caps-flow) .cap-media img { position: absolute; width: 64%; box-shadow: 0 30px 60px -30px rgba(14, 13, 11, .45); }
+.pin .caps:not(.caps-flow) .cap-media img:nth-child(1) { left: 0; top: 0; }
+.pin .caps:not(.caps-flow) .cap-media img:nth-child(2) { left: 18%; top: 20%; }
+.pin .caps:not(.caps-flow) .cap-media img:nth-child(3) { left: 36%; top: 40%; }
+.pin .caps:not(.caps-flow) .cap-nav { position: absolute; left: 16rem; right: 16rem; bottom: 5vh; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 1.6rem; }
 /* phones: the heading at the top, the panel's words, then the sites; the nav keeps only its numbers */
-.pin.narrow .caps-h { top: 9rem; left: var(--m); font-size: max(5.6rem, 40px); }
-.pin.narrow .cap { padding: 18rem calc(var(--m) + 11vw) calc(9rem + 100lvh - 100svh) var(--m); }
-.pin.narrow .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; row-gap: 2.4rem; }
-.pin.narrow .cap h3 { font-size: max(3.6rem, 28px); }
-.pin.narrow .cap-list { margin: 1.6rem 0 2.4rem; }
-.pin.narrow .cap-media img { width: 72%; }
-.pin.narrow .cap-media img:nth-child(2) { left: 14%; top: 16%; }
-.pin.narrow .cap-media img:nth-child(3) { left: 28%; top: 32%; }
-.pin.narrow .cap-note { align-self: start; }
-.pin.narrow .cap-nav { left: var(--m); right: var(--m); bottom: calc(3.2rem + 100lvh - 100svh); }
-.pin.narrow .cap-nav span { font-size: 0; }
-.pin.narrow .cap-nav b { font-size: max(1.1rem, 11px); }
+.pin.narrow .caps:not(.caps-flow) .caps-h { top: 9rem; left: var(--m); font-size: max(5.6rem, 40px); }
+.pin.narrow .caps:not(.caps-flow) .cap { padding: 18rem calc(var(--m) + 11vw) calc(9rem + 100lvh - 100svh) var(--m); }
+.pin.narrow .caps:not(.caps-flow) .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; row-gap: 2.4rem; }
+.pin.narrow .caps:not(.caps-flow) .cap h3 { font-size: max(3.6rem, 28px); }
+.pin.narrow .caps:not(.caps-flow) .cap-list { margin: 1.6rem 0 2.4rem; }
+.pin.narrow .caps:not(.caps-flow) .cap-media img { width: 72%; }
+.pin.narrow .caps:not(.caps-flow) .cap-media img:nth-child(2) { left: 14%; top: 16%; }
+.pin.narrow .caps:not(.caps-flow) .cap-media img:nth-child(3) { left: 28%; top: 32%; }
+.pin.narrow .caps:not(.caps-flow) .cap-note { align-self: start; }
+.pin.narrow .caps:not(.caps-flow) .cap-nav { left: var(--m); right: var(--m); bottom: calc(3.2rem + 100lvh - 100svh); }
+.pin.narrow .caps:not(.caps-flow) .cap-nav span { font-size: 0; }
+.pin.narrow .caps:not(.caps-flow) .cap-nav b { font-size: max(1.1rem, 11px); }
 .cap-nav span { color: rgba(14, 13, 11, .78); transition: color .4s; }   /* 4.5:1 or better on every panel color */
 .cap-nav span.on { color: var(--ink); }
 .cap-nav b { margin-right: 1.6rem; font-weight: 600; }
@@ -667,6 +707,8 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .big { font-size: max(7.2rem, 42px); }
   .study-meta, .study-q { grid-column: 1 / -1; }
   .study-body { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
+  .vr-media { grid-template-columns: minmax(0, 1fr); row-gap: 4.8rem; }
+  .vr-invite-p { max-width: 46ch; }
   .study-body > *, .study--rok .case-detail, .study--bbs .case-detail, .study--tirzahs .case-detail, .study--voice .case-detail { grid-column: 1 / -1; }
   .case-overview { margin-bottom: 6rem; }
   .case-lede { font-size: max(2.3rem, 19px); line-height: 1.22; }

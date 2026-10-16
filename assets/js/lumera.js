@@ -203,7 +203,14 @@
     if (Math.abs(sy - y) > 4) scrollToY(y, false);
   });
   function measureCaps() {
+    caps.classList.remove('caps-flow');
     if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
+    // the panels pin only if every panel's content fits inside it at rest; otherwise they stack in the page (no hidden text, no inner scrolling)
+    const fits = capPanels.every(p => {
+      const cs = getComputedStyle(p), inner = $('.cap-in', p);
+      return inner.scrollHeight <= p.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 2;
+    });
+    if (!fits) { caps.classList.add('caps-flow'); C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); markDirty(); return; }
     const vh = VH(), n = capPanels.length, lead = narrow ? 0.08 : 0.25;   // a rest before the first move and after the last (short on phones)
     const len = vh * ((n - 1) + 2 * lead);
     caps.style.height = (len + vh) + 'px';
