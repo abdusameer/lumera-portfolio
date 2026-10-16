@@ -454,34 +454,15 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .vr-frame img { width: 100%; height: 100%; object-fit: cover; }
 .panel--voice .p-name { text-wrap: balance; }
 
-/* Voice Receptionist: the automation preview in What we build (02) */
-.cap--auto .cap-in { grid-template-areas: "text" "prev" "cta"; }
-.cap--auto .cap-text { grid-area: text; }
-.cap--auto .cap-cta { grid-area: cta; }
-.cap--auto .cap-list { margin-bottom: 0; }
-.vr-prev { grid-area: prev; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: 2.4rem; align-items: center; max-width: 64rem; min-width: 0; }
-.vr-prev-art { position: relative; aspect-ratio: 3 / 4; border-radius: .6rem; background: radial-gradient(70% 60% at 50% 45%, #1A2C78 0%, #0B1022 62%, #06080D 100%); overflow: hidden; }
-.vr-prev-art img { position: absolute; inset: 9% 6%; width: 88%; height: 82%; object-fit: contain; }   /* the whole receiver, at its own proportions */
-.vr-prev-text { display: grid; gap: 1.2rem; justify-items: start; min-width: 0; }
-.vr-prev-h { font-size: max(2.8rem, 22px); line-height: 1.1; letter-spacing: -.02em; }
-.vr-prev-p { max-width: 38ch; font-size: max(1.6rem, 15px); line-height: 1.4; }
+/* Voice Receptionist: What we build (02) links the demo beside its thumbnails, like Interactive web */
+.cap--auto .cap-list { margin-bottom: 2rem; }
+.vr-label { margin-bottom: 2rem; color: rgba(14, 13, 11, .82); }
 .vr-biz { letter-spacing: .06em; }
-.vr-label { color: rgba(14, 13, 11, .82); }
-.vr-prev .pill { margin-top: .8rem; }
-@media (max-width: 759px) { .vr-prev { grid-template-columns: minmax(0, 30%) minmax(0, 1fr); column-gap: 1.6rem; align-items: start; } }
-.pin .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; grid-template-areas: "text prev" "cta prev"; align-content: start; }
-.pin .caps:not(.caps-flow) .cap--auto .cap-cta { align-self: start; margin-top: 3.6rem; }
-.pin .caps:not(.caps-flow) .cap--auto .vr-prev { align-self: center; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: "text" "prev" "cta"; row-gap: 2.4rem; height: auto; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-cta { margin-top: 0; }
-.pin.narrow .caps:not(.caps-flow) .vr-prev { grid-template-columns: minmax(0, 24%) minmax(0, 1fr); column-gap: 1.6rem; align-items: start; }
-.pin.narrow .caps:not(.caps-flow) .vr-prev-text { gap: .8rem; }
-.pin.narrow .caps:not(.caps-flow) .vr-prev-h { font-size: max(2rem, 19px); }
-.pin.narrow .caps:not(.caps-flow) .vr-prev-p { font-size: max(1.4rem, 14px); }
-.pin.narrow .caps:not(.caps-flow) .vr-prev .pill { margin-top: 0; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-list { margin-bottom: 0; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-in { row-gap: 2rem; }
-.pin.narrow .caps:not(.caps-flow) .vr-prev-text { gap: .6rem; }
+.cap-pills { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-list { margin-bottom: 1.4rem; }
+.pin.narrow .caps:not(.caps-flow) .vr-label { margin-bottom: 1.4rem; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-media img { width: 58%; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-media img:nth-child(2) { left: 32%; top: 8%; }
 
 /* Voice Receptionist: the recording beside an invitation to the full showcase */
 .vr-media { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: clamp(3.2rem, 4vw, 8rem); align-items: center; }

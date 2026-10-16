@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261015b">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -287,8 +287,11 @@
     </div>
     <div class="study-body">
       <figure class="vr-stage">
-        <div class="vr-frame"><img src="assets/img/work/voice-panel-900.webp" srcset="assets/img/work/voice-panel-900.webp 900w, assets/img/work/voice-panel-1600.webp 1600w" sizes="(min-width: 1024px) 50vw, 100vw" width="1600" height="1000" alt="The silver telephone receiver from the showcase, lit in cobalt blue on a dark navy ground." loading="lazy" decoding="async"></div>
-        <figcaption><span class="tag tag--inline">Concept image</span> The receiver at the centre of the showcase. Sample calls for a salon, an HVAC business, a plumber and a restaurant unfold around it.</figcaption>
+        <div class="site-desk vr-frame">
+          <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-label="sample call" data-poster="assets/video/voice-story-poster.webp" data-src="assets/video/voice-story.mp4" data-src-sm="assets/video/voice-story-sm.mp4" aria-label="Screen recording of the Voice Receptionist showcase: a sample HVAC call moves chapter by chapter while its service-request summary fills in."></video>
+          <noscript><img class="media-video" src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="The Voice Receptionist showcase: the first chapter of a sample HVAC call beside its service-request summary." loading="lazy"></noscript>
+        </div>
+        <figcaption>Recorded from the live showcase: a sample HVAC call, chapter by chapter, with its summary filling in. Sample data.</figcaption>
       </figure>
       <div class="case-detail">
         <div class="case-cols">
@@ -326,11 +329,11 @@
       <figure class="site vr-site" id="voice-site">
         <div class="site-screens">
           <div class="site-desk">
-            <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-poster="assets/video/voice-story-poster.webp" data-src="assets/video/voice-story.mp4" data-src-sm="assets/video/voice-story-sm.mp4" aria-label="Screen recording of the Voice Receptionist showcase: a sample HVAC call moves chapter by chapter while its service-request summary fills in."></video>
-            <noscript><img class="media-video" src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="The Voice Receptionist showcase: the first chapter of a sample HVAC call beside its service-request summary." loading="lazy"></noscript>
+            <video class="media-video" muted playsinline preload="none" width="1600" height="1000" data-label="whole site" data-poster="assets/video/voice-site-poster.webp" data-src="assets/video/voice-site.mp4" data-src-sm="assets/video/voice-site-sm.mp4" aria-label="Screen recording of the whole Voice Receptionist showcase on a laptop, scrolled from top to bottom: the receiver, the business selector and the sample HVAC call with its summary."></video>
+            <noscript><img class="media-video" src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="The Voice Receptionist showcase on a laptop, at the top of the page." loading="lazy"></noscript>
           </div>
         </div>
-        <figcaption>Recorded from the live showcase: a sample HVAC call, chapter by chapter, with its summary filling in.</figcaption>
+        <figcaption>The whole showcase, recorded top to bottom: the receiver, the business selector and the sample HVAC call with its summary.</figcaption>
       </figure>
       <div class="vr-invite">
         <p class="vr-eyebrow small">Voice Receptionist Automation</p>
@@ -461,18 +464,16 @@
             <p class="cap-n small">02</p>
             <h3>Systems and automation</h3>
             <ul class="cap-list small"><li>Lead intake and routing systems</li><li>Voice receptionists and appointment booking</li><li>Customer follow-up workflows</li><li>Internal process automation</li><li>Carefully scoped intelligent systems</li></ul>
-          </div>
-          <div class="vr-prev">
-            <div class="vr-prev-art" aria-hidden="true"><img src="assets/img/work/voice-receiver-560.webp" width="560" height="1244" alt="" loading="lazy" decoding="async"></div>
-            <div class="vr-prev-text">
-              <p class="vr-label small">Interactive demo · Sample data</p>
-              <p class="vr-prev-h">Voice Receptionist Automation</p>
-              <p class="vr-prev-p">Follow a sample customer call as it becomes an appointment request, service inquiry, restaurant reservation, or pickup order.</p>
-              <p class="vr-biz small">Salon · HVAC · Plumbing · Restaurant</p>
+            <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
+            <div class="cap-pills">
               <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore the demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+              <a class="pill" href="#contact">Talk to us</a>
             </div>
           </div>
-          <div class="cap-cta"><a class="pill" href="#contact">Talk to us</a></div>
+          <div class="cap-media" aria-hidden="true">
+            <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+          </div>
         </div>
       </div>
       <div class="cap" style="--cc: var(--c-lilac)">
@@ -602,7 +603,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js" defer></script>
+<script src="assets/js/lumera.js?v=20261015b" defer></script>
 <!--/email_off-->
 </body>
 </html>

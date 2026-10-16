@@ -467,7 +467,7 @@
   // every recording has a visible pause and play control (WCAG 2.2.2), reachable by keyboard and touch
   const addPlayButton = v => {
     const study = ($('.study-title', v.closest('.study')) || {}).textContent || 'project';
-    const device = v.closest('.phone-screen') ? 'phone' : 'laptop';
+    const device = v.dataset.label || (v.closest('.phone-screen') ? 'phone' : 'laptop');   // a study with two laptop recordings names each one
     const b = doc.createElement('button');
     b.type = 'button'; b.className = 'play';
     const label = () => { const on = !v.paused; b.dataset.state = on ? 'playing' : 'paused'; b.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} the ${study.trim()} recording, ${device}`); };
