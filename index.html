@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css?v=20261019a">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261019b">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -409,52 +409,58 @@
     <div class="caps-stage">
       <h2 class="big caps-h" id="caps-title" data-rise>What we build</h2>
       <div class="cap" style="--cc: var(--c-slate)">
-        <div class="cap-in">
-          <div class="cap-text">
-            <p class="cap-n small">01</p>
-            <h3>Interactive web</h3>
-            <ul class="cap-list small"><li>Websites</li><li>Interactive experiences</li><li>Website restructuring</li><li>Digital product interfaces</li></ul>
-            <a class="pill" href="#rok">See the work</a>
-          </div>
-          <div class="cap-media" aria-hidden="true">
-            <img src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-            <img src="assets/video/tirzahs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-            <img src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">01</p>
+              <h3>Interactive web</h3>
+              <ul class="cap-list small"><li>Websites</li><li>Interactive experiences</li><li>Website restructuring</li><li>Digital product interfaces</li></ul>
+              <a class="pill" href="#rok">See the work</a>
+            </div>
+            <div class="cap-media" aria-hidden="true">
+              <img src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/tirzahs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            </div>
           </div>
         </div>
       </div>
       <div class="cap cap--auto" style="--cc: var(--c-terra)">
-        <div class="cap-in">
-          <div class="cap-text">
-            <p class="cap-n small">02</p>
-            <h3>Systems and automation</h3>
-          </div>
-          <ul class="svc-rows">
-            <li><h4 class="svc-name">Voice Receptionists</h4><p class="svc-desc">Answer customer calls, collect key details, and assist with appointment requests, scheduling, and routing.</p></li>
-            <li><h4 class="svc-name">Missed-Call Text-Back</h4><p class="svc-desc">Respond to missed calls by text, capture what the caller needs, and help them take the next step.</p></li>
-            <li><h4 class="svc-name">Quotes &amp; Proposals</h4><p class="svc-desc">Prepare draft quotes and proposals using your services and pricing rules, ready for your team to review.</p></li>
-            <li><h4 class="svc-name">Lead Follow-Up &amp; Reactivation</h4><p class="svc-desc">Follow up on inquiries, outstanding estimates, and past leads through workflows configured for your business.</p></li>
-          </ul>
-          <div class="cap-demo">
-            <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
-            <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore receptionist demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
-          </div>
-          <div class="cap-cta"><a class="pill" href="#contact">Talk to us</a></div>
-          <div class="cap-media" aria-hidden="true">
-            <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-            <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">02</p>
+              <h3>Systems and automation</h3>
+            </div>
+            <ul class="svc-rows">
+              <li><h4 class="svc-name">Voice Receptionists</h4><p class="svc-desc">Answer customer calls, collect key details, and assist with appointment requests, scheduling, and routing.</p></li>
+              <li><h4 class="svc-name">Missed-Call Text-Back</h4><p class="svc-desc">Respond to missed calls by text, capture what the caller needs, and help them take the next step.</p></li>
+              <li><h4 class="svc-name">Quotes &amp; Proposals</h4><p class="svc-desc">Prepare draft quotes and proposals using your services and pricing rules, ready for your team to review.</p></li>
+              <li><h4 class="svc-name">Lead Follow-Up &amp; Reactivation</h4><p class="svc-desc">Follow up on inquiries, outstanding estimates, and past leads through workflows configured for your business.</p></li>
+            </ul>
+            <div class="cap-demo">
+              <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
+              <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore receptionist demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+            </div>
+            <div class="cap-cta"><a class="pill" href="#contact">Talk to us</a></div>
+            <div class="cap-media" aria-hidden="true">
+              <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            </div>
           </div>
         </div>
       </div>
       <div class="cap" style="--cc: var(--c-lilac)">
-        <div class="cap-in">
-          <div class="cap-text">
-            <p class="cap-n small">03</p>
-            <h3>Custom systems</h3>
-            <ul class="cap-list small"><li>Custom business tools</li><li>Integrations between approved platforms</li></ul>
-            <a class="pill" href="#contact">Talk to us</a>
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">03</p>
+              <h3>Custom systems</h3>
+              <ul class="cap-list small"><li>Custom business tools</li><li>Integrations between approved platforms</li></ul>
+              <a class="pill" href="#contact">Talk to us</a>
+            </div>
+            <p class="cap-note">Built around the way a business already works, and connected only to the platforms it approves.</p>
           </div>
-          <p class="cap-note">Built around the way a business already works, and connected only to the platforms it approves.</p>
         </div>
       </div>
       <div class="cap-nav small" aria-hidden="true">
@@ -573,7 +579,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js?v=20261019a" defer></script>
+<script src="assets/js/lumera.js?v=20261019b" defer></script>
 <!--/email_off-->
 </body>
 </html>

@@ -190,52 +190,93 @@
     const a = $('.round', p); if (a) a.click();
   }));
 
-  /* ------------------------------------------------------------------ capabilities: panels push in from the right */
+  /* ------------------------------------------------------------------ capabilities: panels push in from the right
+     Every panel has a rest. A panel whose content is taller than its window also gets a reading span: there the page's own
+     scroll moves that panel's content up (one scroll, nothing nested), and only after it does the next panel push in. */
   const caps = $('#capabilities'), capPanels = $$('.cap', caps), capNav = $$('.cap-nav span', caps), capBar = $('.cap-bar i', caps);
+  const capViews = capPanels.map(p => $('.cap-view', p) || p), capIns = capPanels.map(p => $('.cap-in', p));
   let C = null, capOn = -1;
-  // keyboard: a focused panel pushes in, so focus is never on something sitting off screen
+  const capSpans = () => (C ? C.a.map((a, i) => [a, a + C.o[i]]) : []);
+  // where the page is in the panels: on panel k's rest or reading span (f = 0), or pushing from k to k + 1 (0 < f < 1)
+  const capAt = y => {
+    let k = 0, f = 0;
+    for (let i = 0; i < C.n; i++) if (y >= C.a[i]) { k = i; const end = C.a[i] + C.o[i]; f = i < C.n - 1 && y > end ? clamp((y - end) / C.vh, 0, 1) : 0; }
+    return { k, f, off: clamp(y - C.a[k], 0, C.o[k]) };
+  };
+  // keyboard: a focused panel pushes in, and a control further down a long panel is read into view
   caps.addEventListener('focusin', e => {
     const stageEl = e.target.closest('.caps-stage'); if (stageEl) { stageEl.scrollLeft = 0; stageEl.scrollTop = 0; }
+    capViews.forEach(v => { v.scrollTop = 0; });
     if (!C) return;
     const i = capPanels.indexOf(e.target.closest('.cap'));
     if (i < 0) return;
-    const y = C.top + (C.lead + i) * C.vh;
+    const at = capAt(sy), room = capViews[i].clientHeight;
+    const top = e.target.getBoundingClientRect().top - capIns[i].getBoundingClientRect().top;   // its place in the panel's content
+    const h = e.target.getBoundingClientRect().height;
+    const curOff = at.k === i && at.f === 0 ? at.off : null;
+    if (curOff != null && top - curOff >= 0 && top - curOff + h <= room) return;   // already in view
+    const y = C.a[i] + clamp(top - room * 0.3, 0, C.o[i]);
     if (Math.abs(sy - y) > 4) scrollToY(y, false);
+  });
+  // the visitor's place in the panels, kept every frame in both layouts, so a re-measure (resizing, rotating, fonts) can restore it
+  let capMem = null, capHold = false;                     // capHold: a resize is under way, so the old measurements no longer match the page
+  const absTop = el => el.getBoundingClientRect().top + sy;
+  tasks.add(() => {
+    if (capHold) return;
+    if (C) { capMem = sy >= C.top - 2 && sy <= C.top + C.len + 2 ? capAt(sy) : null; return; }
+    const top = caps.offsetTop, bottom = top + caps.offsetHeight;
+    if (sy < top - 2 || sy > bottom) { capMem = null; return; }
+    let k = 0; capPanels.forEach((p, i) => { if (absTop(p) <= sy + 2) k = i; });
+    capMem = { k, f: 0, off: Math.max(0, sy - absTop(capIns[k])) };
   });
   function measureCaps() {
     caps.classList.remove('caps-flow');
-    if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
-    // phones read the panels as a plain vertical stack; elsewhere they pin only if every panel's content fits inside it at rest
-    // (otherwise they stack in the page too: no hidden text, no inner scrolling)
-    const fits = innerWidth >= 760 && capPanels.every(p => {
-      const cs = getComputedStyle(p), inner = $('.cap-in', p);
-      return inner.scrollHeight <= p.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 2;
-    });
-    if (!fits) { caps.classList.add('caps-flow'); C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); markDirty(); return; }
-    const vh = VH(), n = capPanels.length, lead = narrow ? 0.08 : 0.25;   // a rest before the first move and after the last (short on phones)
-    const len = vh * ((n - 1) + 2 * lead);
+    const was = capMem;
+    capIns.forEach(el => { el.style.transform = ''; el._off = 0; });
+    if (!pin) {
+      C = null; caps.style.height = ''; delete caps.dataset.stops; delete caps.dataset.read;
+      capPanels.forEach(p => { p.style.transform = ''; p.classList.remove('cap-more'); });
+      if (was) requestAnimationFrame(() => jump(absTop(capIns[was.k]) + was.off));   // the same panel and line in the stacked layout
+      return;
+    }
+    const vh = VH(), n = capPanels.length, lead = narrow ? 0.08 : 0.25, top = caps.offsetTop;   // a rest before the first move and after the last (short on phones)
+    const o = capPanels.map((p, i) => { const d = Math.ceil(capIns[i].scrollHeight - capViews[i].clientHeight); return d > 3 ? d : 0; });   // a few pixels are rounding, not content
+    const a = []; let y = top + lead * vh;
+    o.forEach((oi, i) => { a.push(Math.round(y)); y += oi + (i < n - 1 ? vh : 0); });
+    const len = y + lead * vh - top;
     caps.style.height = (len + vh) + 'px';
-    C = { vh, vw: innerWidth, n, len, lead, top: caps.offsetTop };
+    C = { vh, vw: innerWidth, n, len, lead, top, a, o };
+    caps.dataset.stops = JSON.stringify(a.map(Math.round)); caps.dataset.read = JSON.stringify(o);   // for the QA suite
+    if (was) {
+      const k = Math.min(was.k, n - 1);
+      const ny = was.f > 0 && k < n - 1 ? a[k] + o[k] + was.f * vh : a[k] + Math.min(was.off, o[k]);
+      if (Math.abs(ny - sy) > 2) requestAnimationFrame(() => jump(ny));
+    }
     markDirty();
   }
   regions.push({
     id: 'caps', label: 'What we build',
     entry: () => (C && sy >= C.top - 3 ? 1 : 0),   // arriving at the section's top (a link): its first panel already shows, so the first step is the second
     bounds: () => C && [C.top, C.top + C.len],
-    stops: () => (C ? capPanels.map((p, i) => C.top + (C.lead + i) * C.vh) : []),
+    stops: () => (C ? C.a.slice() : []),
+    spans: capSpans,
     names: () => capPanels.map(p => ($('h3', p) || {}).textContent || ''),
-    scale: () => (C ? C.vh / Math.max(1, C.vw * 0.92) : 0),
+    // a finger follows the push only across panels that need no reading; otherwise the swipe takes its step when it ends
+    scale: (i, dir) => (C && !(dir > 0 ? C.o[i] : C.o[i - 1] || 0) ? C.vh / Math.max(1, C.vw * 0.92) : 0),
   });
   tasks.add((dt, moved) => {
     if (!C || (!moved && !dirty)) return;
     if (sy < C.top - C.vh * 1.5 || sy > C.top + C.len + C.vh * 1.5) return;
-    const u = clamp((sy - C.top) / C.vh - C.lead, 0, C.n - 1), k = Math.floor(u);
-    const sC = Math.min(C.n - 1, k + settle(u - k));
+    const at = capAt(sy), sC = Math.min(C.n - 1, at.k + settle(at.f));
     const P1 = C.vw * 0.08, P2 = C.vw * 0.03;              // the next panels wait at the edge as strips
     capPanels.forEach((p, i) => {
       const d = i - sC;
       const x = d <= 0 ? 0 : d <= 1 ? d * (C.vw - P1) : d <= 2 ? (C.vw - P1) + (d - 1) * (P1 - P2) : C.vw - P2;
       p.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
+      // reading: panels before the current one rest at their end, the current one follows the page, the rest at their top
+      const off = i < at.k ? C.o[i] : i > at.k ? 0 : at.off;
+      if (capIns[i]._off !== off) { capIns[i]._off = off; capIns[i].style.transform = off ? `translate3d(0,${(-off).toFixed(1)}px,0)` : ''; }
+      p.classList.toggle('cap-more', C.o[i] - off > 4);
     });
     const on = Math.round(sC);
     if (on !== capOn) { capNav.forEach((s, i) => s.classList.toggle('on', i === on)); capOn = on; }
@@ -884,6 +925,16 @@
     for (let i = 0; i < n - 1; i++) if (y < stops[i + 1]) return i + (y - stops[i]) / Math.max(1, stops[i + 1] - stops[i]);
     return n - 1 + (y - stops[n - 1]) / gap;
   };
+  const posR = (r, y) => {                                 // pos() for a region; a panel's reading span counts as being on its stage
+    if (!r.spans) return pos(r.stops(), y);
+    const sp = r.spans(), n = sp.length; if (!n) return 0;
+    if (y <= sp[0][0]) return (y - sp[0][0]) / VH();
+    for (let i = 0; i < n; i++) {
+      if (y <= sp[i][1]) return i;
+      if (i < n - 1 && y < sp[i + 1][0]) return i + (y - sp[i][1]) / Math.max(1, sp[i + 1][0] - sp[i][1]);
+    }
+    return n - 1 + (y - sp[n - 1][1]) / VH();
+  };
   let flight = null;                                       // a step on its way: { r, i (stop index, or null when letting go), y }
   let released = null;                                     // where the last step past an end landed: { r, dir, y }
   const seqStatus = $('#seq-status');
@@ -897,10 +948,10 @@
       if (released && dir === -released.dir && Math.abs(y - released.y) < 12) return released.r;
       return regions.find(r => within(r, y)) || null;
     },
-    to(r, i, done, talk) {                                 // glide to one stop of a region
+    to(r, i, done, talk, at) {                             // glide to one stop of a region (or to a point inside its reading span)
       const stops = r.stops(); if (!stops.length) return false;
       i = clamp(i, 0, stops.length - 1);
-      const y = clamp(stops[i], 0, maxY());
+      const y = clamp(at != null ? at : stops[i], 0, maxY());
       flight = { r, i, y }; released = null;
       glide(y, glideMs(y), () => { if (flight && flight.y === y) flight = null; if (talk) announce(r, i); if (done) done(); });
       return true;
@@ -910,10 +961,19 @@
       const r = opts.r || (flight && flight.r) || nav.regionFor(sy, dir);
       if (!r) return false;
       const stops = r.stops(), n = stops.length; if (!n) return false;
+      if (opts.read && r.spans) {
+        const sp = r.spans(), y0 = flight && flight.r === r ? flight.y : sy, page = VH() * 0.8;
+        const k = sp.findIndex(s => y0 >= s[0] - 2 && y0 <= s[1] + 2);
+        if (k >= 0) {
+          if (dir > 0 && y0 < sp[k][1] - 2) return nav.to(r, k, null, false, Math.min(sp[k][1], y0 + page));
+          if (dir < 0 && y0 > sp[k][0] + 2) return nav.to(r, k, null, false, Math.max(sp[k][0], y0 - page));
+          if (dir < 0 && k > 0) return nav.to(r, k - 1, null, opts.talk, sp[k - 1][1]);
+        }
+      }
       let p;
       if (flight && flight.r === r && flight.i != null) p = flight.i;
       else if (released && released.r === r && Math.abs(sy - released.y) < 12) p = released.dir > 0 ? n - 0.5 : -0.5;
-      else p = opts.from != null ? opts.from : pos(stops, sy);
+      else p = opts.from != null ? opts.from : posR(r, sy);
       const near = Math.round(p), onStop = Math.abs(p - near) < 0.03;   // (resting a fraction of a pixel off a stage counts as on it)
       let i;
       if (onStop) i = near + dir;
@@ -951,7 +1011,7 @@
     if (e.key === ' ') dir = e.shiftKey ? -1 : 1; else if (e.shiftKey) return;
     if (!dir || usesKey(e.target, e.key)) return;
     if (e.repeat) { if (flight || nav.regionFor(sy, dir)) e.preventDefault(); return; }   // a held key takes one step, not a run of them
-    if (nav.step(dir, { talk: true })) { e.preventDefault(); return; }
+    if (nav.step(dir, { talk: true, read: true })) { e.preventDefault(); return; }
     // the demonstration in a short wide window (stages in a row): left and right move it while focus is inside it
     if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && sysCtl.manualMode() && sysCtl.inside(e.target) && sysCtl.manual(dir)) e.preventDefault();
   });
@@ -996,7 +1056,7 @@
       g.axis = Math.abs(dx) > Math.abs(dy) * (IOS ? 1 : 1.15) ? 'x' : 'y';
       if (g.axis === 'y') { g = null; touchOwned = false; return; }   // vertical: the browser scrolls the page (touch-action: pan-y)
       if (g.r) {                                       // counted from the stage a moving step was heading to, followed from where the page is
-        g.from = flight && flight.r === g.r && flight.i != null ? flight.i : pos(g.r.stops(), sy);
+        g.from = flight && flight.r === g.r && flight.i != null ? flight.i : posR(g.r, sy);
         if (flight) { g.took = flight; jump(sy); flight = null; }
         g.sy0 = sy; g.dx0 = dx;
       }
@@ -1084,11 +1144,15 @@
     liftedAt = 0;
     const r = regions.find(x => x.id !== 'demo' && within(x, sy, 0));               // only the pinned stages; the demonstration reads like a page
     if (!r) return;
-    const stops = r.stops(), n = stops.length, p = pos(stops, sy), near = Math.round(p);
+    const stops = r.stops(), n = stops.length, p = posR(r, sy), near = Math.round(p);
     if (p < -0.02 || p > n - 0.98) return;                                           // beyond either end, the page stays free
-    if (Math.abs(p - near) < 0.02) { if (Math.abs(sy - stops[near]) > 1) nav.to(r, near); return; }   // a few pixels off a stage: onto it
+    const sp = r.spans ? r.spans() : null;
+    if (sp && Number.isInteger(p)) return;                                           // reading inside a long panel: the page stays where the finger left it
+    if (Math.abs(p - near) < 0.02) { const t = sp ? (p < near ? sp[near][0] : sp[near][1]) : stops[near]; if (Math.abs(sy - t) > 1) nav.to(r, near, null, false, t); return; }   // a few pixels off a stage: onto it
     const i = Math.floor(p), f = p - i;
-    nav.to(r, lastDir >= 0 ? (f > 0.2 ? i + 1 : i) : (f < 0.8 ? i : i + 1));
+    const back = sp ? sp[i][1] : null;                                               // going back lands at the end of the panel's reading
+    if (lastDir >= 0) { if (f > 0.2) nav.to(r, i + 1); else nav.to(r, i, null, false, back); }
+    else { if (f < 0.8) nav.to(r, i, null, false, back); else nav.to(r, i + 1); }
   });
 
   // the opening hint: visible at once, back on every load, and gone once the visitor has actually moved the opening
@@ -1110,7 +1174,7 @@
       if (t !== P.ps) { P.ps = t; P.play.setAttribute('aria-label', PLAY[t][0]); $('use', P.play).setAttribute('href', PLAY[t][1]); }
     }
     const stops = P.r.stops(), n = stops.length, y = flight && flight.r === P.r && flight.i != null ? flight.y : sy;
-    const i = clamp(Math.round(pos(stops, y)), 0, n - 1);
+    const i = clamp(Math.round(posR(P.r, y)), 0, n - 1);
     if (i === P.at && n === P.n) return;
     P.at = i; P.n = n;
     const [num, total] = P.r.count ? P.r.count(i, n) : [pad2(i + 1), pad2(n)];
@@ -1148,13 +1212,16 @@
     root.style.setProperty('--menu-w', menuBtn.offsetWidth + 'px');   // the wide pager sits beside the menu button
     measureStrip(); measureCaps(); measureDemo(); liveFit(); syncPagers();
     if (lenis) lenis.resize();
+    capHold = false;
   }
   let rt = 0, lastW = innerWidth, lastH = innerHeight;
   const onResize = () => {
     clearTimeout(rt);
+    const real = !(innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && (narrow || !pin));
+    if (real) capHold = true;                                // keep the visitor's place in the panels as it was before the size changed
     rt = setTimeout(() => {
       // phones hide and show their toolbars while scrolling; only a real change of size re-lays the page
-      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && (narrow || !pin)) return;
+      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && (narrow || !pin)) { capHold = false; return; }
       lastW = innerWidth; lastH = innerHeight; setMode();
     }, 120);
   };
