@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css?v=20261015b">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261019a">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -302,6 +302,11 @@
         <p class="vr-biz small">Salon · HVAC · Plumbing · Restaurant</p>
         <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore the full experience<span class="visually-hidden">: the Voice Receptionist Automation showcase</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
         <p class="vr-label small">Interactive demo · Sample data</p>
+        <div class="vr-beyond">
+          <p class="vr-beyond-h">Beyond the call</p>
+          <p class="vr-beyond-p">We also build missed-call text-back, quote and proposal preparation, and lead follow-up workflows. Each system is configured around your services, business rules, and existing tools.</p>
+          <a class="vr-beyond-link" href="#contact">Discuss your automation needs<svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+        </div>
       </div>
     </div>
   </article>
@@ -423,13 +428,18 @@
           <div class="cap-text">
             <p class="cap-n small">02</p>
             <h3>Systems and automation</h3>
-            <ul class="cap-list small"><li>Lead intake and routing systems</li><li>Voice receptionists and appointment booking</li><li>Customer follow-up workflows</li><li>Internal process automation</li><li>Carefully scoped intelligent systems</li></ul>
-            <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
-            <div class="cap-pills">
-              <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore the demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
-              <a class="pill" href="#contact">Talk to us</a>
-            </div>
           </div>
+          <ul class="svc-rows">
+            <li><h4 class="svc-name">Voice Receptionists</h4><p class="svc-desc">Answer customer calls, collect key details, and assist with appointment requests, scheduling, and routing.</p></li>
+            <li><h4 class="svc-name">Missed-Call Text-Back</h4><p class="svc-desc">Respond to missed calls by text, capture what the caller needs, and help them take the next step.</p></li>
+            <li><h4 class="svc-name">Quotes &amp; Proposals</h4><p class="svc-desc">Prepare draft quotes and proposals using your services and pricing rules, ready for your team to review.</p></li>
+            <li><h4 class="svc-name">Lead Follow-Up &amp; Reactivation</h4><p class="svc-desc">Follow up on inquiries, outstanding estimates, and past leads through workflows configured for your business.</p></li>
+          </ul>
+          <div class="cap-demo">
+            <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
+            <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore receptionist demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+          </div>
+          <div class="cap-cta"><a class="pill" href="#contact">Talk to us</a></div>
           <div class="cap-media" aria-hidden="true">
             <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
             <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
@@ -563,7 +573,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js?v=20261015b" defer></script>
+<script src="assets/js/lumera.js?v=20261019a" defer></script>
 <!--/email_off-->
 </body>
 </html>

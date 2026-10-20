@@ -205,8 +205,9 @@
   function measureCaps() {
     caps.classList.remove('caps-flow');
     if (!pin) { C = null; caps.style.height = ''; capPanels.forEach(p => { p.style.transform = ''; }); return; }
-    // the panels pin only if every panel's content fits inside it at rest; otherwise they stack in the page (no hidden text, no inner scrolling)
-    const fits = capPanels.every(p => {
+    // phones read the panels as a plain vertical stack; elsewhere they pin only if every panel's content fits inside it at rest
+    // (otherwise they stack in the page too: no hidden text, no inner scrolling)
+    const fits = innerWidth >= 760 && capPanels.every(p => {
       const cs = getComputedStyle(p), inner = $('.cap-in', p);
       return inner.scrollHeight <= p.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 2;
     });

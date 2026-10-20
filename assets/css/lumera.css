@@ -454,17 +454,37 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .vr-frame img { width: 100%; height: 100%; object-fit: cover; }
 .panel--voice .p-name { text-wrap: balance; }
 
-/* Voice Receptionist: What we build (02) links the demo beside its thumbnails, like Interactive web */
-.cap--auto .cap-list { margin-bottom: 2rem; }
-.vr-label { margin-bottom: 2rem; color: rgba(14, 13, 11, .82); }
+/* What we build (02): four services as editorial rows, then the receptionist demo, then Talk to us */
+.cap--auto .cap-in { grid-template-areas: "text" "rows" "demo" "cta" "media"; }
+.cap--auto .cap-text { grid-area: text; }
+.svc-rows { grid-area: rows; border-top: 1px solid rgba(14, 13, 11, .28); }
+.svc-rows li { display: grid; gap: .6rem; padding: 1.6rem 0; border-bottom: 1px solid rgba(14, 13, 11, .28); }
+.svc-name { margin: 0; font-size: max(2.2rem, 19px); font-weight: 400; line-height: 1.15; letter-spacing: -.02em; }
+.svc-desc { margin: 0; max-width: 52ch; font-size: max(1.5rem, 15px); line-height: 1.45; }
+.cap-demo { grid-area: demo; display: grid; gap: 1.4rem; justify-items: start; }
+.cap--auto .cap-cta { grid-area: cta; }
+.cap--auto .cap-media { grid-area: media; }
+.vr-label { color: rgba(14, 13, 11, .82); }
 .vr-biz { letter-spacing: .06em; }
-.cap-pills { display: flex; flex-wrap: wrap; gap: 1.2rem; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-list { margin-bottom: 1.4rem; }
-.pin.narrow .caps:not(.caps-flow) .vr-label { margin-bottom: 1.4rem; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-media img { width: 58%; }
-.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-media img:nth-child(2) { left: 32%; top: 8%; }
+/* pinned (wide screens): heading, demo and Talk to us on the left above the thumbnails; the services fill the right */
+.pin .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); grid-template-areas: "text rows" "demo rows" "cta rows" "media rows"; row-gap: 2.4rem; }
+.pin .caps:not(.caps-flow) .cap--auto .svc-rows { align-self: start; }
+.pin .caps:not(.caps-flow) .cap--auto .svc-rows li { padding: 1.2rem 0; }
+.pin .caps:not(.caps-flow) .cap--auto .cap-media { min-height: 0; }
+/* the thumbnails take their size from the height left under the buttons, so they never run past the panel */
+.pin .caps:not(.caps-flow) .cap--auto .cap-media img { width: auto; height: 78%; max-width: 64%; aspect-ratio: 16 / 10; object-fit: cover; }
+.pin .caps:not(.caps-flow) .cap--auto .cap-media img:nth-child(2) { left: 22%; top: 22%; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "text" "rows" "demo" "cta"; row-gap: 2rem; }
+.pin.narrow .caps:not(.caps-flow) .cap--auto .cap-media { display: none; }   /* too little height left on a pinned tablet for thumbnails worth seeing */
 
 /* Voice Receptionist: the recording beside an invitation to the full showcase */
+.vr-beyond { display: grid; gap: 1.2rem; justify-items: start; width: 100%; margin-top: 1.6rem; padding-top: 2.4rem; border-top: 1px solid rgba(14, 13, 11, .28); }
+.vr-beyond-h { font-size: max(2rem, 18px); line-height: 1.2; letter-spacing: -.015em; }
+.vr-beyond-p { max-width: 38ch; font-size: max(1.5rem, 15px); line-height: 1.45; }
+.vr-beyond-link { display: inline-flex; align-items: center; gap: .8rem; min-height: 44px; font: 600 max(1.1rem, 12px)/1.2 var(--text); letter-spacing: .04em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.vr-beyond-link .i { width: 12px; height: 12px; }
+@media (hover: hover) { .vr-beyond-link:hover { text-decoration-thickness: 2px; } }
+.vr-beyond-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
 .vr-media { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: clamp(3.2rem, 4vw, 8rem); align-items: center; }
 .vr-site .site-screens { grid-template-columns: minmax(0, 1fr); }
 .vr-invite { display: grid; gap: 2rem; justify-items: start; align-content: center; min-width: 0; }
@@ -682,6 +702,30 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
 .rise .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
 .rise .w > span { display: inline-block; transform: translateY(108%); transition: transform 1.05s var(--ease); transition-delay: calc(var(--i) * 45ms); }
 .rise.in .w > span { transform: none; }
+
+/* ---------- What we build on phones: a natural vertical stack (the panels never pin below 760 px) ---------- */
+@media (max-width: 759px) {
+  .caps-h { padding: 9.6rem var(--m) 2.4rem; font-size: max(5.6rem, 42px); }
+  .cap { padding: 4.8rem var(--m) 5.6rem; }
+  .cap-in { gap: 3.2rem; }
+  .cap h3 { font-size: max(3.8rem, 34px); line-height: 1.02; text-wrap: balance; }
+  .cap-list { margin: 1.8rem 0 0; gap: .8rem 2rem; }
+  .cap-text > .pill { margin-top: 2.8rem; }
+  .cap .pill { width: 100%; }
+  .cap-note { font-size: max(2rem, 19px); line-height: 1.3; }
+  .cap-media { display: block; position: relative; aspect-ratio: 16 / 13; }
+  .cap-media img { position: absolute; width: 74%; box-shadow: 0 24px 40px -24px rgba(14, 13, 11, .45); }
+  .cap-media img:nth-child(1) { left: 0; top: 0; }
+  .cap-media img:nth-child(2) { left: 13%; top: 20%; }
+  .cap-media img:nth-child(3) { left: 26%; top: 40%; }
+  .cap--auto .cap-media { aspect-ratio: 16 / 11; }
+  .cap--auto .cap-media img:nth-child(2) { left: 26%; top: 28%; }
+  .cap-demo { gap: 1.2rem; }
+  .svc-rows li { padding: 1.8rem 0; }
+  /* long labels wrap instead of pushing past the screen (larger text settings) */
+  .cap .pill, .vr-invite .pill { white-space: normal; text-align: center; line-height: 1.25; padding-top: 1rem; padding-bottom: 1rem; }
+  .vr-invite .pill { max-width: 100%; }
+}
 
 /* ---------- tablets and phones ---------- */
 @media (max-width: 1023px) {
