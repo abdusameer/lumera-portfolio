@@ -25,7 +25,8 @@
   vhProbe.setAttribute('aria-hidden', 'true');
   vhProbe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
   doc.body.appendChild(vhProbe);
-  const VH = () => vhProbe.offsetHeight || innerHeight;
+  let vhCache = 0;                                              // measured once per window size: reading it every frame forces layout
+  const VH = () => vhCache || (vhCache = vhProbe.offsetHeight || innerHeight);
 
   /* ------------------------------------------------------------------ scroll + one loop */
   let lenis = null;
@@ -38,20 +39,35 @@
   });
 
   const tasks = new Set();
+  // reads: run first in each frame, while layout is still clean from the last one, so measuring never forces a second layout
+  // after a task has written styles. Tasks that measure take their numbers from here (or from the cached window size).
+  const reads = new Set();
+  let vpW = innerWidth, vpH = innerHeight;
+  addEventListener('resize', () => { vpW = innerWidth; vpH = innerHeight; vhCache = 0; }, { passive: true });
   const regions = [];                                           // the pinned experiences: { bounds(), stops() }, in page order (see the input section)
   let measureDemo = () => {}, demoMoved = () => false;
-  let sy = window.scrollY, prevSy = -1, lastT = 0, dirty = true;
+  // The loop sleeps when nothing moves: a frame requested every 16 ms for nothing kept phones working (and warm) at rest.
+  // It wakes on any input, scroll, resize or change, and stays awake while something is still moving: the page, a smooth
+  // scroll, or an animation that asks for the next frame with wake().
+  let sy = window.scrollY, prevSy = -1, lastT = 0, dirty = true, running = false, awake = 0;
+  const wake = (n = 2) => { if (n > awake) awake = n; if (!running) { running = true; lastT = 0; requestAnimationFrame(loop); } };
   const loop = t => {
     const dt = lastT ? Math.min(64, t - lastT) : 16.667; lastT = t;
     if (lenis) lenis.raf(t);
     sy = window.scrollY;
     const moved = sy !== prevSy;
+    if (moved || dirty) awake = Math.max(awake, 8);           // a few frames past the last movement, so the final position is drawn and read
+    reads.forEach(fn => fn(dt, moved));
     tasks.forEach(fn => fn(dt, moved));
     prevSy = sy; dirty = false;
-    requestAnimationFrame(loop);
+    if (awake > 0 || (lenis && lenis.isScrolling)) { awake--; requestAnimationFrame(loop); } else running = false;
   };
-  requestAnimationFrame(loop);
-  const markDirty = () => { dirty = true; };
+  const markDirty = () => { dirty = true; wake(); };
+  ['scroll', 'wheel', 'touchstart', 'touchmove', 'keydown', 'resize', 'orientationchange', 'focusin', 'pointerdown', 'load'].forEach(t => addEventListener(t, () => wake(), { passive: true, capture: true }));
+  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' || e.buttons) wake(); }, { passive: true });
+  doc.addEventListener('visibilitychange', () => wake());
+  if (lenis) { const scrollTo = lenis.scrollTo.bind(lenis); lenis.scrollTo = (...a) => { wake(); return scrollTo(...a); }; }
+  wake(30);
   const fontsReady = (doc.fonts && doc.fonts.ready) ? doc.fonts.ready : Promise.resolve();
 
   /* ------------------------------------------------------------------ mode: the pinned layouts need motion and room.
@@ -167,7 +183,7 @@
     root.classList.toggle('past-hero', f > 0.28 || s >= S.len);
   }
   tasks.add((dt, moved) => {
-    if (introK < 1) { introK = clamp((performance.now() - introT) / 1500, 0, 1); dirty = true; }
+    if (introK < 1) { introK = clamp((performance.now() - introT) / 1500, 0, 1); dirty = true; wake(); }
     if (!S) { if (moved || dirty) root.classList.toggle('past-hero', sy > panels[0].offsetHeight * 0.5); return; }
     if (!moved && !dirty) return;
     if (sy > S.top + S.len + S.vh * 1.5 && !dirty) { root.classList.add('past-hero'); return; }   // well past the strip: nothing to move (a jump straight here still brings the header in)
@@ -298,14 +314,21 @@
     for (let i = 0; i < w * h; i++) lum[i] = lumOf(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]);
     return { w, h, lum };
   };
-  const imgGrid = img => {                                        // read once, off the main thread; null until it is ready
+  const idle = window.requestIdleCallback ? fn => requestIdleCallback(fn, { timeout: 2000 }) : fn => setTimeout(fn, 200);
+  const imgGrid = img => {                                        // read once, when the page is idle; null until it is ready
     if (grids.has(img)) return grids.get(img);
     grids.set(img, null);
-    createImageBitmap(img, { resizeWidth: 48, resizeQuality: 'low' }).then(bm => { grids.set(img, readGrid(bm, bm.width, bm.height, bm.width)); if (bm.close) bm.close(); }).catch(() => {});
+    idle(() => createImageBitmap(img, { resizeWidth: 48, resizeQuality: 'low' }).then(bm => idle(() => { grids.set(img, readGrid(bm, bm.width, bm.height, bm.width)); if (bm.close) bm.close(); })).catch(() => {}));
     return null;
   };
-  let vid = { el: null, t: 0, g: null };                          // a playing recording, re-read four times a second
-  const vidGrid = v => { const now = performance.now(); if (vid.el !== v || now - vid.t > 500) vid = { el: v, t: now, g: readGrid(v, v.videoWidth, v.videoHeight, 32) }; return vid.g; };
+  // a recording is judged by its poster, read once: reading live video frames back from the GPU stalls phones
+  const posters = new Map();
+  const posterOfVideo = v => {
+    const url = v.poster; if (!url) return null;
+    let im = posters.get(url);
+    if (!im) { im = new Image(); im.decoding = 'async'; im.src = url; posters.set(url, im); }
+    return im.complete && im.naturalWidth ? im : null;
+  };
   // the media's own pixels under the logo, through object-fit cover or contain; null over a letterbox
   const mediaTone = (el, natW, natH, g, r) => {
     if (!g) return null;
@@ -325,7 +348,7 @@
       if (topBar.contains(el)) continue;
       let t = null;
       if (el.tagName === 'IMG' && el.complete && el.naturalWidth) t = mediaTone(el, el.naturalWidth, el.naturalHeight, imgGrid(el), r);
-      else if (el.tagName === 'VIDEO' && el.readyState >= 2 && el.videoWidth && getComputedStyle(el).visibility !== 'hidden') t = mediaTone(el, el.videoWidth, el.videoHeight, vidGrid(el), r);
+      else if (el.tagName === 'VIDEO' && getComputedStyle(el).visibility !== 'hidden') { const im = posterOfVideo(el); if (im) t = mediaTone(el, im.naturalWidth, im.naturalHeight, imgGrid(im), r); }
       else if (el.tagName === 'IFRAME') return 0.8;   // a live study inside a screen: treated as light
       else {
         const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
@@ -336,9 +359,9 @@
     return lumOf(238, 234, 227);                                  // the paper
   };
   let toneAt = 0, onDark = false;
-  tasks.add((dt, moved) => {
+  reads.add((dt, moved) => {
     const now = performance.now();
-    if (now - toneAt < (moved || dirty ? 90 : 300)) return;       // about ten looks a second while scrolling; recordings keep it looking at rest
+    if (now - toneAt < (moved || dirty ? 90 : 1000)) return;      // about ten looks a second while scrolling, one a second at rest
     toneAt = now;
     if (getComputedStyle(logoEl).visibility === 'hidden') return;
     const dark = toneUnder(logoEl.getBoundingClientRect()) < 0.18;   // where ink and paper read equally well
@@ -455,11 +478,12 @@
   if (!reduce && footLetters.length) {
     let near = false;
     new IntersectionObserver(([e]) => { near = e.isIntersecting; markDirty(); }, { rootMargin: '0px 0px 200px 0px' }).observe(footMark);
-    let lastP = -1;
-    tasks.add((dt, moved) => {
-      if (!near || (!moved && !dirty)) return;
-      const r = footMark.getBoundingClientRect();
-      const p = clamp((innerHeight - r.top) / r.height, 0, 1);
+    let lastP = -1, footR = null;
+    reads.add((dt, moved) => { footR = near && (moved || dirty) ? footMark.getBoundingClientRect() : null; });
+    tasks.add(() => {
+      if (!footR) return;
+      const r = footR;
+      const p = clamp((vpH - r.top) / r.height, 0, 1);
       if (p === lastP) return;
       lastP = p;
       footLetters.forEach((s, k) => {
@@ -638,12 +662,14 @@
       // the still arrives well ahead; the clip itself (about 2 MB) only once the pour is close, so it never rides the first load
       new IntersectionObserver(([e], o) => { if (e.isIntersecting) { if (!scrub.poster) scrub.poster = scrub.dataset.poster; o.disconnect(); } }, { rootMargin: '1200px 0px' }).observe(crop);
       new IntersectionObserver(([e]) => { near = e.isIntersecting; if (near) loadVideo(scrub); }, { rootMargin: '300px 0px' }).observe(crop);
+      let cropR = null;
+      reads.add(() => { cropR = near ? crop.getBoundingClientRect() : null; });
       tasks.add(dt => {
-        if (!near) return;
-        const r = crop.getBoundingClientRect(), vh = innerHeight;
+        if (!cropR) return;
+        const r = cropR, vh = vpH;
         const p = clamp((vh * 0.85 - r.top) / (vh * 0.55 + r.height), 0, 1);
         shown = lerp(shown, p, dtK(0.16, dt));
-        if (Math.abs(shown - p) < 0.0005) shown = p;
+        if (Math.abs(shown - p) < 0.0005) shown = p; else wake();
         meter.style.setProperty('--p', shown.toFixed(4));
         if (!ready || !scrub.duration) return;
         want = shown * (scrub.duration - 0.05);
@@ -668,14 +694,16 @@
       let near = false, shown = 0;
       placeWin(KF[0]);
       new IntersectionObserver(([e]) => { near = e.isIntersecting; }, { rootMargin: '300px 0px' }).observe(art);
+      let artR = null;
+      reads.add(() => { artR = near ? art.getBoundingClientRect() : null; });
       tasks.add((dt, moved) => {
-        if (!near) return;
-        const r = art.getBoundingClientRect(), vh = innerHeight;
+        if (!artR) return;
+        const r = artR, vh = vpH;
         // sketch while the stage enters, photograph by the time it starts to leave
         const p = clamp((vh * 0.75 - r.top) / (vh * 0.75 + r.height * 0.25), 0, 1);
         const before = shown;
         shown = lerp(shown, p, dtK(0.14, dt));
-        if (Math.abs(shown - p) < 0.0005) shown = p;
+        if (Math.abs(shown - p) < 0.0005) shown = p; else wake();
         if (Math.abs(shown - before) < 1e-5 && !moved && !dirty) return;
         const q = smooth(shown);
         const seg = q < 0.55 ? 0 : 1, local = seg === 0 ? q / 0.55 : (q - 0.55) / 0.45;
@@ -758,6 +786,7 @@
     let heldK = k, heldAt = 0;
     const speak = now => {
       if (k !== heldK) { heldK = k; heldAt = now; }
+      if (said !== k) wake();                                                // an announcement is pending: keep the frames coming until it is made
       if (said === k || now - heldAt < 250 || (flight && flight.r === region)) return;
       if (said !== -2) live.textContent = k < 0 ? 'Not started.' : k >= N ? 'Demonstration complete. The sample inquiry is recorded in the pipeline.' : `Step ${k + 1} of ${N}: ${$('h4', stages[k]).textContent}. ${EVENT[k]}`;
       said = k;
@@ -853,7 +882,7 @@
         const nk = kAt(sy); if (nk !== k) k = nk;
         render();
       } else if (playing) {
-        elapsed += dt; k = Math.min(N, Math.floor(elapsed / STEP)); if (k >= N) play(false); render();
+        elapsed += dt; k = Math.min(N, Math.floor(elapsed / STEP)); if (k >= N) play(false); render(); wake();
       }
       speak(performance.now());
     });
@@ -995,8 +1024,8 @@
   // so does anything else that stops its glide (the browser's own touch scrolling, an immediate jump), once no gesture is deciding
   if (lenis) tasks.add(() => { if (flight && !g && lenis.isScrolling !== 'smooth') flight = null; });
   addEventListener('pointerdown', e => { if (e.pointerType === 'mouse' && !(e.target.closest && e.target.closest('.pager, .sys-controls'))) flight = null; }, { passive: true });
-  const zone = y => regions.some(r => { const b = r.bounds(); return b && y > b[0] - innerHeight * 0.6 && y < b[1] + innerHeight * 0.6; });
-  if (lenis) tasks.add(() => { lenis.options.smoothWheel = zone(sy); });
+  const zone = y => regions.some(r => { const b = r.bounds(); return b && y > b[0] - vpH * 0.6 && y < b[1] + vpH * 0.6; });
+  if (lenis) tasks.add((dt, moved) => { if (moved || dirty) lenis.options.smoothWheel = zone(sy); });
 
   // keys
   const KEYS = { ArrowDown: 1, ArrowRight: 1, PageDown: 1, ArrowUp: -1, ArrowLeft: -1, PageUp: -1 };
@@ -1200,8 +1229,8 @@
   tasks.add((dt, moved) => {
     if (!moved) return;
     const dy = sy - lastY;
-    if (phone.matches && sy > innerHeight * 1.5 && dy > 6) topBar.classList.add('logo-away');
-    else if (!phone.matches || sy <= innerHeight * 1.5 || dy < -6) topBar.classList.remove('logo-away');
+    if (phone.matches && sy > vpH * 1.5 && dy > 6) topBar.classList.add('logo-away');
+    else if (!phone.matches || sy <= vpH * 1.5 || dy < -6) topBar.classList.remove('logo-away');
     lastY = sy;
   });
 

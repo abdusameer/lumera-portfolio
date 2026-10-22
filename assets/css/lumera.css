@@ -216,7 +216,9 @@ ul, ol { list-style: none; padding: 0; }
 /* the opening hint: only where the page moves sideways; quiet, in the muted ink, gone once the visitor starts to explore */
 .cue { display: none; }
 .pin .cue { display: flex; align-items: center; gap: 1.2rem; margin-top: 2.2rem; color: var(--muted); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-.cue-ico { flex: none; width: max(2.4rem, 22px); height: max(2.4rem, 22px); animation: cue-nudge 3.2s var(--ease-io) infinite; }
+.cue-ico { flex: none; display: block; width: max(2.4rem, 22px); height: max(2.4rem, 22px); animation: cue-nudge 3.2s var(--ease-io) infinite; }   /* an HTML box, so the nudge runs on the compositor */
+.cue-ico svg { display: block; width: 100%; height: 100%; }
+.cue-off .cue-ico, .past-hero .cue-ico { animation: none; }   /* once the hint has done its job, nothing keeps animating */
 @keyframes cue-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 2px); } }
 .cue-off .cue { opacity: 0; transform: translateY(.6rem); pointer-events: none; }
 .hero-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 2rem; margin-top: 3.6rem; padding-top: 1.2rem; border-top: 1px solid var(--ink); }
