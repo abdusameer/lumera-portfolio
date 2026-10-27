@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-JtaCpHIbZ1nWWqwE4agHEbuhiQQtW+GQIjEVaTpzID0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://abdusameer.github.io; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-JtaCpHIbZ1nWWqwE4agHEbuhiQQtW+GQIjEVaTpzID0=' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://abdusameer.github.io https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lumera Creative — Websites, voice receptionists and business automation</title>
 <meta name="description" content="Lumera Creative builds websites, voice receptionists, missed-call text-back, custom CRM systems and follow-up automation. Available to businesses across the U.S. Based in Los Angeles. Start with a free website audit.">
@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css?v=20261026a">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261026b">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -296,7 +296,7 @@
     <div class="ap-main">
       <div class="ap-count"><span class="ap-num" aria-hidden="true">(04)</span><span class="small">Steps, every project</span></div>
       <ol class="ap-rows">
-        <li><span class="num small">01</span><h3>Start with a free website audit.</h3><p>Send us your website. We explain, in plain language, what it communicates clearly, what could confuse customers or make it hard to contact you, and what to fix first.</p></li>
+        <li><span class="num small">01</span><h3>Start with a free website audit.</h3><p>Enter your website. You get a plain-language first look at what it communicates clearly, what could confuse customers or make it hard to contact you, and what to fix first.</p></li>
         <li><span class="num small">02</span><h3>Talk it through.</h3><p>We ask how customers reach you today, what you need and what your budget is. No technical experience required.</p></li>
         <li><span class="num small">03</span><h3>Get a tailored quote.</h3><p>Your quote sets out the scope, the price and any additional charges before you decide anything.</p></li>
         <li><span class="num small">04</span><h3>We set it up around your business.</h3><p>Websites and automations are configured around your services, hours and business rules.</p></li>
@@ -593,7 +593,7 @@
   <section class="faq" id="faq" aria-labelledby="faq-title">
     <h2 class="big" id="faq-title" data-rise>Questions</h2>
     <div class="faq-list">
-      <details class="faq-item"><summary><h3>What's included in the free website audit?</h3><i aria-hidden="true"></i></summary><p>We look at your website the way a new customer would. You get a plain-language summary of what it communicates clearly, what could confuse customers or make it hard to contact you, and which improvements deserve attention first. It's free, and there's no obligation.</p></details>
+      <details class="faq-item"><summary><h3>What's included in the free website audit?</h3><i aria-hidden="true"></i></summary><p>The automatic check reads your homepage and up to two pages it links to (contact and services), looking for what a new customer looks for. You get a plain-language summary of what your website communicates clearly, what could confuse customers or make it hard to contact you, and what to fix first, with a note on what the check couldn't see. If you'd like to talk it through, we'll go over the results with you. It's free, and there's no obligation.</p></details>
       <details class="faq-item"><summary><h3>How much does it cost?</h3><i aria-hidden="true"></i></summary><p>Voice receptionist plans are $99 a month, with setup included and up to 400 call minutes; extra minutes are confirmed in your quote. Websites, custom CRMs and other automation are priced for each business, as a project fee or a monthly plan depending on the service. After the audit and a conversation about your needs and budget, we send a quote that sets out the scope and any additional charges.</p></details>
       <details class="faq-item"><summary><h3>Do I need to be technical?</h3><i aria-hidden="true"></i></summary><p>No technical experience required. We set everything up and explain it in plain language.</p></details>
       <details class="faq-item"><summary><h3>Do you use an off-the-shelf CRM?</h3><i aria-hidden="true"></i></summary><p>No. We build the CRM ourselves, around the way your business works, so your contacts, inquiries and follow-up are kept in one place.</p></details>
@@ -602,21 +602,29 @@
     </div>
   </section>
 
-  <!-- the free audit: the request is written here and sent from the visitor's own email app -->
+  <!-- the free audit: an automatic first look from /api/audit, and the emailed request, sent from the visitor's own email app,
+       when the automatic check is unavailable, over its daily limit or can't read the site -->
   <section class="contact" id="contact" aria-labelledby="contact-title">
     <h2 class="contact-h" id="contact-title" data-rise>Get your free website audit</h2>
-    <p class="contact-sub">Send us your website. We'll explain in plain language what's working, what could confuse customers and what to fix first. Free, with no obligation.</p>
+    <p class="contact-sub">Enter your website address. In about a minute you get a plain-language first look: what's clear, what could confuse customers or make it hard to contact you, and what to fix first. Free, and no email needed.</p>
     <form class="audit-form" id="audit-form" novalidate>
       <div class="af-field af-wide"><label for="af-site">Website address</label><input id="af-site" name="site" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="yourbusiness.com" required aria-describedby="af-error"></div>
-      <div class="af-field"><label for="af-name">Your name</label><input id="af-name" name="name" type="text" autocomplete="name" required aria-describedby="af-error"></div>
-      <div class="af-field"><label for="af-email">Email</label><input id="af-email" name="email" type="email" autocomplete="email" required aria-describedby="af-error"></div>
-      <div class="af-field af-wide"><label for="af-focus">Anything you'd like us to look at? <span class="af-opt">Optional</span></label><textarea id="af-focus" name="focus" rows="3"></textarea></div>
+      <p class="af-why af-wide" id="af-why" hidden></p>
+      <div class="af-req" id="af-req" hidden>
+        <div class="af-field"><label for="af-name">Your name</label><input id="af-name" name="name" type="text" autocomplete="name" aria-describedby="af-error"></div>
+        <div class="af-field"><label for="af-email">Email</label><input id="af-email" name="email" type="email" autocomplete="email" aria-describedby="af-error"></div>
+        <div class="af-field af-wide"><label for="af-focus">Anything you'd like us to look at? <span class="af-opt">Optional</span></label><textarea id="af-focus" name="focus" rows="3"></textarea></div>
+      </div>
+      <div class="af-bot af-wide" id="af-bot"></div>
       <p class="af-error" id="af-error" role="alert"></p>
       <div class="af-send af-wide">
-        <button class="pill pill--gold" type="submit">Request my free audit</button>
-        <p class="af-note">Sending opens your email app with the request ready to go to contact@lumeracreative.agency. Nothing is sent until you send it.</p>
+        <button class="pill pill--gold" type="submit" id="af-submit">Check my website</button>
+        <p class="af-note" id="af-note">An automated first look by Lumera Creative. It reads your homepage and up to two linked pages, and takes up to a minute. <a href="privacy.html#audit">What happens to the address you enter</a>.</p>
       </div>
+      <p class="af-switch af-wide" id="af-switch"><button type="button" id="af-to-request">Prefer a person to look? Request an audit by email.</button></p>
     </form>
+    <div class="af-progress" id="af-progress" hidden><p class="af-progress-line" role="status" aria-live="polite"></p><p class="af-progress-time" aria-hidden="true"></p></div>
+    <article class="af-result" id="af-result" tabindex="-1" aria-labelledby="af-result-h" hidden></article>
     <div class="af-done" id="af-done" tabindex="-1" hidden>
       <p class="af-done-h">Your email app should now be open with your request.</p>
       <p>If it didn't open, copy the message below and send it to contact@lumeracreative.agency.</p>
@@ -648,7 +656,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js?v=20261026a" defer></script>
+<script src="assets/js/lumera.js?v=20261026b" defer></script>
 <!--/email_off-->
 </body>
 </html>

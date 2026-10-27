@@ -37,6 +37,7 @@
       <li><a href="#collect">What this site collects</a></li>
       <li><a href="#storage">What it stores in your browser</a></li>
       <li><a href="#hosting">Hosting</a></li>
+      <li><a href="#audit">The free website audit</a></li>
       <li><a href="#email">When you email us</a></li>
       <li><a href="#studies">Concept studies and Scroll it yourself</a></li>
       <li><a href="#selling">Selling and sharing</a></li>
@@ -49,31 +50,44 @@
   <div class="legal-body">
     <section id="short" aria-labelledby="short-h">
       <h2 id="short-h"><span>01</span>The short version</h2>
-      <p>The Lumera portfolio has no accounts, analytics, advertising trackers or tracking tools, sets no cookies, and you don't need to give us any personal information to view it. Its one form, the free website audit request, sends nothing from the site: it writes an email that you send yourself from your own email app. Some concept studies it links to, or can show inside a frame, are separate websites that load services from other companies and may set cookies. The ways information can reach us, or other companies, are listed below.</p>
+      <p>The Lumera portfolio has no accounts, analytics, advertising trackers or tracking tools, sets no cookies, and you don't need to give us any personal information to view it. Its one form is the free website audit. The automatic check sends the website address you enter (and nothing about you) to our server, which reads that website's public pages and has Anthropic's AI service write the result; a Cloudflare bot check runs first. The emailed request sends nothing from the site: it writes an email that you send yourself from your own email app. Some concept studies it links to, or can show inside a frame, are separate websites that load services from other companies and may set cookies. The ways information can reach us, or other companies, are listed below.</p>
     </section>
 
     <section id="collect" aria-labelledby="collect-h">
       <h2 id="collect-h"><span>02</span>What this site collects</h2>
-      <p>Nothing about you directly. We don't run analytics, error monitoring, advertising pixels, chat widgets or social media embeds on this site. When you fill in the free website audit request, what you type stays in your browser until the form opens your email app with the message written for you; nothing reaches us unless you send that email. Its fonts, scripts, images and recordings are served from the site itself, so your browser doesn't contact other companies to show it.</p>
+      <p>Nothing about you directly. We don't run analytics, error monitoring, advertising pixels, chat widgets or social media embeds on this site. If you use the automatic website audit, the website address you enter reaches our server, as described under <a href="#audit">The free website audit</a>. When you fill in the emailed audit request, what you type stays in your browser until the form opens your email app with the message written for you; nothing reaches us unless you send that email. Its fonts, scripts, images and recordings are served from the site itself, so your browser doesn't contact other companies to show it, until you start typing an address into the audit (see below).</p>
     </section>
 
     <section id="storage" aria-labelledby="storage-h">
       <h2 id="storage-h"><span>03</span>What it stores in your browser</h2>
-      <p>The site stores one small entry in your browser's session storage, named <code>lumera-opened</code>. It lets the opening animation play once per visit instead of every time you return to the page. The entry stays on your device, is never sent to us, and is removed when you close the tab. The site sets no cookies.</p>
+      <p>The site stores one small entry in your browser's session storage, named <code>lumera-opened</code>. It lets the opening animation play once per visit instead of every time you return to the page. The entry stays on your device, is never sent to us, and is removed when you close the tab. The site sets no cookies. If you start the automatic audit, Cloudflare's bot check runs in a small frame from challenges.cloudflare.com, which may store information in your browser under Cloudflare's own address, under Cloudflare's policies.</p>
     </section>
 
     <section id="hosting" aria-labelledby="hosting-h">
       <h2 id="hosting-h"><span>04</span>Hosting</h2>
-      <p>The site is hosted on Cloudflare Pages, a service of Cloudflare, Inc. When your browser asks for a page, Cloudflare receives technical information such as your IP address, your browser type and the page you asked for, and may keep logs. How Cloudflare handles that is described in <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's privacy policy<span class="visually-hidden"> (opens in a new tab)</span></a>. We don't use it to identify visitors.</p>
+      <p>The site, and the server code behind the automatic audit, are hosted on Cloudflare Pages, a service of Cloudflare, Inc. When your browser asks for a page, Cloudflare receives technical information such as your IP address, your browser type and the page you asked for, and may keep logs. How Cloudflare handles that is described in <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's privacy policy<span class="visually-hidden"> (opens in a new tab)</span></a>. We don't use it to identify visitors.</p>
+    </section>
+
+    <section id="audit" aria-labelledby="audit-h">
+      <h2 id="audit-h"><span>05</span>The free website audit</h2>
+      <p>The automatic check needs only a website address. You don't give us your name or email to use it. When you start it:</p>
+      <ul>
+        <li><strong>Bot check.</strong> Cloudflare Turnstile confirms that a person started the check. Its script and frame load from challenges.cloudflare.com only after you start typing an address. Turnstile looks at information about your browser and device to tell people from automated programs and gives our server a pass or fail; Cloudflare handles that information under <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">its privacy policy<span class="visually-hidden"> (opens in a new tab)</span></a>.</li>
+        <li><strong>Reading the website.</strong> Your browser sends the address to our server on this site. The server reads the public homepage at that address and up to two pages it links to (contact and services), the same pages anyone can open. It identifies itself as LumeraAudit and follows the website's robots.txt; if that file asks automated tools to stay away, it doesn't read the site.</li>
+        <li><strong>Writing the result.</strong> Facts our code picks out of those pages (such as headings, links, forms and opening hours) and the text of the pages are sent to Anthropic, PBC, whose AI service writes the result in plain language. Anthropic processes it as our service provider under <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener noreferrer">its privacy policy<span class="visually-hidden"> (opens in a new tab)</span></a> and commercial terms. Nothing about you is sent, only the website's pages.</li>
+        <li><strong>What we keep.</strong> The website address and its result are kept for 7 days in Cloudflare's storage, so the same address can be shown again without another check, and are then deleted automatically. To limit each visitor to 3 checks a day, we keep a count under a scrambled, one-way code made from your IP address and the date, never the IP address itself; it is deleted automatically after 2 days. Our server's logs record which website was checked and what the check cost, not who asked.</li>
+        <li><strong>Discussing the results.</strong> "Discuss your results with us" opens the emailed request with the results written into it. Nothing is sent until you send that email yourself; after that, it's handled as described under <a href="#email">When you email us</a>.</li>
+      </ul>
+      <p>The result describes the website, not you. It is an automated first look and may contain mistakes; we go over it with you before quoting any work.</p>
     </section>
 
     <section id="email" aria-labelledby="email-h">
-      <h2 id="email-h"><span>05</span>When you email us</h2>
-      <p>If you email <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a>, Lumera Creative LLC receives your email address, your name if you include it, and whatever you write. We use it to reply to you, to talk about a project, and to keep an ordinary record of the conversation. Your email provider handles the message as part of delivering it. The email links and the audit request form on this site open your own email app; nothing is sent until you send it. If you ask for a free website audit, we also use the website address you give us to review your site and write the audit.</p>
+      <h2 id="email-h"><span>06</span>When you email us</h2>
+      <p>If you email <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a>, Lumera Creative LLC receives your email address, your name if you include it, and whatever you write. We use it to reply to you, to talk about a project, and to keep an ordinary record of the conversation. Your email provider handles the message as part of delivering it. The email links and the emailed audit request on this site open your own email app; nothing is sent until you send it. If you ask for a free website audit by email, we also use the website address you give us to review your site and write the audit.</p>
     </section>
 
     <section id="studies" aria-labelledby="studies-h">
-      <h2 id="studies-h"><span>06</span>Concept studies and Scroll it yourself</h2>
+      <h2 id="studies-h"><span>07</span>Concept studies and Scroll it yourself</h2>
       <p>The Lumera portfolio does not use advertising trackers or analytics cookies. Each concept study is its own website. Some linked or embedded concept studies may load third-party services, including video players, content-delivery networks, maps, fonts, reservation services, or ordering platforms. Those providers may receive connection information or set cookies under their own policies when a visitor opens or interacts with that content.</p>
       <p>Nothing from a study loads on this page until you choose <strong>Scroll it yourself</strong> on it; then the study runs inside a screen on this page, in a sandboxed frame. The studies are also linked so that you can open them in their own tab.</p>
       <p>When we last checked, on October 6, 2026, a study's own page loaded these services:</p>
@@ -87,23 +101,23 @@
     </section>
 
     <section id="selling" aria-labelledby="selling-h">
-      <h2 id="selling-h"><span>07</span>Selling and sharing</h2>
-      <p>We don't sell personal information, and this site doesn't share it with advertisers or data brokers.</p>
+      <h2 id="selling-h"><span>08</span>Selling and sharing</h2>
+      <p>We don't sell personal information, and this site doesn't share it with advertisers or data brokers. The service providers named on this page, Cloudflare and Anthropic, process what the automatic audit sends them only to provide it.</p>
     </section>
 
     <section id="keep" aria-labelledby="keep-h">
-      <h2 id="keep-h"><span>08</span>How long we keep things</h2>
-      <p>We keep an email conversation for as long as we need it to answer you and to keep ordinary business records. You can ask us to delete it sooner (see below). We keep nothing else about visitors to this site, because we don't collect it.</p>
+      <h2 id="keep-h"><span>09</span>How long we keep things</h2>
+      <p>We keep an email conversation for as long as we need it to answer you and to keep ordinary business records. You can ask us to delete it sooner (see below). Automatic audit results are kept for 7 days and the scrambled daily counts for 2 days, as described under <a href="#audit">The free website audit</a>. We keep nothing else about visitors to this site, because we don't collect it.</p>
     </section>
 
     <section id="choices" aria-labelledby="choices-h">
-      <h2 id="choices-h"><span>09</span>Your choices and requests</h2>
+      <h2 id="choices-h"><span>10</span>Your choices and requests</h2>
       <p>Depending on where you live, you may have the right to ask what personal information we hold about you, to have it corrected or deleted, and to object to some uses of it. To make a request, email <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a> with "Privacy request" in the subject. We may ask you to confirm it's really you, and we'll tell you if we can't do what you ask and why. If you're not happy with our answer, you may be able to complain to your local data protection authority.</p>
       <p>This site runs no tracking of its own, so it has no cookie settings to change and no opt-out signals, such as Global Privacy Control, for it to apply. If nonessential tracking is ever added, we'll review this policy first and ask before using it.</p>
     </section>
 
     <section id="changes" aria-labelledby="changes-h">
-      <h2 id="changes-h"><span>10</span>Changes</h2>
+      <h2 id="changes-h"><span>11</span>Changes</h2>
       <p>If we change how the site handles information, we'll update this page and the date at the top.</p>
     </section>
   </div>
