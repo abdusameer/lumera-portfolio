@@ -926,6 +926,39 @@
     btn._t = setTimeout(() => { btn.textContent = label; btn.classList.remove('is-done'); if (status) status.textContent = ''; }, 2600);
   }));
 
+  /* ------------------------------------------------------------------ keep scrolling (phones)
+     A small chevron fades in after the page has rested for a moment and out the instant it moves or is touched. The style keeps it off
+     while a pager is on screen and at the end; the observers below tell it (the audit form and the footer are the end). */
+  const keepEl = $('.keep');
+  if (keepEl) {
+    const phoneMq = matchMedia('(pointer: coarse) and (max-width: 1023px)');
+    let keepOn = false, keepT = 0, keepLast = 0, keepOff = 0;
+    const keepSet = v => {
+      if (v === keepOn) return;
+      keepOn = v; keepEl.classList.toggle('on', v); clearTimeout(keepOff);
+      if (v) keepOff = setTimeout(() => keepSet(false), 7000);                          // it nudges for a few seconds, then leaves the reader alone
+    };
+    const keepCheck = () => {
+      const wait = 1500 - (performance.now() - keepLast);
+      if (wait > 30) { keepT = setTimeout(keepCheck, wait); return; }
+      keepT = 0; if (phoneMq.matches) keepSet(true);
+    };
+    const keepMoved = () => { keepLast = performance.now(); if (keepOn) keepSet(false); if (!keepT) keepT = setTimeout(keepCheck, 1500); };
+    addEventListener('scroll', keepMoved, { passive: true });
+    addEventListener('touchstart', keepMoved, { passive: true });
+    keepLast = performance.now() + 2800; keepT = setTimeout(keepCheck, 4300);          // the first one waits for the opening to settle
+    if ('IntersectionObserver' in window) {
+      const watch = (els, cls, margin) => {                                                // a class on the page while any of these is on screen
+        const seen = new Set();
+        const io = new IntersectionObserver(es => { es.forEach(e => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target))); root.classList.toggle(cls, seen.size > 0); }, { rootMargin: margin });
+        els.forEach(el => el && io.observe(el));
+      };
+      watch([$('#contact'), $('.foot')], 'at-end', '0px 0px -30% 0px');
+      watch($$('.pager'), 'pager-up', '0px');
+      watch([$('.approach'), $('.sys-demo')], 'keep-dark', '-90% 0px 0px 0px');             // the chevron turns dark-on-light or light-on-dark with what is under it                                              // a pager (opening, What we build, the demonstration) has the bottom to itself
+    }
+  }
+
   /* ------------------------------------------------------------------ the free audit request
      Nothing is sent from the page: the form writes the email and opens the visitor's own email app. The same message stays on
      screen with a copy button, for a computer where no email app opens. */

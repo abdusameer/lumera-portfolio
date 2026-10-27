@@ -335,6 +335,22 @@ ul, ol { list-style: none; padding: 0; }
 .pin.narrow .lr-kind { grid-column: 2; grid-row: 2; justify-content: flex-start; text-align: left; }
 .pin.narrow .list-text { font-size: 16px; line-height: 1.45; letter-spacing: 0; }
 
+/* keep scrolling: a small round chevron at the foot of a phone's screen. Shown after a pause (never while the page moves), only where
+   the page flows (while a pager is on screen it has the bottom to itself), gone at the end. Only opacity and transform change, so it stays on the compositor. */
+.keep { display: none; }
+@media (pointer: coarse) and (max-width: 1023px) {
+  .js .keep { --kd: max(3rem, 28px); display: grid; place-items: center; position: fixed; left: 50%; bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px)); z-index: 20; width: var(--kd); height: var(--kd); margin-left: calc(var(--kd) / -2); border-radius: 50%; background: rgba(238, 234, 227, .92); color: var(--ink); box-shadow: 0 0 0 1px rgba(14, 13, 11, .12), 0 8px 18px -12px rgba(14, 13, 11, .55); opacity: 0; pointer-events: none; transition: opacity .35s var(--ease), background-color .4s var(--ease), color .4s var(--ease); }
+  .keep.on { opacity: 1; transition-duration: .9s; }
+  .keep-ico { display: block; width: 52%; height: 52%; }
+  .keep-ico svg { display: block; width: 100%; height: 100%; }
+  .keep.on .keep-ico { animation: keep-bob 2.4s var(--ease-io) infinite; }
+  html.keep-dark .keep { background: rgba(238, 234, 227, .16); color: var(--paper); box-shadow: 0 0 0 1px rgba(238, 234, 227, .5); }   /* over the dark sections */
+  html.pager-up .keep, html.at-end .keep { opacity: 0; transition-duration: .25s; }
+  html.pager-up .keep .keep-ico, html.at-end .keep .keep-ico { animation: none; }
+}
+@keyframes keep-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .keep-ico { animation: none !important; } }
+
 /* previous / next on touch screens: a small pill with two round buttons and the current stage, inside the pinned stage */
 .pager { display: none; }
 .pager:not([hidden]) { z-index: 30; display: flex; align-items: center; gap: .2rem; padding: 4px; border-radius: 99px; background: rgba(238, 234, 227, .94); color: var(--ink); box-shadow: 0 0 0 1px rgba(14, 13, 11, .14), 0 10px 26px -16px rgba(14, 13, 11, .5); }

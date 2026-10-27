@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css?v=20261026a">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261026b">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -69,6 +69,9 @@
 
 <!-- the opening: the letters as thin slices, then the page slides in over them -->
 <div class="loader" id="loader" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></div>
+
+<!-- a quiet nudge to keep scrolling, on phones only (the script shows it after a pause; the style hides it elsewhere) -->
+<div class="keep" aria-hidden="true"><span class="keep-ico"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
 
 <header class="top" id="top-bar">
   <a class="logo" href="#top" aria-label="Lumera Creative, back to top"><svg class="logo-owl" viewBox="0 0 1000 1000" aria-hidden="true"><use href="assets/img/owl.svg#owl"/></svg></a>
@@ -648,7 +651,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js?v=20261026a" defer></script>
+<script src="assets/js/lumera.js?v=20261026b" defer></script>
 <!--/email_off-->
 </body>
 </html>
