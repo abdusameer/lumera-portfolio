@@ -381,11 +381,18 @@
     const top = id === '#top';
     const target = top ? strip : doc.querySelector(id);
     if (!target) return;
-    scrollToY(top ? 0 : anchorY(target), true, () => {
+    const finish = () => {
       if (!focus || top) return;
       if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
       target.focus({ preventScroll: true });
-    });
+    };
+    const yOf = () => Math.min(anchorY(target), doc.documentElement.scrollHeight - innerHeight);
+    // what the page passes on the way can open as it goes (on a phone, the demonstration's record): once it has, follow the target
+    const settle = (n = 0) => {
+      if (top || n > 3) { finish(); return; }
+      setTimeout(() => { const y = yOf(); if (Math.abs(y - window.scrollY) > 4) scrollToY(y, false, () => settle(n + 1)); else finish(); }, 260);
+    };
+    scrollToY(top ? 0 : yOf(), true, () => settle());
   };
   doc.addEventListener('click', e => {
     const a = e.target.closest('a[href^="#"]');
@@ -918,6 +925,52 @@
     }
     btn._t = setTimeout(() => { btn.textContent = label; btn.classList.remove('is-done'); if (status) status.textContent = ''; }, 2600);
   }));
+
+  /* ------------------------------------------------------------------ the free audit request
+     Nothing is sent from the page: the form writes the email and opens the visitor's own email app. The same message stays on
+     screen with a copy button, for a computer where no email app opens. */
+  const auditForm = $('#audit-form');
+  if (auditForm) {
+    const to = ($('.contact-mail a[href^="mailto:"]') || { getAttribute: () => '' }).getAttribute('href').replace(/^mailto:/, '').split('?')[0];
+    const done = $('#af-done'), msgBox = $('#af-msg'), err = $('#af-error'), copyBtn = $('#af-copy'), copyStatus = $('.af-copy-status');
+    const field = n => auditForm.elements[n];
+    auditForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const site = field('site').value.trim(), name = field('name').value.trim(), email = field('email').value.trim(), focus = field('focus').value.trim();
+      const bad = [];
+      if (!/^(https?:\/\/)?[^\s/.]+(\.[^\s/.]+)*\.[a-z]{2,}(\/\S*)?$/i.test(site)) bad.push(['site', 'Enter your website address, for example yourbusiness.com.']);
+      if (!name) bad.push(['name', 'Enter your name.']);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) bad.push(['email', 'Enter an email address we can reply to.']);
+      ['site', 'name', 'email'].forEach(n => field(n).removeAttribute('aria-invalid'));
+      if (bad.length) {
+        bad.forEach(([n]) => field(n).setAttribute('aria-invalid', 'true'));
+        err.textContent = bad.map(b => b[1]).join(' ');
+        field(bad[0][0]).focus();
+        return;
+      }
+      err.textContent = '';
+      const subject = 'Free website audit: ' + site;
+      const body = `Hello Lumera,\n\nPlease send me a free website audit.\n\nWebsite: ${site}\nName: ${name}\nEmail: ${email}` + (focus ? `\nWhat I'd like you to look at: ${focus}` : '') + '\n\nThank you.';
+      msgBox.value = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+      done.hidden = false;
+      location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      done.focus({ preventScroll: true });
+      markDirty();   // the page grew: pinned lengths below are measured again
+    });
+    copyBtn.addEventListener('click', async () => {
+      let ok = false;
+      try { await navigator.clipboard.writeText(msgBox.value); ok = true; } catch (e) {
+        msgBox.select();
+        try { ok = doc.execCommand('copy'); } catch (e2) { ok = false; }
+      }
+      if (!ok) msgBox.select();
+      copyStatus.textContent = ok ? 'Copied' : `Couldn't copy it for you. It's selected: press ${mac ? '⌘C' : 'Ctrl+C'}.`;
+      clearTimeout(copyBtn._t); copyBtn._t = setTimeout(() => { copyStatus.textContent = ''; }, 2600);
+    });
+    // the header's audit button steps aside while the form itself is on screen
+    const contactSec = $('#contact');
+    if (contactSec && 'IntersectionObserver' in window) new IntersectionObserver(([en]) => root.classList.toggle('at-audit', en.isIntersecting), { rootMargin: '0px 0px -35% 0px' }).observe(contactSec);
+  }
 
   /* ------------------------------------------------------------------ input: one progress, any gesture
      The page's scroll position is the single progress value for every pinned experience (the opening and the work, the capabilities,

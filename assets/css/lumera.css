@@ -144,8 +144,8 @@ ul, ol { list-style: none; padding: 0; }
 .intro-run .hero-mark svg { clip-path: inset(0 48.6%); }
 .intro-go .hero-mark svg { clip-path: inset(0 0%); transition: clip-path 1.2s var(--ease-io); transition-delay: calc(240ms + var(--k) * 70ms); }
 /* (moved, never hidden: the text is painted under the loader from the start, so it can be the first paint) */
-.intro-run .hero-nav a, .intro-run .hero-tag, .intro-run .hero-sub, .intro-run .hero-foot { transform: translateY(2.4rem); }
-.intro-go .hero-nav a, .intro-go .hero-tag, .intro-go .hero-sub, .intro-go .hero-foot { transform: none; transition: transform 1.2s var(--ease) .8s; }
+.intro-run .hero-nav a, .intro-run .hero-tag, .intro-run .hero-sub, .intro-run .hero-offer, .intro-run .hero-act, .intro-run .hero-foot { transform: translateY(2.4rem); }
+.intro-go .hero-nav a, .intro-go .hero-tag, .intro-go .hero-sub, .intro-go .hero-offer, .intro-go .hero-act, .intro-go .hero-foot { transform: none; transition: transform 1.2s var(--ease) .8s; }
 .intro-go .hero-nav a:nth-child(2) { transition-delay: .96s; }
 .intro-go .hero-nav a:nth-child(3) { transition-delay: 1.02s; }
 .intro-go .hero-nav a:nth-child(4) { transition-delay: 1.08s; }
@@ -177,6 +177,12 @@ ul, ol { list-style: none; padding: 0; }
 .top .logo, .burger { visibility: visible; }
 .pin:not(.past-hero) .top .logo, .pin:not(.narrow):not(.past-hero) .burger { opacity: 0; transform: translateY(-140%); visibility: hidden; transition: opacity .5s var(--ease), transform .7s var(--ease), visibility 0s .7s; }
 .js:not(.pin):not(.past-hero) .top .logo { opacity: 0; visibility: hidden; transition: opacity .5s var(--ease), visibility 0s .5s; }
+/* the free audit, always one tap away once the opening has its own button out of view; not while the audit itself is on screen */
+.top-act { display: flex; align-items: center; gap: 1rem; }
+.top-cta { pointer-events: auto; min-height: max(5.2rem, 44px); padding: 0 2rem; visibility: visible; transition: color .45s var(--ease), opacity .5s var(--ease), transform .7s var(--ease); }
+.top-cta::after { display: none; }
+.js:not(.past-hero) .top-cta, .at-audit .top-cta { opacity: 0; transform: translateY(-140%); visibility: hidden; transition: opacity .5s var(--ease), transform .7s var(--ease), visibility 0s .7s; }
+@media (max-width: 759px) { .top-cta-long { display: none; } .top-cta { padding: 0 1.6rem; } }
 
 /* ---------- menu ---------- */
 .menu { position: fixed; inset: 0; z-index: 70; background: var(--ink); color: var(--paper); clip-path: inset(100% 0 0 0); transition: clip-path .5s var(--ease-io); }   /* leaving is quicker than arriving */
@@ -197,6 +203,7 @@ ul, ol { list-style: none; padding: 0; }
 .menu.is-open .menu-nav a:nth-child(2) span { transition-delay: .27s; }
 .menu.is-open .menu-nav a:nth-child(3) span { transition-delay: .32s; }
 .menu.is-open .menu-nav a:nth-child(4) span { transition-delay: .37s; }
+.menu.is-open .menu-nav a:nth-child(5) span { transition-delay: .42s; }
 @media (hover: hover) { .menu-nav a:hover span { opacity: .55; } }
 .menu-info { grid-column: 2; align-self: start; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding-top: 12vh; }
 .menu-info a { display: block; padding: .6rem 0; }
@@ -213,9 +220,11 @@ ul, ol { list-style: none; padding: 0; }
 .hero-mark { display: block; height: 32vh; height: 32svh; min-height: 18rem; color: var(--ink); }
 .hero-tag { display: block; margin-top: 2rem; font-size: max(2.4rem, 20px); line-height: 1.1; letter-spacing: -.02em; }
 .hero-sub { max-width: 34ch; margin-top: 1rem; color: var(--muted); font-size: max(1.6rem, 15px); }
+.hero-offer { max-width: 44ch; margin-top: 1.6rem; font-size: max(1.6rem, 15px); line-height: 1.4; }
+.hero-act { display: flex; flex-wrap: wrap; align-items: center; gap: 1.6rem 3.2rem; margin-top: 2.8rem; }
 /* the opening hint: only where the page moves sideways; quiet, in the muted ink, gone once the visitor starts to explore */
 .cue { display: none; }
-.pin .cue { display: flex; align-items: center; gap: 1.2rem; margin-top: 2.2rem; color: var(--muted); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.pin .cue { display: flex; align-items: center; gap: 1.2rem; color: var(--muted); transition: opacity .9s var(--ease), transform .9s var(--ease); }
 .cue-ico { flex: none; display: block; width: max(2.4rem, 22px); height: max(2.4rem, 22px); animation: cue-nudge 3.2s var(--ease-io) infinite; }   /* an HTML box, so the nudge runs on the compositor */
 .cue-ico svg { display: block; width: 100%; height: 100%; }
 .cue-off .cue-ico, .past-hero .cue-ico { animation: none; }   /* once the hint has done its job, nothing keeps animating */
@@ -276,7 +285,7 @@ ul, ol { list-style: none; padding: 0; }
 .hero-nav i { width: .8rem; height: .8rem; border-radius: 50%; background: var(--dot); transition: transform .5s var(--ease); }
 .hero-nav a:focus-visible i { transform: scale(2.6); }
 @media (hover: hover) { .hero-nav a:hover i { transform: scale(2.6); } }
-.pin .hero-mark { height: 42vh; }
+.pin .hero-mark { height: 34vh; }
 .pin .panel--proj { display: block; }
 .pin .p-media { aspect-ratio: auto; width: 100%; height: 62vh; }
 .pin .p-info { position: absolute; left: 0; bottom: 0; width: 62vw; height: 38vh; min-height: 0; }
@@ -303,9 +312,12 @@ ul, ol { list-style: none; padding: 0; }
 .pin.narrow .panel:nth-child(4) { width: 3vw; transform: translate3d(97vw, 0, 0); }
 .pin.narrow .panel:nth-child(5) { width: 0; transform: translate3d(100vw, 0, 0); }
 .pin.narrow .hero-nav { display: none; }
-.pin.narrow .hero-mark { height: 34svh; min-height: 0; }
-.pin.narrow .hero-h { min-height: 0; }   /* on a short phone the wordmark gives up height, so the opening's last line clears the pager */
-.pin.narrow .hero-foot { flex-direction: column; margin-top: 2.4rem; }
+.pin.narrow .hero-h { flex: 1 1 auto; justify-content: flex-end; min-height: 0; margin-top: 0; }
+.pin.narrow .hero-mark { flex: 1 1 0; height: auto; min-height: 6svh; max-height: 30svh; }   /* the wordmark takes what the words leave, so the opening's last line clears the pager */
+.pin.narrow .hero-act { margin-top: 2rem; }
+.pin.narrow .hero-foot span:first-child { display: none; }   /* the offer line above already says what we do: room for the hint */
+@media (max-height: 700px) { .pin.narrow .hero-act .cue { display: none; } }   /* a short phone: the wordmark keeps its height; the pager says it moves sideways */
+.pin.narrow .hero-foot { flex-direction: column; margin-top: 2rem; }
 .pin.narrow .p-media { height: 50svh; }
 .pin.narrow .p-info { top: 50svh; height: auto; width: 84vw; padding: 1.6rem 1.6rem calc(1.6rem + 100lvh - 100svh); }
 .pin.narrow .p-name { font-size: max(4.4rem, 34px); }
@@ -459,10 +471,13 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 /* What we build (02): four services as editorial rows, then the receptionist demo, then Talk to us */
 .cap--auto .cap-in { grid-template-areas: "text" "rows" "demo" "cta" "media"; }
 .cap--auto .cap-text { grid-area: text; }
-.svc-rows { grid-area: rows; border-top: 1px solid rgba(14, 13, 11, .28); }
+.svc-block { grid-area: rows; }
+.svc-rows { border-top: 1px solid rgba(14, 13, 11, .28); }
 .svc-rows li { display: grid; gap: .6rem; padding: 1.6rem 0; border-bottom: 1px solid rgba(14, 13, 11, .28); }
 .svc-name { margin: 0; font-size: max(2.2rem, 19px); font-weight: 400; line-height: 1.15; letter-spacing: -.02em; }
 .svc-desc { margin: 0; max-width: 52ch; font-size: max(1.5rem, 15px); line-height: 1.45; }
+.svc-price { justify-self: start; margin-top: .4rem; padding: .5em .9em; border-radius: 99px; box-shadow: inset 0 0 0 1px currentColor; }
+.svc-note { max-width: 52ch; margin-top: 1.6rem; font-size: max(1.4rem, 14px); line-height: 1.45; }
 .cap-demo { grid-area: demo; display: grid; gap: 1.4rem; justify-items: start; }
 .cap--auto .cap-cta { grid-area: cta; }
 .cap--auto .cap-media { grid-area: media; }
@@ -470,7 +485,7 @@ figcaption { margin-top: 1.4rem; max-width: 64ch; font-size: max(1.3rem, 13px); 
 .vr-biz { letter-spacing: .06em; }
 /* pinned (wide screens): heading, demo and Talk to us on the left above the thumbnails; the services fill the right */
 .pin .caps:not(.caps-flow) .cap--auto .cap-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto auto minmax(12rem, 1fr); grid-template-areas: "text rows" "demo rows" "cta rows" "media rows"; row-gap: 2.4rem; }
-.pin .caps:not(.caps-flow) .cap--auto .svc-rows { align-self: start; }
+.pin .caps:not(.caps-flow) .cap--auto .svc-block { align-self: start; }
 .pin .caps:not(.caps-flow) .cap--auto .svc-rows li { padding: 1.2rem 0; }
 .pin .caps:not(.caps-flow) .cap--auto .cap-media { min-height: 0; }
 /* the thumbnails take their size from the height left under the buttons, so they never run past the panel */
@@ -676,11 +691,67 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .sys-controls .pill { justify-content: space-between; }
 }
 
+/* ---------- about: two names set large on the paper ---------- */
+.about { display: grid; grid-template-columns: 5fr 7fr; column-gap: 6rem; row-gap: 6rem; padding: 18rem var(--m) 14rem; background: var(--paper); }
+.ab-lede { max-width: 34ch; margin-top: 3.2rem; font-size: max(2.4rem, 19px); line-height: 1.25; letter-spacing: -.015em; }
+.ab-people { align-self: end; border-top: 1px solid var(--ink); }
+.ab-people li { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--line); }
+.ab-name { font-size: max(9.6rem, 52px); line-height: .95; letter-spacing: -.045em; }
+.ab-people .small { color: var(--muted); }
+.ab-facts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; padding-top: 2.4rem; border-top: 1px solid var(--line); }
+.ab-facts dt { color: var(--muted); }
+.ab-facts dd { margin-top: .8rem; font-size: max(2rem, 17px); letter-spacing: -.01em; }
+
+/* ---------- questions: plain answers, one open at a time if you like ---------- */
+.faq { display: grid; grid-template-columns: 5fr 7fr; column-gap: 6rem; padding: 4rem var(--m) 18rem; background: var(--paper); }
+.faq-list { border-top: 1px solid var(--ink); }
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 44px; padding: 2.4rem 0; cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item h3 { font-size: max(2.4rem, 19px); font-weight: 400; line-height: 1.2; letter-spacing: -.015em; }
+.faq-item summary i { position: relative; flex: none; width: max(3.2rem, 28px); height: max(3.2rem, 28px); border-radius: 50%; box-shadow: inset 0 0 0 1px currentColor; transition: transform .45s var(--ease), background .3s; }
+.faq-item summary i::before, .faq-item summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 36%; height: 1.5px; margin: -.75px 0 0 -18%; background: currentColor; }
+.faq-item summary i::after { transform: rotate(90deg); transition: transform .45s var(--ease); }
+.faq-item[open] summary i::after { transform: none; }
+@media (hover: hover) { .faq-item summary:hover i { background: var(--gold); } }
+.faq-item summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.faq-item p { max-width: 58ch; padding: 0 0 2.8rem; font-size: max(1.6rem, 16px); line-height: 1.5; color: var(--muted); }
+
 /* ---------- contact + footer: the dark close ---------- */
 .contact { display: grid; justify-items: center; padding: 22rem var(--m) 16rem; background: var(--ink); color: var(--paper); text-align: center; }
 .contact-h { max-width: 11ch; font-size: max(9.6rem, 44px); font-weight: 400; line-height: .98; letter-spacing: -.045em; }
 .contact-sub { margin-top: 2.4rem; font-size: max(2rem, 17px); opacity: .78; }
-.contact-actions { display: grid; justify-items: center; gap: 2rem; margin-top: 5.6rem; }
+.contact-actions { display: grid; justify-items: center; gap: 2rem; margin-top: 3.2rem; }
+/* the audit request: a short form on the dark ground; it writes the email, the visitor sends it */
+.audit-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 2.4rem; width: min(100%, 72rem); margin-top: 5.6rem; text-align: left; }
+.af-wide { grid-column: 1 / -1; }
+.af-field { display: grid; gap: .8rem; }
+.af-field label { font: 600 max(1.1rem, 12px)/1.35 var(--text); letter-spacing: .04em; text-transform: uppercase; }
+.af-opt { margin-left: .6rem; font-weight: 400; text-transform: none; letter-spacing: 0; opacity: .7; }
+.audit-form input, .audit-form textarea, .af-done textarea { width: 100%; min-height: 48px; padding: 1.2rem 1.4rem; border: 0; border-radius: .6rem; background: rgba(238, 234, 227, .08); box-shadow: inset 0 0 0 1px rgba(238, 234, 227, .4); color: var(--paper); font: 400 max(1.6rem, 16px)/1.4 var(--text); transition: box-shadow .25s; }
+.audit-form textarea, .af-done textarea { resize: vertical; }
+.audit-form input::placeholder { color: rgba(238, 234, 227, .5); }
+.audit-form input:focus, .audit-form textarea:focus, .af-done textarea:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
+.audit-form [aria-invalid="true"] { box-shadow: inset 0 0 0 2px #F0A08A; }
+.af-error { grid-column: 1 / -1; color: #F0A08A; font-size: max(1.5rem, 15px); }
+.af-error:empty { display: none; }
+.af-send { display: flex; flex-wrap: wrap; align-items: center; gap: 1.6rem 2.4rem; }
+.af-note { flex: 1 1 28ch; font-size: max(1.4rem, 14px); line-height: 1.45; opacity: .72; }
+.af-done { display: grid; gap: 1.4rem; width: min(100%, 72rem); margin-top: 5.6rem; text-align: left; font-size: max(1.6rem, 16px); }
+.af-done[hidden] { display: none; }
+.af-done:focus { outline: none; }
+.af-done-h { font-size: max(2.4rem, 20px); letter-spacing: -.015em; }
+.af-copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.6rem; }
+.af-copy { min-height: 44px; padding: 0 1.8rem; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(238, 234, 227, .45); font: 600 12px/1 var(--text); letter-spacing: .04em; text-transform: uppercase; }
+@media (hover: hover) { .af-copy:hover { box-shadow: inset 0 0 0 1px var(--paper); } }
+.af-copy-status { color: var(--gold); font-size: 13px; }
+.af-nojs { display: none; margin-top: 4rem; font-size: max(1.8rem, 16px); }
+.af-nojs a { text-decoration: underline; text-underline-offset: 3px; }
+html:not(.js) .audit-form { display: none; }
+html:not(.js) .af-nojs { display: block; }
+.contact-alt { display: grid; justify-items: center; width: min(100%, 72rem); margin-top: 12rem; padding-top: 6rem; border-top: 1px solid rgba(238, 234, 227, .25); }
+.contact-alt-h { font-size: max(4.8rem, 30px); font-weight: 400; line-height: 1.02; letter-spacing: -.035em; }
+.contact-alt-sub { margin-top: 1.6rem; font-size: max(1.8rem, 16px); opacity: .78; }
 .contact-mail { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem 1.6rem; font-size: max(1.6rem, 15px); }
 .contact-mail a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
 .copy { min-height: 44px; padding: 0 1.6rem; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(238, 234, 227, .45); font: 600 12px/1 var(--text); letter-spacing: .04em; text-transform: uppercase; transition: box-shadow .3s, transform .45s var(--ease); }
@@ -754,6 +825,8 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .live-btn { justify-self: center; }
   .drinks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 1.6rem; }
   .approach { grid-template-columns: minmax(0, 1fr); row-gap: 6rem; }
+  .about, .faq { grid-template-columns: minmax(0, 1fr); }
+  .faq { row-gap: 4rem; }
   .ap-side { position: static; }
   .foot-info { grid-template-columns: 1fr 1fr; }
   .foot-info > p:last-child { text-align: left; }
@@ -784,6 +857,11 @@ html:not(.js) .sys-controls, html:not(.js) .sys-hint, html:not(.js) .sys-packet 
   .ap-rows li { grid-template-columns: 4rem minmax(0, 1fr); row-gap: 1rem; padding-inline: .4rem; }
   .ap-rows p { grid-column: 2; }
   .contact { padding: 14rem var(--m) 12rem; }
+  .about { padding: 10rem var(--m) 8rem; row-gap: 4.8rem; }
+  .faq { padding: 2rem var(--m) 10rem; }
+  .ab-facts { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+  .audit-form { grid-template-columns: minmax(0, 1fr); }
+  .contact-alt { margin-top: 8rem; padding-top: 4.8rem; }
   .foot-info { grid-template-columns: 1fr; }
   .foot-mark { height: 22vh; }
 }

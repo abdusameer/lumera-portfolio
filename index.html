@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-JtaCpHIbZ1nWWqwE4agHEbuhiQQtW+GQIjEVaTpzID0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://abdusameer.github.io; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lumera Creative — Where design meets innovation</title>
-<meta name="description" content="Lumera Creative: where design meets innovation. We start with the problem, then design and build the technology it calls for. Concept studies for rōk and BB's Bakery, and Voice Receptionist, an interactive automation demo.">
+<title>Lumera Creative — Websites, voice receptionists and business automation</title>
+<meta name="description" content="Lumera Creative builds websites, voice receptionists, missed-call text-back, custom CRM systems and follow-up automation. Available to businesses across the U.S. Based in Los Angeles. Start with a free website audit.">
 <meta name="theme-color" content="#EEEAE3">
 <meta name="color-scheme" content="light">
 <meta name="author" content="Lumera Creative LLC">
@@ -13,7 +13,7 @@
 <link rel="canonical" href="https://lumeracreative.agency/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lumera Creative">
-<meta property="og:title" content="Lumera Creative — Where design meets innovation">
+<meta property="og:title" content="Lumera Creative — Websites, voice receptionists and business automation">
 <meta property="og:description" content="Where design meets innovation. We start with the problem, then design and build the technology it calls for.">
 <meta property="og:url" content="https://lumeracreative.agency/">
 <meta property="og:image" content="https://lumeracreative.agency/assets/og.jpg">
@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/work/rok-panel-900.webp 900w, assets/img/work/rok-panel-1600.webp 1600w" imagesizes="(min-width: 1024px) 62vw, 100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/lumera.css?v=20261022a">
+<link rel="stylesheet" href="assets/css/lumera.css?v=20261026a">
 <!-- before the first paint: the layout mode, and whether the opening runs (once per visit, at the top; not on reload, back or a link to a section) -->
 <script>(function(){var d=document.documentElement,m=matchMedia('(prefers-reduced-motion: reduce)').matches,w=innerWidth,h=innerHeight,n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];d.classList.add('js');var W=!m&&w>=1024&&w>h*1.1&&h>=500,N=!m&&!W&&h>=600&&h>=w*1.15;if(W||N)d.classList.add('pin');if(N)d.classList.add('narrow');var seen=1;try{seen=sessionStorage.getItem('lumera-opened');sessionStorage.setItem('lumera-opened','1')}catch(e){}if(!m&&!seen&&!location.hash&&!(n&&n.type!=='navigate'))d.classList.add('intro-run');})();</script>
 <script type="application/ld+json">
@@ -35,7 +35,10 @@
   "legalName": "Lumera Creative LLC",
   "url": "https://lumeracreative.agency/",
   "email": "contact@lumeracreative.agency",
-  "description": "Where design meets innovation. A creative technology and automation agency: we start with the problem, then design and build the technology it calls for."
+  "description": "Where design meets innovation. Lumera Creative builds websites, voice receptionists, missed-call text-back, custom CRM systems and follow-up automation. Available to businesses across the U.S.",
+  "address": { "@type": "PostalAddress", "addressLocality": "Los Angeles", "addressRegion": "CA", "addressCountry": "US" },
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "founder": [ { "@type": "Person", "name": "Afrid" }, { "@type": "Person", "name": "Sam" } ]
 }
 </script>
 </head>
@@ -69,7 +72,10 @@
 
 <header class="top" id="top-bar">
   <a class="logo" href="#top" aria-label="Lumera Creative, back to top"><svg class="logo-owl" viewBox="0 0 1000 1000" aria-hidden="true"><use href="assets/img/owl.svg#owl"/></svg></a>
+  <div class="top-act">
+  <a class="pill pill--gold top-cta" href="#contact"><span>Free<span class="top-cta-long"> website</span> audit</span></a>
   <button class="burger" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="burger-label">Menu</span><span class="burger-dot" aria-hidden="true"><i></i><i></i></span></button>
+  </div>
 </header>
 
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
@@ -79,10 +85,11 @@
       <button class="menu-close" id="menu-close" type="button" aria-label="Close the menu"><i></i><i></i></button>
     </div>
     <nav class="menu-nav" aria-label="Menu">
-      <a href="#work"><span>Concepts</span></a>
-      <a href="#approach"><span>Our approach</span></a>
       <a href="#capabilities"><span>What we build</span></a>
-      <a href="#contact"><span>Contact</span></a>
+      <a href="#work"><span>Work</span></a>
+      <a href="#approach"><span>Our approach</span></a>
+      <a href="#about"><span>About us</span></a>
+      <a href="#contact"><span>Free website audit</span></a>
     </nav>
     <div class="menu-info small">
       <div><p>Lumera Creative</p><p class="dim">Creative technology and automation agency</p></div>
@@ -100,17 +107,21 @@
 
       <div class="panel panel--hero" data-panel>
         <nav class="hero-nav" aria-label="Primary">
-          <a href="#work" style="--dot: var(--c-rok)"><i aria-hidden="true"></i>Concepts</a>
-          <a href="#approach" style="--dot: var(--c-rose)"><i aria-hidden="true"></i>Our approach</a>
           <a href="#capabilities" style="--dot: var(--c-bbs)"><i aria-hidden="true"></i>What we build</a>
-          <a href="#contact" style="--dot: var(--gold)"><i aria-hidden="true"></i>Contact</a>
+          <a href="#work" style="--dot: var(--c-rok)"><i aria-hidden="true"></i>Work</a>
+          <a href="#approach" style="--dot: var(--c-rose)"><i aria-hidden="true"></i>Our approach</a>
+          <a href="#about" style="--dot: var(--gold)"><i aria-hidden="true"></i>About us</a>
         </nav>
         <h1 class="hero-h"><span class="visually-hidden">Lumera Creative. </span><span class="hero-mark" aria-hidden="true"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></span><span class="hero-tag">Where design meets innovation.</span></h1>
         <p class="hero-sub">We design and build the technology the problem calls for.</p>
+        <p class="hero-offer">Websites, voice receptionists, missed-call text-back, custom CRM systems and follow-up automation. Available to businesses across the U.S.</p>
+        <div class="hero-act">
+        <a class="pill pill--gold" href="#contact">Get your free website audit</a>
         <p class="cue small" aria-hidden="true"><span class="cue-ico"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v18M8.5 6.5 12 3l3.5 3.5M8.5 17.5 12 21l3.5-3.5M3 12h18M6.5 8.5 3 12l3.5 3.5M17.5 8.5 21 12l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Scroll or swipe to explore</span></p>
+        </div>
         <div class="hero-foot small">
           <span>Creative technology and automation agency</span>
-          <span>Concept studies · 2026</span>
+          <span>Based in Los Angeles</span>
           <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a>
         </div>
       </div>
@@ -196,6 +207,100 @@
         <p class="pager-now small" aria-hidden="true"><b class="pager-num">01</b><span class="pager-sep">/</span><span class="pager-total">05</span></p>
         <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
       </div>
+    </div>
+  </section>
+
+  <!-- capabilities: colored panels that push in one after another -->
+  <section class="caps" id="capabilities" aria-labelledby="caps-title">
+    <div class="caps-stage">
+      <h2 class="big caps-h" id="caps-title" data-rise>What we build</h2>
+      <div class="cap" style="--cc: var(--c-slate)">
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">01</p>
+              <h3>Interactive web</h3>
+              <ul class="cap-list small"><li>Websites</li><li>Interactive experiences</li><li>Website restructuring</li><li>Digital product interfaces</li></ul>
+              <a class="pill" href="#rok">See the work</a>
+            </div>
+            <div class="cap-media" aria-hidden="true">
+              <img src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/tirzahs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap cap--auto" style="--cc: var(--c-terra)">
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">02</p>
+              <h3>Systems and automation</h3>
+            </div>
+            <div class="svc-block">
+            <ul class="svc-rows">
+              <li><h4 class="svc-name">Voice Receptionists</h4><p class="svc-desc">Answer customer calls, collect key details, and assist with appointment requests, scheduling, and routing.</p><p class="svc-price small">$99/month · setup included · 400 minutes</p></li>
+              <li><h4 class="svc-name">Missed-Call Text-Back</h4><p class="svc-desc">Respond to missed calls by text, capture what the caller needs, and help them take the next step.</p></li>
+              <li><h4 class="svc-name">Custom CRM</h4><p class="svc-desc">A CRM we build around the way your business works, so your contacts, inquiries and follow-up are kept in one place.</p></li>
+              <li><h4 class="svc-name">Quotes &amp; Proposals</h4><p class="svc-desc">Prepare draft quotes and proposals using your services and pricing rules, ready for your team to review.</p></li>
+              <li><h4 class="svc-name">Lead Follow-Up &amp; Reactivation</h4><p class="svc-desc">Follow up on inquiries, outstanding estimates, and past leads through workflows configured for your business.</p></li>
+            </ul>
+            <p class="svc-note">Voice receptionist: $99 a month, setup included, up to 400 call minutes. Extra minutes are confirmed in your quote. Everything else is quoted after a free website audit, with the scope and any additional charges set out before you decide.</p>
+            </div>
+            <div class="cap-demo">
+              <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
+              <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore receptionist demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
+            </div>
+            <div class="cap-cta"><a class="pill" href="#contact">Get your free website audit</a></div>
+            <div class="cap-media" aria-hidden="true">
+              <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+              <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap" style="--cc: var(--c-lilac)">
+        <div class="cap-view">
+          <div class="cap-in">
+            <div class="cap-text">
+              <p class="cap-n small">03</p>
+              <h3>Custom systems</h3>
+              <ul class="cap-list small"><li>Custom business tools</li><li>Integrations between approved platforms</li></ul>
+              <a class="pill" href="#contact">Talk to us</a>
+            </div>
+            <p class="cap-note">Built around the way a business already works, and connected only to the platforms it approves.</p>
+          </div>
+        </div>
+      </div>
+      <div class="cap-nav small" aria-hidden="true">
+        <span><b>01</b>Interactive web</span><span><b>02</b>Systems and automation</span><span><b>03</b>Custom systems</span>
+        <i class="cap-bar"><i></i></i>
+      </div>
+      <!-- previous / next for touch screens and phones (hidden elsewhere and without the script); the same steps as a swipe or an arrow key -->
+      <div class="pager" data-seq="caps" role="group" aria-label="What we build" hidden>
+        <button class="pager-btn" type="button" data-dir="-1" aria-label="Previous"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <p class="pager-now small" aria-hidden="true"><b class="pager-num">01</b><span class="pager-sep">/</span><span class="pager-total">03</span></p>
+        <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- approach: the dark room. Four steps as rows that light up under the pointer -->
+  <section class="approach" id="approach" aria-labelledby="approach-title">
+    <div class="ap-side">
+      <h2 class="big" id="approach-title" data-rise>Our approach</h2>
+      <p class="ap-lede">We don't start with a deliverable. We start with the problem.</p>
+      <a class="pill pill--light" href="#contact">Get your free website audit</a>
+    </div>
+    <div class="ap-main">
+      <div class="ap-count"><span class="ap-num" aria-hidden="true">(04)</span><span class="small">Steps, every project</span></div>
+      <ol class="ap-rows">
+        <li><span class="num small">01</span><h3>Start with a free website audit.</h3><p>Send us your website. We explain, in plain language, what it communicates clearly, what could confuse customers or make it hard to contact you, and what to fix first.</p></li>
+        <li><span class="num small">02</span><h3>Talk it through.</h3><p>We ask how customers reach you today, what you need and what your budget is. No technical experience required.</p></li>
+        <li><span class="num small">03</span><h3>Get a tailored quote.</h3><p>Your quote sets out the scope, the price and any additional charges before you decide anything.</p></li>
+        <li><span class="num small">04</span><h3>We set it up around your business.</h3><p>Websites and automations are configured around your services, hours and business rules.</p></li>
+      </ol>
     </div>
   </section>
 
@@ -304,7 +409,7 @@
         <p class="vr-label small">Interactive demo · Sample data</p>
         <div class="vr-beyond">
           <p class="vr-beyond-h">Beyond the call</p>
-          <p class="vr-beyond-p">We also build missed-call text-back, quote and proposal preparation, and lead follow-up workflows. Each system is configured around your services, business rules, and existing tools.</p>
+          <p class="vr-beyond-p">We also build custom CRMs, missed-call text-back, quote and proposal preparation, and lead follow-up workflows. Each system is configured around your services, business rules, and existing tools.</p>
           <a class="vr-beyond-link" href="#contact">Discuss your automation needs<svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
         </div>
       </div>
@@ -385,96 +490,6 @@
       <figcaption><span class="tag tag--inline">Concept images</span> The whole site on a laptop and a phone: the loaf, six breads going from pencil to photograph, the story and a visit.</figcaption>
     </figure>
   </article>
-
-  <!-- approach: the dark room. Four steps as rows that light up under the pointer -->
-  <section class="approach" id="approach" aria-labelledby="approach-title">
-    <div class="ap-side">
-      <h2 class="big" id="approach-title" data-rise>Our approach</h2>
-      <p class="ap-lede">We don't start with a deliverable. We start with the problem.</p>
-      <a class="pill pill--light" href="#contact">Start a project</a>
-    </div>
-    <div class="ap-main">
-      <div class="ap-count"><span class="ap-num" aria-hidden="true">(04)</span><span class="small">Steps, every project</span></div>
-      <ol class="ap-rows">
-        <li><span class="num small">01</span><h3>Understand what's in the way.</h3><p>Before anything is designed, we find the actual obstacle: what people can't find, can't feel, or can't do.</p></li>
-        <li><span class="num small">02</span><h3>Find where technology helps.</h3><p>Sometimes it's a website. Sometimes it's a tool, an automation, or less software than you expected.</p></li>
-        <li><span class="num small">03</span><h3>Design the system that fits.</h3><p>Structure, interaction and look are designed together, for the people who will use it.</p></li>
-        <li><span class="num small">04</span><h3>Build it, and test it properly.</h3><p>Desktop, tablet and mobile layouts, resized windows, keyboards and reduced motion. Then we measure and fix.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- capabilities: colored panels that push in one after another -->
-  <section class="caps" id="capabilities" aria-labelledby="caps-title">
-    <div class="caps-stage">
-      <h2 class="big caps-h" id="caps-title" data-rise>What we build</h2>
-      <div class="cap" style="--cc: var(--c-slate)">
-        <div class="cap-view">
-          <div class="cap-in">
-            <div class="cap-text">
-              <p class="cap-n small">01</p>
-              <h3>Interactive web</h3>
-              <ul class="cap-list small"><li>Websites</li><li>Interactive experiences</li><li>Website restructuring</li><li>Digital product interfaces</li></ul>
-              <a class="pill" href="#rok">See the work</a>
-            </div>
-            <div class="cap-media" aria-hidden="true">
-              <img src="assets/video/rok-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-              <img src="assets/video/tirzahs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-              <img src="assets/video/bbs-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cap cap--auto" style="--cc: var(--c-terra)">
-        <div class="cap-view">
-          <div class="cap-in">
-            <div class="cap-text">
-              <p class="cap-n small">02</p>
-              <h3>Systems and automation</h3>
-            </div>
-            <ul class="svc-rows">
-              <li><h4 class="svc-name">Voice Receptionists</h4><p class="svc-desc">Answer customer calls, collect key details, and assist with appointment requests, scheduling, and routing.</p></li>
-              <li><h4 class="svc-name">Missed-Call Text-Back</h4><p class="svc-desc">Respond to missed calls by text, capture what the caller needs, and help them take the next step.</p></li>
-              <li><h4 class="svc-name">Quotes &amp; Proposals</h4><p class="svc-desc">Prepare draft quotes and proposals using your services and pricing rules, ready for your team to review.</p></li>
-              <li><h4 class="svc-name">Lead Follow-Up &amp; Reactivation</h4><p class="svc-desc">Follow up on inquiries, outstanding estimates, and past leads through workflows configured for your business.</p></li>
-            </ul>
-            <div class="cap-demo">
-              <p class="vr-label small">Voice Receptionist Automation · Interactive demo · Sample data</p>
-              <a class="pill pill--go" href="https://abdusameer.github.io/lumera-hvac-receptionist/">Explore receptionist demo<span class="visually-hidden">: Voice Receptionist Automation</span><svg class="i" aria-hidden="true"><use href="#i-ne"/></svg></a>
-            </div>
-            <div class="cap-cta"><a class="pill" href="#contact">Talk to us</a></div>
-            <div class="cap-media" aria-hidden="true">
-              <img src="assets/video/voice-site-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-              <img src="assets/video/voice-story-poster.webp" width="1280" height="800" alt="" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cap" style="--cc: var(--c-lilac)">
-        <div class="cap-view">
-          <div class="cap-in">
-            <div class="cap-text">
-              <p class="cap-n small">03</p>
-              <h3>Custom systems</h3>
-              <ul class="cap-list small"><li>Custom business tools</li><li>Integrations between approved platforms</li></ul>
-              <a class="pill" href="#contact">Talk to us</a>
-            </div>
-            <p class="cap-note">Built around the way a business already works, and connected only to the platforms it approves.</p>
-          </div>
-        </div>
-      </div>
-      <div class="cap-nav small" aria-hidden="true">
-        <span><b>01</b>Interactive web</span><span><b>02</b>Systems and automation</span><span><b>03</b>Custom systems</span>
-        <i class="cap-bar"><i></i></i>
-      </div>
-      <!-- previous / next for touch screens and phones (hidden elsewhere and without the script); the same steps as a swipe or an arrow key -->
-      <div class="pager" data-seq="caps" role="group" aria-label="What we build" hidden>
-        <button class="pager-btn" type="button" data-dir="-1" aria-label="Previous"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
-        <p class="pager-now small" aria-hidden="true"><b class="pager-num">01</b><span class="pager-sep">/</span><span class="pager-total">03</span></p>
-        <button class="pager-btn" type="button" data-dir="1" aria-label="Next"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
-      </div>
-    </div>
-  </section>
 
   <!-- systems and automation: a scripted demonstration with fictional data. The five stages and the log are plain text first; the script only animates them -->
   <section class="systems" id="systems" aria-labelledby="systems-title">
@@ -557,12 +572,66 @@
   </div></div>
   </section>
 
+  <!-- who we are: two names, set like the wordmark's quieter cousins -->
+  <section class="about" id="about" aria-labelledby="about-title">
+    <div class="ab-head">
+      <h2 class="big" id="about-title" data-rise>About us</h2>
+      <p class="ab-lede">Founded by Afrid and Sam, Lumera Creative brings together computer science, thoughtful design and practical business automation. We build websites and connected systems that help businesses handle inquiries, simplify everyday tasks and follow up with customers.</p>
+    </div>
+    <ul class="ab-people" aria-label="Founders">
+      <li><p class="ab-name">Afrid</p><p class="small">Co-founder</p></li>
+      <li><p class="ab-name">Sam</p><p class="small">Co-founder</p></li>
+    </ul>
+    <dl class="ab-facts">
+      <div><dt class="small">Based in</dt><dd>Los Angeles</dd></div>
+      <div><dt class="small">Available to</dt><dd>Businesses across the U.S.</dd></div>
+      <div><dt class="small">Background</dt><dd>Computer science graduates</dd></div>
+    </dl>
+  </section>
+
+  <!-- the questions people ask before they get in touch, answered plainly -->
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <h2 class="big" id="faq-title" data-rise>Questions</h2>
+    <div class="faq-list">
+      <details class="faq-item"><summary><h3>What's included in the free website audit?</h3><i aria-hidden="true"></i></summary><p>We look at your website the way a new customer would. You get a plain-language summary of what it communicates clearly, what could confuse customers or make it hard to contact you, and which improvements deserve attention first. It's free, and there's no obligation.</p></details>
+      <details class="faq-item"><summary><h3>How much does it cost?</h3><i aria-hidden="true"></i></summary><p>Voice receptionist plans are $99 a month, with setup included and up to 400 call minutes; extra minutes are confirmed in your quote. Websites, custom CRMs and other automation are priced for each business, as a project fee or a monthly plan depending on the service. After the audit and a conversation about your needs and budget, we send a quote that sets out the scope and any additional charges.</p></details>
+      <details class="faq-item"><summary><h3>Do I need to be technical?</h3><i aria-hidden="true"></i></summary><p>No technical experience required. We set everything up and explain it in plain language.</p></details>
+      <details class="faq-item"><summary><h3>Do you use an off-the-shelf CRM?</h3><i aria-hidden="true"></i></summary><p>No. We build the CRM ourselves, around the way your business works, so your contacts, inquiries and follow-up are kept in one place.</p></details>
+      <details class="faq-item"><summary><h3>Do you only work with businesses in Los Angeles?</h3><i aria-hidden="true"></i></summary><p>No. We're based in Los Angeles and available to businesses across the U.S.</p></details>
+      <details class="faq-item"><summary><h3>Is the work on this site client work?</h3><i aria-hidden="true"></i></summary><p>Not yet. The projects are independent concept studies and demonstrations we designed and built ourselves, and each one is labelled that way. The voice receptionist demo runs on sample data.</p></details>
+    </div>
+  </section>
+
+  <!-- the free audit: the request is written here and sent from the visitor's own email app -->
   <section class="contact" id="contact" aria-labelledby="contact-title">
-    <h2 class="contact-h" id="contact-title" data-rise>What's getting in the way?</h2>
-    <p class="contact-sub">Tell us what isn't working.</p>
-    <div class="contact-actions">
-      <a class="pill pill--gold" href="mailto:contact@lumeracreative.agency?subject=New%20project">Start a project</a>
-      <p class="contact-mail"><a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a><button class="copy" type="button" data-copy="contact@lumeracreative.agency">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
+    <h2 class="contact-h" id="contact-title" data-rise>Get your free website audit</h2>
+    <p class="contact-sub">Send us your website. We'll explain in plain language what's working, what could confuse customers and what to fix first. Free, with no obligation.</p>
+    <form class="audit-form" id="audit-form" novalidate>
+      <div class="af-field af-wide"><label for="af-site">Website address</label><input id="af-site" name="site" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="yourbusiness.com" required aria-describedby="af-error"></div>
+      <div class="af-field"><label for="af-name">Your name</label><input id="af-name" name="name" type="text" autocomplete="name" required aria-describedby="af-error"></div>
+      <div class="af-field"><label for="af-email">Email</label><input id="af-email" name="email" type="email" autocomplete="email" required aria-describedby="af-error"></div>
+      <div class="af-field af-wide"><label for="af-focus">Anything you'd like us to look at? <span class="af-opt">Optional</span></label><textarea id="af-focus" name="focus" rows="3"></textarea></div>
+      <p class="af-error" id="af-error" role="alert"></p>
+      <div class="af-send af-wide">
+        <button class="pill pill--gold" type="submit">Request my free audit</button>
+        <p class="af-note">Sending opens your email app with the request ready to go to contact@lumeracreative.agency. Nothing is sent until you send it.</p>
+      </div>
+    </form>
+    <div class="af-done" id="af-done" tabindex="-1" hidden>
+      <p class="af-done-h">Your email app should now be open with your request.</p>
+      <p>If it didn't open, copy the message below and send it to contact@lumeracreative.agency.</p>
+      <label class="visually-hidden" for="af-msg">Your audit request</label>
+      <textarea id="af-msg" rows="7" readonly></textarea>
+      <p class="af-copy-row"><button class="af-copy" type="button" id="af-copy">Copy message</button><span class="af-copy-status" role="status" aria-live="polite"></span></p>
+    </div>
+    <p class="af-nojs">Email your website address to <a href="mailto:contact@lumeracreative.agency?subject=Free%20website%20audit">contact@lumeracreative.agency</a> and we'll send your audit.</p>
+    <div class="contact-alt">
+      <h3 class="contact-alt-h">What's getting in the way?</h3>
+      <p class="contact-alt-sub">Tell us what isn't working.</p>
+      <div class="contact-actions">
+        <a class="pill" href="mailto:contact@lumeracreative.agency?subject=New%20project">Start a project</a>
+        <p class="contact-mail"><a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a><button class="copy" type="button" data-copy="contact@lumeracreative.agency">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
+      </div>
     </div>
   </section>
 </main>
@@ -579,7 +648,7 @@
 </footer>
 
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/lumera.js?v=20261022a" defer></script>
+<script src="assets/js/lumera.js?v=20261026a" defer></script>
 <!--/email_off-->
 </body>
 </html>
