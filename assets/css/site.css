@@ -512,3 +512,6 @@ html.lenis, html.lenis body { height: auto; }
   .stage-label { justify-self: start; }
 }
 @media (prefers-reduced-motion: reduce) { .jc-ringing i { animation: none; opacity: 1; } }
+
+/* the plain-list story on wide screens (reduced motion): cards keep a readable width */
+@media (min-width: 760px) { .journey:not(.is-staged) .beat { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; } .journey:not(.is-staged) .beat-card .jc { max-width: 520px; } }
