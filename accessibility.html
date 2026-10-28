@@ -2,98 +2,148 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Accessibility — Lumera Creative</title>
+<title>Accessibility · Lumera Creative</title>
 <meta name="description" content="Our accessibility goal for the Lumera Creative website, what we have done, known limitations, and how to report a problem.">
-<meta name="theme-color" content="#EEEAE3">
+<meta name="theme-color" content="#F4F1EC">
 <meta name="color-scheme" content="light">
 <meta name="author" content="Lumera Creative LLC">
-<meta name="copyright" content="© 2026 Lumera Creative LLC. All rights reserved.">
 <link rel="canonical" href="https://lumeracreative.agency/accessibility">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/lumera.css">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lumera Creative">
+<meta property="og:title" content="Accessibility · Lumera Creative">
+<meta property="og:description" content="Our accessibility goal for the Lumera Creative website, what we have done, known limitations, and how to report a problem.">
+<meta property="og:url" content="https://lumeracreative.agency/accessibility">
+<meta property="og:image" content="https://lumeracreative.agency/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261028a">
+<script src="/assets/js/site.js?v=20261028a" defer></script>
 </head>
-<body class="legal">
+<body>
 <!--email_off-->
-<a class="skip" href="#legal-main">Skip to content</a>
-<header class="bar is-solid">
-  <a class="mark" href="./" aria-label="Lumera Creative, back to the portfolio"><span class="mark-l">LUMERA</span> <span class="mark-c">Creative</span></a>
-  <a class="btn" href="./">Back to the work</a>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Lumera Creative, home"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><use href="/assets/img/owl.svg#owl"/></svg><span class="brand-name" aria-hidden="true">Lumera <span>Creative</span></span></a>
+    <nav class="nav-desk" aria-label="Main"><a href="/services/">Services</a><a href="/work/">Work</a><a href="/about/">About</a></nav>
+    <div class="head-actions">
+      <a class="btn btn--primary btn--small" href="/audit/">Free audit</a>
+      <details class="menu">
+        <summary><span class="menu-icon" aria-hidden="true"></span><span class="menu-label">Menu</span></summary>
+        <div class="menu-panel">
+          <nav aria-label="Main">
+        <a href="/">Home <span aria-hidden="true">→</span></a>
+        <a href="/services/">Services <span aria-hidden="true">→</span></a>
+        <a href="/work/">Work <span aria-hidden="true">→</span></a>
+        <a href="/about/">About <span aria-hidden="true">→</span></a>
+          </nav>
+          <a class="btn btn--primary" href="/audit/">Get your free website audit</a>
+          <p class="menu-contact muted small">Or email <a class="text-link" href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a></p>
+        </div>
+      </details>
+    </div>
+  </div>
 </header>
+<main id="main">
 
-<main class="legal-main" id="legal-main">
-  <div class="legal-head">
-    <p class="label">Last updated October 6, 2026</p>
-    <h1>Accessibility</h1>
-    <p class="lede">We want everyone to be able to use this site, and we want to hear when they can't.</p>
+<section class="page-hero">
+  <div class="wrap">
+    <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Accessibility</li></ol>
+    <p class="label">Last updated October 28, 2026</p>
+    <h1 class="display mt-s">Accessibility</h1>
+    <p class="lead">We want everyone to be able to use this site, and we want to hear when they can’t.</p>
   </div>
+</section>
+<section class="section--tight">
+  <div class="wrap legal-body">
+    <nav class="legal-toc" aria-label="On this page"><ol><li><a href="#goal">Our goal</a></li><li><a href="#built">What we've built in</a></li><li><a href="#limits">Known limitations</a></li><li><a href="#report">Report a problem</a></li><li><a href="#review">How we checked</a></li></ol></nav>
+    <div class="legal-content">
+      <section id="goal" aria-labelledby="goal-h">
+        <h2 id="goal-h"><span>01</span>Our goal</h2>
+        <p>Lumera Creative LLC uses the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA as the accessibility target for this site. That's a target we work toward, not a certification or a guarantee: nobody independent has audited the site, and we don't claim it's perfect.</p>
+      </section>
+      <section id="built" aria-labelledby="built-h">
+        <h2 id="built-h"><span>02</span>What we've built in</h2>
+        <ul>
+          <li>Every page scrolls the ordinary way, top to bottom. Nothing takes over scrolling or moves sideways, and no important content sits inside its own scrolling box.</li>
+          <li>Everything works with a keyboard, with a visible focus outline and a skip link at the top of every page.</li>
+          <li>Pages use real headings, landmarks, labels and descriptive link text, and meaningful images have text alternatives.</li>
+          <li>Text and controls are checked for contrast against their backgrounds.</li>
+          <li>Nothing important depends on hover. The menu on small screens and the questions on each page open and close with a tap, a click or the keyboard, and work without JavaScript.</li>
+          <li>Motion is short and only helps you follow the page. If your device asks for reduced motion, sections appear in place without movement, and everything is visible even if the animation doesn't run.</li>
+          <li>Recordings of our concept studies never play by themselves and have no sound; each has standard play and pause controls.</li>
+          <li>The pages work at 320 px wide and at 200% browser zoom without sideways scrolling.</li>
+          <li>Without JavaScript, the pages still show all their content, and the free website audit offers an email address instead of the form.</li>
+        </ul>
+      </section>
+      <section id="limits" aria-labelledby="limits-h">
+        <h2 id="limits-h"><span>03</span>Known limitations</h2>
+        <ul>
+          <li>The recordings are silent visual demonstrations of the concept studies. The text beside each one describes the work, and each study can be opened as a live site.</li>
+          <li>The concept studies and the receptionist demo we link to are separate websites. They aren't covered by this statement and may not meet the same standard.</li>
+          <li>The automatic website audit uses Cloudflare Turnstile to confirm a person started it. If that check is hard to complete, use "Prefer a person to look? Request an audit by email" on the same form, or email us.</li>
+        </ul>
+      </section>
+      <section id="report" aria-labelledby="report-h">
+        <h2 id="report-h"><span>04</span>Report a problem</h2>
+        <p>If something on this site is hard or impossible to use, tell us at <a href="mailto:contact@lumeracreative.agency?subject=Accessibility%20feedback">contact@lumeracreative.agency</a>. Tell us the page, what you were trying to do and, if you can, the device and assistive technology you use. We read every report and will reply.</p>
+      </section>
+      <section id="review" aria-labelledby="review-h">
+        <h2 id="review-h"><span>05</span>How we checked</h2>
+        <p>We last reviewed the site on October 28, 2026. We used automated checks (axe-core, and our own browser tests in Chrome), keyboard-only navigation, focus and reduced-motion checks, and a review of every page at phone, tablet and desktop sizes from 320 px to 1920 px wide. We haven't yet tested the site with screen readers, in other browsers or on a range of physical devices, and it hasn't been reviewed by an independent auditor.</p>
+      </section>
 
-  <nav class="legal-toc" aria-label="On this page">
-    <ol>
-      <li><a href="#goal">Our goal</a></li>
-      <li><a href="#built">What we've built in</a></li>
-      <li><a href="#limits">Known limitations</a></li>
-      <li><a href="#report">Report a problem</a></li>
-      <li><a href="#review">How we checked</a></li>
-    </ol>
-  </nav>
-
-  <div class="legal-body">
-    <section id="goal" aria-labelledby="goal-h">
-      <h2 id="goal-h"><span>01</span>Our goal</h2>
-      <p>Lumera Creative LLC uses the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA as the accessibility target for this site. That's a target we work toward, not a certification or a guarantee: nobody independent has audited the site, and we don't claim it's perfect.</p>
-    </section>
-
-    <section id="built" aria-labelledby="built-h">
-      <h2 id="built-h"><span>02</span>What we've built in</h2>
-      <ul>
-        <li>Everything works with a keyboard, with a visible focus outline and a skip link at the top of every page.</li>
-        <li>Pages use real headings, landmarks, labels and descriptive link text, and meaningful images have text alternatives.</li>
-        <li>Text and controls are checked for contrast against their backgrounds, including on each project's color.</li>
-        <li>Every screen recording has a pause and play button, and nothing plays with sound.</li>
-        <li>The live concept viewer opens with focus on the viewer, closes with the Escape key or its <strong>Close live view</strong> button, and returns focus to the control that opened it.</li>
-        <li>On touch screens, <strong>Previous</strong> and <strong>Next</strong> buttons step through the opening, the selected work and what we build one stage at a time, the same as a swipe or an arrow key. Pinch zoom stays on, and while you are zoomed in a sideways swipe moves the zoomed view.</li>
-        <li>If your device asks for reduced motion, the sideways scrolling and scroll-driven movement are replaced by a plain stacked page, recordings don't start by themselves, and the final state of every effect is shown.</li>
-        <li>The page works at 320 px wide and at 200% browser zoom without sideways scrolling, and in small or non-fullscreen windows.</li>
-        <li>Without JavaScript, the pages still show their content, with still images in place of recordings.</li>
-      </ul>
-    </section>
-
-    <section id="limits" aria-labelledby="limits-h">
-      <h2 id="limits-h"><span>03</span>Known limitations</h2>
-      <ul>
-        <li>On large screens, and on phones held upright, the opening and the project strip move sideways as you scroll. A reduced-motion setting, a phone held sideways or a small window gives you the stacked page instead.</li>
-        <li>Text size follows the window width and doesn't follow the default font size set in a browser. Browser zoom works.</li>
-        <li>The recordings are silent visual demonstrations of the concept studies. The text beside each one describes the work, and each study can be opened as a live site.</li>
-        <li>Scroll it yourself shows a separate concept website inside a screen. Each study is its own site, and the studies we link to open as separate sites; they aren't covered by this statement and may not meet the same standard.</li>
-      </ul>
-    </section>
-
-    <section id="report" aria-labelledby="report-h">
-      <h2 id="report-h"><span>04</span>Report a problem</h2>
-      <p>If something on this site is hard or impossible to use, tell us at <a href="mailto:contact@lumeracreative.agency?subject=Accessibility%20feedback">contact@lumeracreative.agency</a>. Tell us the page, what you were trying to do and, if you can, the device and assistive technology you use. We read every report and will reply.</p>
-    </section>
-
-    <section id="review" aria-labelledby="review-h">
-      <h2 id="review-h"><span>05</span>How we checked</h2>
-      <p>We last reviewed the site on October 7, 2026. We used automated checks (axe-core, and our own browser tests in Chrome), keyboard-only navigation, focus and contrast checks, text-spacing and zoom checks, touch simulation, and a review of representative desktop, tablet, mobile and resized-browser layouts, from 320 px wide to 1440 px. We haven't yet tested the site with screen readers, in other browsers or on a range of physical devices, and it hasn't been reviewed by an independent auditor.</p>
-    </section>
+    </div>
   </div>
+</section>
+
 </main>
-
-<footer class="foot">
-  <p class="foot-copy">&copy; 2026 Lumera Creative LLC. All rights reserved.</p>
-  <p class="foot-note">The projects shown are independent concept studies and capability demonstrations by Lumera Creative LLC, not paid client work.</p>
-  <nav class="foot-links" aria-label="Footer">
-    <a href="./">Back to the work</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="accessibility.html">Accessibility</a>
-    <a href="legal.html">Legal &amp; credits</a>
-    <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a>
-  </nav>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-statement">
+      <p>Where design meets innovation.</p>
+      <p>We design and build the technology the problem calls for.</p>
+    </div>
+    <div class="foot-grid">
+      <div class="foot-contact">
+        <h2>Talk to us</h2>
+        <p>Lumera Creative, Los Angeles. Available to businesses across the U.S.</p>
+        <p class="mail-line"><a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a><button class="copy" type="button" data-copy="contact@lumeracreative.agency">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
+        <p><a class="btn btn--primary" href="/audit/">Get your free website audit</a></p>
+      </div>
+      <nav aria-labelledby="foot-explore">
+        <h2 id="foot-explore">Explore</h2>
+        <ul>
+          <li><a href="/services/">Services</a></li>
+          <li><a href="/services/websites/">Websites</a></li>
+          <li><a href="/services/voice-receptionist/">Voice receptionist</a></li>
+          <li><a href="/services/crm-follow-up/">CRM and follow-up</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="foot-site">
+        <h2 id="foot-site">This site</h2>
+        <ul>
+          <li><a href="/audit/">Free website audit</a></li>
+          <li><a href="/#contact">Questions and contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+          <li><a href="/legal">Legal &amp; credits</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="foot-legal">
+      <p>&copy; 2026 Lumera Creative LLC. All rights reserved.</p>
+      <p>The projects shown are independent concept studies and sample-data demonstrations by Lumera Creative LLC, not client work. Third-party names and marks belong to their owners and are used only to identify the subject of a study.</p>
+    </div>
+  </div>
 </footer>
 <!--/email_off-->
 </body>

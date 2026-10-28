@@ -5,8 +5,35 @@
   "siteUrl": "https://lumeracreative.agency/",
   "sitemapPages": [
     "",
+    "services/",
+    "services/websites/",
+    "services/voice-receptionist/",
+    "services/crm-follow-up/",
+    "work/",
+    "work/rok/",
+    "work/bbs/",
+    "work/voice-receptionist/",
+    "about/",
+    "audit/",
     "privacy",
     "accessibility",
     "legal"
+  ],
+  "pages": [
+    "index.html",
+    "services/index.html",
+    "services/websites/index.html",
+    "services/voice-receptionist/index.html",
+    "services/crm-follow-up/index.html",
+    "work/index.html",
+    "work/rok/index.html",
+    "work/bbs/index.html",
+    "work/voice-receptionist/index.html",
+    "about/index.html",
+    "audit/index.html",
+    "privacy.html",
+    "accessibility.html",
+    "legal.html",
+    "404.html"
   ]
 }

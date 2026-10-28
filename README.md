@@ -4,15 +4,33 @@ The portfolio website of Lumera Creative LLC, a creative technology and automati
 
 Live: https://lumeracreative.agency/
 
-## Local preview
+## Pages
 
-The site is plain HTML, CSS and JavaScript with no build step. From this folder:
+Plain HTML, CSS and JavaScript. Cloudflare Pages serves the committed files as they are; there is no build step at deploy.
+The pages are written by `scripts/build.mjs` from `scripts/site/*.mjs`, so the header, footer, audit form and questions stay
+the same on every page. After editing anything in `scripts/site/`:
 
 ```bash
-python3 -m http.server 8000
+node scripts/build.mjs                  # write the pages and their list in site.config.json
+node scripts/apply-config.mjs           # contact address, site address, sitemap.xml and robots.txt
 ```
 
-Then open http://localhost:8000/.
+Styles are in `assets/css/site.css`, behavior in `assets/js/site.js`, and the free website audit's page code in
+`assets/js/audit.js` (its server side is `functions/api/audit.js`).
+
+## Local preview
+
+Static pages only:
+
+```bash
+node .claude/serve.js        # http://localhost:8794/ (PORT to change)
+```
+
+With the audit endpoint, using `.dev.vars` (never committed):
+
+```bash
+npx wrangler pages dev . --kv AUDIT_KV
+```
 
 ## Configuration
 

@@ -2,55 +2,71 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Privacy — Lumera Creative</title>
+<title>Privacy · Lumera Creative</title>
 <meta name="description" content="What the Lumera Creative website collects, what it does not, and how to contact us about privacy.">
-<meta name="theme-color" content="#EEEAE3">
+<meta name="theme-color" content="#F4F1EC">
 <meta name="color-scheme" content="light">
 <meta name="author" content="Lumera Creative LLC">
-<meta name="copyright" content="© 2026 Lumera Creative LLC. All rights reserved.">
 <link rel="canonical" href="https://lumeracreative.agency/privacy">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<link rel="preload" href="assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/lumera.css">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lumera Creative">
+<meta property="og:title" content="Privacy · Lumera Creative">
+<meta property="og:description" content="What the Lumera Creative website collects, what it does not, and how to contact us about privacy.">
+<meta property="og:url" content="https://lumeracreative.agency/privacy">
+<meta property="og:image" content="https://lumeracreative.agency/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261028a">
+<script src="/assets/js/site.js?v=20261028a" defer></script>
 </head>
-<body class="legal">
+<body>
 <!--email_off-->
-<a class="skip" href="#legal-main">Skip to content</a>
-<header class="bar is-solid">
-  <a class="mark" href="./" aria-label="Lumera Creative, back to the portfolio"><span class="mark-l">LUMERA</span> <span class="mark-c">Creative</span></a>
-  <a class="btn" href="./">Back to the work</a>
-</header>
-
-<main class="legal-main" id="legal-main">
-  <div class="legal-head">
-    <p class="label">Last updated October 26, 2026</p>
-    <h1>Privacy</h1>
-    <p class="lede">What this website collects, what it doesn't, and who to ask. Lumera Creative LLC publishes it, and this page is written for the site as it works today.</p>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Lumera Creative, home"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><use href="/assets/img/owl.svg#owl"/></svg><span class="brand-name" aria-hidden="true">Lumera <span>Creative</span></span></a>
+    <nav class="nav-desk" aria-label="Main"><a href="/services/">Services</a><a href="/work/">Work</a><a href="/about/">About</a></nav>
+    <div class="head-actions">
+      <a class="btn btn--primary btn--small" href="/audit/">Free audit</a>
+      <details class="menu">
+        <summary><span class="menu-icon" aria-hidden="true"></span><span class="menu-label">Menu</span></summary>
+        <div class="menu-panel">
+          <nav aria-label="Main">
+        <a href="/">Home <span aria-hidden="true">→</span></a>
+        <a href="/services/">Services <span aria-hidden="true">→</span></a>
+        <a href="/work/">Work <span aria-hidden="true">→</span></a>
+        <a href="/about/">About <span aria-hidden="true">→</span></a>
+          </nav>
+          <a class="btn btn--primary" href="/audit/">Get your free website audit</a>
+          <p class="menu-contact muted small">Or email <a class="text-link" href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a></p>
+        </div>
+      </details>
+    </div>
   </div>
+</header>
+<main id="main">
 
-  <nav class="legal-toc" aria-label="On this page">
-    <ol>
-      <li><a href="#short">The short version</a></li>
-      <li><a href="#collect">What this site collects</a></li>
-      <li><a href="#storage">What it stores in your browser</a></li>
-      <li><a href="#hosting">Hosting</a></li>
-      <li><a href="#audit">The free website audit</a></li>
-      <li><a href="#email">When you email us</a></li>
-      <li><a href="#studies">Concept studies and Scroll it yourself</a></li>
-      <li><a href="#selling">Selling and sharing</a></li>
-      <li><a href="#keep">How long we keep things</a></li>
-      <li><a href="#choices">Your choices and requests</a></li>
-      <li><a href="#changes">Changes</a></li>
-    </ol>
-  </nav>
-
-  <div class="legal-body">
+<section class="page-hero">
+  <div class="wrap">
+    <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Privacy</li></ol>
+    <p class="label">Last updated October 28, 2026</p>
+    <h1 class="display mt-s">Privacy</h1>
+    <p class="lead">What this website collects, what it doesn’t, and who to ask. Lumera Creative LLC publishes it, and this page is written for the site as it works today.</p>
+  </div>
+</section>
+<section class="section--tight">
+  <div class="wrap legal-body">
+    <nav class="legal-toc" aria-label="On this page"><ol><li><a href="#short">The short version</a></li><li><a href="#collect">What this site collects</a></li><li><a href="#storage">What it stores in your browser</a></li><li><a href="#hosting">Hosting</a></li><li><a href="#audit">The free website audit</a></li><li><a href="#email">When you email us</a></li><li><a href="#studies">Concept studies</a></li><li><a href="#selling">Selling and sharing</a></li><li><a href="#keep">How long we keep things</a></li><li><a href="#choices">Your choices and requests</a></li><li><a href="#changes">Changes</a></li></ol></nav>
+    <div class="legal-content">
     <section id="short" aria-labelledby="short-h">
       <h2 id="short-h"><span>01</span>The short version</h2>
-      <p>The Lumera portfolio has no accounts, analytics, advertising trackers or tracking tools, sets no cookies, and you don't need to give us any personal information to view it. Its one form is the free website audit. The automatic check sends the website address you enter (and nothing about you) to our server, which reads that website's public pages and has Anthropic's AI service write the result; a Cloudflare bot check runs first. The emailed request sends nothing from the site: it writes an email that you send yourself from your own email app. Some concept studies it links to, or can show inside a frame, are separate websites that load services from other companies and may set cookies. The ways information can reach us, or other companies, are listed below.</p>
+      <p>The Lumera Creative website has no accounts, analytics, advertising trackers or tracking tools, sets no cookies, and you don't need to give us any personal information to view it. Its one form is the free website audit. The automatic check sends the website address you enter (and nothing about you) to our server, which reads that website's public pages and has Anthropic's AI service write the result; a Cloudflare bot check runs first. The emailed request sends nothing from the site: it writes an email that you send yourself from your own email app. Some concept studies it links to are separate websites that load services from other companies and may set cookies. The ways information can reach us, or other companies, are listed below.</p>
     </section>
 
     <section id="collect" aria-labelledby="collect-h">
@@ -60,7 +76,7 @@
 
     <section id="storage" aria-labelledby="storage-h">
       <h2 id="storage-h"><span>03</span>What it stores in your browser</h2>
-      <p>The site stores one small entry in your browser's session storage, named <code>lumera-opened</code>. It lets the opening animation play once per visit instead of every time you return to the page. The entry stays on your device, is never sent to us, and is removed when you close the tab. The site sets no cookies. If you start the automatic audit, Cloudflare's bot check runs in a small frame from challenges.cloudflare.com, which may store information in your browser under Cloudflare's own address, under Cloudflare's policies.</p>
+      <p>The site stores nothing in your browser and sets no cookies. If you start the automatic audit, Cloudflare's bot check runs in a small frame from challenges.cloudflare.com, which may store information in your browser under Cloudflare's own address, under Cloudflare's policies.</p>
     </section>
 
     <section id="hosting" aria-labelledby="hosting-h">
@@ -87,9 +103,9 @@
     </section>
 
     <section id="studies" aria-labelledby="studies-h">
-      <h2 id="studies-h"><span>07</span>Concept studies and Scroll it yourself</h2>
-      <p>The Lumera portfolio does not use advertising trackers or analytics cookies. Each concept study is its own website. Some linked or embedded concept studies may load third-party services, including video players, content-delivery networks, maps, fonts, reservation services, or ordering platforms. Those providers may receive connection information or set cookies under their own policies when a visitor opens or interacts with that content.</p>
-      <p>Nothing from a study loads on this page until you choose <strong>Scroll it yourself</strong> on it; then the study runs inside a screen on this page, in a sandboxed frame. The studies are also linked so that you can open them in their own tab.</p>
+      <h2 id="studies-h"><span>07</span>Concept studies</h2>
+      <p>The Lumera Creative website does not use advertising trackers or analytics cookies. Each concept study is its own website. Some linked or embedded concept studies may load third-party services, including video players, content-delivery networks, maps, fonts, reservation services, or ordering platforms. Those providers may receive connection information or set cookies under their own policies when a visitor opens or interacts with that content.</p>
+      <p>No concept study loads on this site. The studies are linked so that you can open them in their own tab, and the recordings of them on this site are served from the site itself.</p>
       <p>When we last checked, on October 6, 2026, a study's own page loaded these services:</p>
       <ul>
         <li>rōk coffee and tea, BB's Bakery, Stagger Coffee and Motiq load fonts from Google Fonts (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy<span class="visually-hidden"> (opens in a new tab)</span></a>).</li>
@@ -120,19 +136,52 @@
       <h2 id="changes-h"><span>11</span>Changes</h2>
       <p>If we change how the site handles information, we'll update this page and the date at the top.</p>
     </section>
+  
+    </div>
   </div>
-</main>
+</section>
 
-<footer class="foot">
-  <p class="foot-copy">&copy; 2026 Lumera Creative LLC. All rights reserved.</p>
-  <p class="foot-note">The projects shown are independent concept studies and capability demonstrations by Lumera Creative LLC, not paid client work.</p>
-  <nav class="foot-links" aria-label="Footer">
-    <a href="./">Back to the work</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="accessibility.html">Accessibility</a>
-    <a href="legal.html">Legal &amp; credits</a>
-    <a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a>
-  </nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-statement">
+      <p>Where design meets innovation.</p>
+      <p>We design and build the technology the problem calls for.</p>
+    </div>
+    <div class="foot-grid">
+      <div class="foot-contact">
+        <h2>Talk to us</h2>
+        <p>Lumera Creative, Los Angeles. Available to businesses across the U.S.</p>
+        <p class="mail-line"><a href="mailto:contact@lumeracreative.agency">contact@lumeracreative.agency</a><button class="copy" type="button" data-copy="contact@lumeracreative.agency">Copy</button><span class="copy-status" role="status" aria-live="polite"></span></p>
+        <p><a class="btn btn--primary" href="/audit/">Get your free website audit</a></p>
+      </div>
+      <nav aria-labelledby="foot-explore">
+        <h2 id="foot-explore">Explore</h2>
+        <ul>
+          <li><a href="/services/">Services</a></li>
+          <li><a href="/services/websites/">Websites</a></li>
+          <li><a href="/services/voice-receptionist/">Voice receptionist</a></li>
+          <li><a href="/services/crm-follow-up/">CRM and follow-up</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="foot-site">
+        <h2 id="foot-site">This site</h2>
+        <ul>
+          <li><a href="/audit/">Free website audit</a></li>
+          <li><a href="/#contact">Questions and contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+          <li><a href="/legal">Legal &amp; credits</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="foot-legal">
+      <p>&copy; 2026 Lumera Creative LLC. All rights reserved.</p>
+      <p>The projects shown are independent concept studies and sample-data demonstrations by Lumera Creative LLC, not client work. Third-party names and marks belong to their owners and are used only to identify the subject of a study.</p>
+    </div>
+  </div>
 </footer>
 <!--/email_off-->
 </body>
