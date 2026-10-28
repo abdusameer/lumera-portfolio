@@ -195,7 +195,7 @@ button { cursor: pointer; }
 .need--calls { --tint: var(--t-calls); }
 .need--leads { --tint: var(--t-leads); }
 .need-icon { display: grid; place-items: center; width: 44px; height: 44px; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, .7); }
-.need-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.need-icon svg { width: 24px; height: 24px; }
 .need h3 { margin-top: 18px; }
 .need p { margin-top: 10px; color: var(--ink-2); }
 .need ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(18, 17, 16, .14); }
@@ -256,9 +256,8 @@ a.work:hover h3 span[aria-hidden] { transform: translate(3px, -3px); }
 @media (min-width: 900px) { .founders { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: start; } }
 .people { display: grid; gap: 12px; }
 @media (min-width: 560px) { .people { grid-template-columns: 1fr 1fr; } }
-.person { display: grid; gap: 16px; align-content: start; padding: 22px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
-.monogram { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 1.3rem; font-weight: 600; letter-spacing: -.02em; }
-.person h3 { font-size: 1.35rem; font-weight: 500; letter-spacing: -.015em; }
+.person { display: grid; gap: 12px; align-content: end; min-height: 160px; padding: 22px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.person h2, .person h3 { font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem); font-weight: 500; line-height: 1; letter-spacing: -.04em; }
 .person p { color: var(--muted); font-size: .95rem; }
 .facts { display: grid; gap: 0; margin-top: 8px; border-top: 1px solid var(--line); }
 .facts div { display: grid; grid-template-columns: 9em 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
@@ -443,10 +442,14 @@ html:not(.js) .af-nojs { display: block; }
 .foot-legal { display: grid; gap: 10px; padding-top: 24px; border-top: 1px solid var(--dark-line); color: var(--on-dark-muted); font-size: .85rem; }
 .foot-legal p { max-width: 90ch; }
 
-/* ---------- motion: content is visible by default; the script only adds a short rise when it can ---------- */
-.motion [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
-.motion [data-reveal].is-in { opacity: 1; transform: none; }
+/* ---------- motion (assets/js/motion.js): GSAP sets every starting state itself, so the page is complete without it ---------- */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+.wi { display: inline-block; will-change: transform; }
+/* Lenis, the smooth-scroll engine on mouse and trackpad (its own required rules) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
-  .motion [data-reveal] { opacity: 1; transform: none; }
 }

@@ -1,13 +1,12 @@
 /* Lumera Creative: site behavior. Small on purpose: the page reads and works without it.
-   Header state, the mobile menu, copy buttons, the receptionist demo's business picker, a short rise for sections,
-   and old in-page addresses from the previous single-page site. */
+   Header state, the mobile menu, copy buttons, the receptionist demo's business picker, and old in-page addresses from
+   the previous single-page site. Animation lives in motion.js. */
 (() => {
   'use strict';
   const doc = document, root = doc.documentElement;
   root.classList.add('js');
   const $ = (s, el = doc) => el.querySelector(s);
   const $$ = (s, el = doc) => Array.from(el.querySelectorAll(s));
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---- addresses from the old one-page site: #rok, #capabilities and the rest go to their new homes */
   const OLD = { rok: '/work/rok/', bbs: '/work/bbs/', voice: '/work/voice-receptionist/', capabilities: '/services/', approach: '/about/#approach', systems: '#demo', faq: '#contact', top: '' };
@@ -82,19 +81,4 @@
     pick(tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0]);
   });
 
-  /* ---- a short rise as sections arrive. If the observer never reports (a broken or throttled page), everything is shown after 2.5 s,
-     and anything in view when the page opens is shown at once, so nothing waits on the effect */
-  const items = $$('[data-reveal]');
-  if (items.length && !reduce && 'IntersectionObserver' in window) {
-    root.classList.add('motion');
-    let heard = false;
-    const io = new IntersectionObserver(entries => {
-      heard = true;
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px 8% 0px' });
-    items.forEach(el => io.observe(el));
-    setTimeout(() => { if (!heard) { items.forEach(el => el.classList.add('is-in')); io.disconnect(); } }, 2500);
-    // jumping to a section (menu, links, the browser's find) shows what is there straight away
-    addEventListener('hashchange', () => { const t = location.hash && doc.getElementById(location.hash.slice(1)); if (t) $$('[data-reveal]', t).concat(t.matches('[data-reveal]') ? [t] : []).forEach(el => el.classList.add('is-in')); });
-  }
 })();

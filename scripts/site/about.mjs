@@ -16,8 +16,8 @@ const about = page({
 <section class="section--tight">
   <div class="wrap founders">
     <div class="people" data-reveal>
-      <div class="person"><span class="monogram" aria-hidden="true">A</span><div><h2 class="h3">Afrid</h2><p>Co-founder · Computer science graduate</p></div></div>
-      <div class="person"><span class="monogram" aria-hidden="true">S</span><div><h2 class="h3">Sam</h2><p>Co-founder · Computer science graduate</p></div></div>
+      <div class="person"><h2>Afrid</h2><p>Co-founder · Computer science graduate</p></div>
+      <div class="person"><h2>Sam</h2><p>Co-founder · Computer science graduate</p></div>
     </div>
     <dl class="facts" data-reveal>
       <div><dt>Based in</dt><dd>Los Angeles</dd></div>

@@ -1,9 +1,10 @@
 import { page, auditBlock, faqList, contactCard, ARROW, OUT, NEW_TAB, EMAIL, SITE } from './parts.mjs';
 
+// interface icons: Solar (Iconify, CC BY 4.0), monitor-smartphone, phone-calling and checklist-minimalistic, linear style
 const icon = {
-  web: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M7 21h10M12 18v3"/></svg>',
-  calls: '<svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
-  leads: '<svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h10M4 19h6"/><path d="M17 15l2 2 3-4"/></svg>',
+  web: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path d="M11 17H8C5.17157 17 3.75736 17 2.87868 16.1213C2 15.2426 2 13.8284 2 11V10C2 6.22876 2 4.34315 3.17157 3.17157C4.34315 2 6.22876 2 10 2H15.5C17.8346 2 19.0019 2 19.8856 2.47231C20.5833 2.84525 21.1548 3.4167 21.5277 4.11441C22 4.99805 22 6.16537 22 8.5"/><path d="M14 15C14 13.1144 14 12.1716 14.5858 11.5858C15.1716 11 16.1144 11 18 11C19.8856 11 20.8284 11 21.4142 11.5858C22 12.1716 22 13.1144 22 15V18C22 19.8856 22 20.8284 21.4142 21.4142C20.8284 22 19.8856 22 18 22C16.1144 22 15.1716 22 14.5858 21.4142C14 20.8284 14 19.8856 14 18V15Z"/><path d="M19 20H17"/><path d="M11 22H8"/><path d="M11 22V17"/><path d="M11 13H2"/></g></svg>',
+  calls: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path d="M13.5 2C13.5 2 15.8335 2.21213 18.8033 5.18198C21.7731 8.15183 21.9853 10.4853 21.9853 10.4853"/><path d="M14.207 5.53564C14.207 5.53564 15.197 5.81849 16.6819 7.30341C18.1668 8.78834 18.4497 9.77829 18.4497 9.77829"/><path d="M17.6763 20.9631C18.1917 20.9122 18.6399 20.6343 19.0011 20.254L20.4217 18.7584C21.3806 17.7489 21.1102 16.0182 19.8833 15.312L17.9728 14.2123C17.1672 13.7486 16.1858 13.8848 15.5562 14.5477L15.1007 15.0272C15.1007 15.0272 14.0181 16.167 11.0631 13.0559C8.10812 9.94484 9.1907 8.80507 9.1907 8.80507L9.47752 8.50311C10.1841 7.75924 10.2507 6.56497 9.63424 5.6931L8.37326 3.90961C7.61028 2.8305 6.13596 2.68795 5.26145 3.60864L3.69185 5.26114C3.25823 5.71766 2.96765 6.30945 3.00289 6.96594C3.09304 8.64546 3.81072 12.259 7.81536 16.4752C12.0621 20.9462 16.0468 21.1239 17.6763 20.9631Z"/></g></svg>',
+  leads: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"/><path stroke-linejoin="round" d="M6 15.8L7.14286 17L10 14"/><path stroke-linejoin="round" d="M6 8.8L7.14286 10L10 7"/><path d="M13 9L18 9"/><path d="M13 16L18 16"/></g></svg>',
 };
 
 // sample calls, from the receptionist showcase (fictional data)
@@ -185,8 +186,8 @@ export default page({
     </div>
     <div data-reveal>
       <div class="people">
-        <div class="person"><span class="monogram" aria-hidden="true">A</span><div><h3>Afrid</h3><p>Co-founder · Computer science graduate</p></div></div>
-        <div class="person"><span class="monogram" aria-hidden="true">S</span><div><h3>Sam</h3><p>Co-founder · Computer science graduate</p></div></div>
+        <div class="person"><h3>Afrid</h3><p>Co-founder · Computer science graduate</p></div>
+        <div class="person"><h3>Sam</h3><p>Co-founder · Computer science graduate</p></div>
       </div>
       <dl class="facts">
         <div><dt>Based in</dt><dd>Los Angeles</dd></div>
