@@ -58,7 +58,7 @@ export default page({
   active: 'home',
   jsonld: JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Organization', name: 'Lumera Creative', legalName: 'Lumera Creative LLC', url: SITE, email: EMAIL,
-    description: 'Websites, AI voice receptionists, missed-call text-back, CRM setup and follow-up automation for businesses across the U.S.',
+    description: 'Websites, AI voice receptionists, missed-call text-back, custom CRMs and follow-up automation for businesses across the U.S.',
     address: { '@type': 'PostalAddress', addressLocality: 'Los Angeles', addressRegion: 'CA', addressCountry: 'US' },
     areaServed: { '@type': 'Country', name: 'United States' },
     founder: [{ '@type': 'Person', name: 'Afrid' }, { '@type': 'Person', name: 'Sam' }],
@@ -121,7 +121,7 @@ export default page({
       <article class="need need--calls" data-reveal>
         <div><span class="need-icon">${icon.calls}</span><h3 class="h3">Handle missed calls and inquiries</h3><p>Callers get answered or texted back, and you get their details in writing instead of a voicemail to decode.</p></div>
         <ul>
-          <li><a href="/services/voice-receptionist/">Voice receptionist <small>from $150/mo</small></a></li>
+          <li><a href="/services/voice-receptionist/">Voice receptionist <small>from $100/mo</small></a></li>
           <li><a href="/services/voice-receptionist/#text-back">Missed-call text-back <span aria-hidden="true">→</span></a></li>
           <li><a href="#demo">Try the sample calls <span aria-hidden="true">→</span></a></li>
         </ul>
@@ -130,7 +130,7 @@ export default page({
       <article class="need need--leads" data-reveal>
         <div><span class="need-icon">${icon.leads}</span><h3 class="h3">Organize leads and follow-up</h3><p>Every inquiry lands in one place, with follow-up, quotes and check-ins that don’t depend on someone remembering.</p></div>
         <ul>
-          <li><a href="/services/crm-follow-up/#crm">CRM setup in GoHighLevel <span aria-hidden="true">→</span></a></li>
+          <li><a href="/services/crm-follow-up/#crm">A CRM built for your business <span aria-hidden="true">→</span></a></li>
           <li><a href="/services/crm-follow-up/#follow-up">Lead follow-up and reactivation <span aria-hidden="true">→</span></a></li>
           <li><a href="/services/crm-follow-up/#quotes">Quotes and proposals <span aria-hidden="true">→</span></a></li>
         </ul>

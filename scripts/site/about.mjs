@@ -22,7 +22,7 @@ const about = page({
     <dl class="facts" data-reveal>
       <div><dt>Based in</dt><dd>Los Angeles</dd></div>
       <div><dt>Available to</dt><dd>Businesses across the U.S.</dd></div>
-      <div><dt>What we build</dt><dd>Websites, voice receptionists, missed-call text-back, CRM setup and follow-up</dd></div>
+      <div><dt>What we build</dt><dd>Websites, voice receptionists, missed-call text-back, custom CRMs and follow-up</dd></div>
       <div><dt>You talk to</dt><dd>The two people who build it</dd></div>
     </dl>
   </div>

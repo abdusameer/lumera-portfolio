@@ -3,7 +3,7 @@ import { page, PROCESS, faqList, ctaBand, crumbs, ARROW, OUT, NEW_TAB } from './
 const overview = page({
   path: 'services/', active: 'services',
   title: 'Services · Lumera Creative',
-  description: 'Websites, AI voice receptionists, missed-call text-back, GoHighLevel CRM setup, lead follow-up, quotes and reactivation. Voice receptionist plans from $150/month; everything else quoted for your business.',
+  description: 'Websites, AI voice receptionists, missed-call text-back, custom CRMs we build ourselves, lead follow-up, quotes and reactivation. Voice receptionist plans from $100/month; everything else quoted for your business.',
 }, `
 <section class="page-hero">
   <div class="wrap">
@@ -26,14 +26,14 @@ const overview = page({
     <div class="svc-group" data-reveal>
       <div class="svc-group-head"><p class="label">Handle missed calls and inquiries</p><h2 class="h2">Calls</h2></div>
       <div class="svc-list">
-        <div class="svc"><h3 class="h3">Voice receptionist</h3><p>An AI receptionist answers your calls, collects the details your team needs and passes on an organized summary.</p><p><strong>Plans from $150/month.</strong></p><a class="arrow-link" href="/services/voice-receptionist/">Voice receptionist ${ARROW}</a></div>
+        <div class="svc"><h3 class="h3">Voice receptionist</h3><p>An AI receptionist answers your calls, collects the details your team needs and passes on an organized summary.</p><p><strong>Plans from $100/month.</strong></p><a class="arrow-link" href="/services/voice-receptionist/">Voice receptionist ${ARROW}</a></div>
         <div class="svc"><h3 class="h3">Missed-call text-back</h3><p>When a call is missed, the caller gets a text, says what they need and is helped to the next step.</p><a class="arrow-link" href="/services/voice-receptionist/#text-back">Missed-call text-back ${ARROW}</a></div>
       </div>
     </div>
     <div class="svc-group" data-reveal>
       <div class="svc-group-head"><p class="label">Organize leads and follow-up</p><h2 class="h2">CRM and follow-up</h2></div>
       <div class="svc-list">
-        <div class="svc"><h3 class="h3">CRM setup in GoHighLevel</h3><p>Contacts, your pipeline, your calendar and your forms in one place, set up around the way your business works.</p><a class="arrow-link" href="/services/crm-follow-up/#crm">CRM setup ${ARROW}</a></div>
+        <div class="svc"><h3 class="h3">Custom CRM</h3><p>A CRM we build ourselves, around the way your business works, so contacts, inquiries and follow-up are kept in one place.</p><a class="arrow-link" href="/services/crm-follow-up/#crm">Custom CRM ${ARROW}</a></div>
         <div class="svc"><h3 class="h3">Lead follow-up and reactivation</h3><p>Follow up on new inquiries, outstanding estimates and past leads through workflows configured for your business.</p><a class="arrow-link" href="/services/crm-follow-up/#follow-up">Follow-up ${ARROW}</a></div>
         <div class="svc"><h3 class="h3">Quotes and proposals</h3><p>Draft quotes and proposals prepared from your services and pricing rules, ready for your team to review before they go out.</p><a class="arrow-link" href="/services/crm-follow-up/#quotes">Quotes ${ARROW}</a></div>
       </div>
@@ -46,7 +46,7 @@ const overview = page({
     <div data-reveal><h2 class="h2" id="pricing-title">How pricing works</h2><p class="lead mt-s">One published price, and a quote for everything else, so you pay for what your business needs rather than a package.</p></div>
     <div data-reveal>
       <ul class="list-rows">
-        <li><h3 class="h4">Voice receptionist</h3><p>Plans from $150/month. What’s included is set out in your quote before you commit.</p></li>
+        <li><h3 class="h4">Voice receptionist</h3><p>Plans from $100/month. What’s included is set out in your quote before you commit.</p></li>
         <li><h3 class="h4">Everything else</h3><p>Custom-priced, as a one-time project fee or a monthly plan depending on the scope. We quote after the free audit and a conversation about your needs and budget.</p></li>
         <li><h3 class="h4">No surprises</h3><p>Your quote lists the scope, the price and any additional charges before you decide anything.</p></li>
       </ul>
@@ -133,7 +133,7 @@ ${ctaBand('Find out what your site gets right', 'The free website audit reads yo
 const receptionist = page({
   path: 'services/voice-receptionist/', active: 'services',
   title: 'Voice receptionist and missed-call text-back · Lumera Creative',
-  description: 'An AI voice receptionist that answers your calls, collects the details your team needs and passes on an organized summary. Plans from $150/month. Missed-call text-back is quoted for your business.',
+  description: 'An AI voice receptionist that answers your calls, collects the details your team needs and passes on an organized summary. Plans from $100/month. Missed-call text-back is quoted for your business.',
 }, `
 <section class="page-hero">
   <div class="wrap">
@@ -148,7 +148,7 @@ const receptionist = page({
   <div class="wrap">
     <div class="price" data-reveal>
       <p class="label">Voice receptionist</p>
-      <p class="price-figure">Plans from $150/month</p>
+      <p class="price-figure">Plans from $100/month</p>
       <p class="muted">What’s included for your business is set out in your quote before you commit.</p>
     </div>
   </div>
@@ -215,8 +215,8 @@ ${ctaBand()}
 
 const crm = page({
   path: 'services/crm-follow-up/', active: 'services',
-  title: 'CRM setup and follow-up · Lumera Creative',
-  description: 'GoHighLevel CRM setup, lead follow-up, quotes and proposals, and reactivation workflows, configured around your business. Custom quote after a free website audit.',
+  title: 'Custom CRM and follow-up · Lumera Creative',
+  description: 'A CRM we build ourselves around your business, plus lead follow-up, quotes and proposals, and reactivation workflows. Custom quote after a free website audit.',
 }, `
 <section class="page-hero">
   <div class="wrap">
@@ -230,7 +230,7 @@ const crm = page({
 <section class="section--tight">
   <div class="wrap">
     <div class="svc-list">
-      <div class="svc" id="crm" data-reveal><h2 class="h3">CRM setup in GoHighLevel</h2><p>Your contacts, pipeline stages, calendar and forms set up in GoHighLevel around the way your business works, so every inquiry has a place and a status.</p></div>
+      <div class="svc" id="crm" data-reveal><h2 class="h3">A CRM we build for you</h2><p>We build the CRM ourselves, around the way your business works: your contacts, pipeline stages and forms, so every inquiry has a place and a status.</p></div>
       <div class="svc" id="follow-up" data-reveal><h2 class="h3">Lead follow-up</h2><p>Follow up on new inquiries and outstanding estimates through workflows configured for your business, so a lead doesn’t go quiet because a message was never sent.</p></div>
       <div class="svc" id="quotes" data-reveal><h2 class="h3">Quotes and proposals</h2><p>Draft quotes and proposals prepared from your services and pricing rules, ready for your team to review before they go out.</p></div>
       <div class="svc" id="reactivation" data-reveal><h2 class="h3">Reactivation</h2><p>Reach back out to past leads and customers through workflows configured for your business.</p></div>
@@ -257,7 +257,7 @@ const crm = page({
   <div class="wrap split">
     <div data-reveal><h2 class="h2" id="cprice-title">Pricing and process</h2></div>
     <div data-reveal>
-      <div class="note"><p><strong>Custom-priced.</strong> CRM setup and follow-up are quoted for your business, as a one-time project fee or a monthly plan depending on the scope. The quote lists the scope, the price and any additional charges before you decide.</p></div>
+      <div class="note"><p><strong>Custom-priced.</strong> A custom CRM and follow-up are quoted for your business, as a one-time project fee or a monthly plan depending on the scope. The quote lists the scope, the price and any additional charges before you decide.</p></div>
       <div class="mt-m">${PROCESS}</div>
     </div>
   </div>
