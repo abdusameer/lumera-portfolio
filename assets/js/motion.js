@@ -107,6 +107,44 @@
     gsap.from(el, { opacity: 0, y: 26, duration: 0.8, ease: 'power3.out', clearProps: 'transform', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
   });
 
+  /* ---- the scroll story (home): on wide screens one ScrollTrigger conducts it. The beat whose copy has crossed 55% of the screen
+     is active; its card is shown on the sticky stage and the rail fills with progress. Scrolling stays native and reversible,
+     and nothing runs once scrolling stops. Narrow screens keep the plain list. */
+  const journey = $('[data-journey]');
+  if (journey) {
+    const wide = matchMedia('(min-width: 1000px)');
+    const list = $('.beats', journey), beats = $$('.beat', journey), layers = $$('.stage-layer', journey), fill = $('.stage-fill', journey);
+    let conductor = null, active = -1;
+    const setActive = i => {
+      if (i === active) return;
+      active = i;
+      beats.forEach((b, k) => b.classList.toggle('is-active', k === i));
+      layers.forEach((l, k) => { l.classList.toggle('is-on', k === i); l.classList.toggle('is-past', k < i); });
+    };
+    const locate = () => {
+      const line = innerHeight * 0.55;
+      let i = 0;
+      beats.forEach((b, k) => { if (b.getBoundingClientRect().top <= line) i = k; });
+      setActive(i);
+    };
+    const build = () => {
+      if (conductor) { conductor.kill(); conductor = null; }
+      if (wide.matches) {
+        journey.classList.add('is-staged');
+        conductor = ScrollTrigger.create({ trigger: list, start: 'top 55%', end: 'bottom 55%', onUpdate: self => { fill.style.setProperty('--p', self.progress.toFixed(4)); locate(); }, onRefresh: locate });
+        locate();
+      } else {
+        journey.classList.remove('is-staged');
+        beats.forEach(b => b.classList.remove('is-active'));
+        active = -1;
+      }
+      ScrollTrigger.refresh();
+    };
+    build();
+    wide.addEventListener('change', build);
+    cleanups.push(() => { wide.removeEventListener('change', build); if (conductor) conductor.kill(); journey.classList.remove('is-staged'); });
+  }
+
   /* ---- content is never out of reach: opacity only (never visibility), so everything stays in the tab order, and a section that
      receives keyboard focus before its turn is shown at once */
   doc.addEventListener('focusin', e => {

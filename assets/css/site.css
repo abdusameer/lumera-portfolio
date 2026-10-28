@@ -453,3 +453,62 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- the scroll story (home, See it working) ----------
+   Phones, reduced motion and no JavaScript: an ordinary list, each beat with its own card.
+   Wide screens with motion: motion.js adds .is-staged; the copy scrolls on the left while one sticky stage on the right swaps
+   to the card of the beat in view. Scrolling stays the browser's own, forward and back. */
+.journey { display: grid; gap: 0; }
+.beats { display: grid; gap: 40px; counter-reset: beat; }
+.beat { display: grid; gap: 18px; }
+.beat-copy { display: grid; gap: 10px; max-width: 46ch; }
+.beat-copy p:not(.label) { color: var(--on-dark-muted); }
+.stage { display: none; }
+.journey-end { margin-top: 48px; }
+.try { margin-top: 48px; }
+
+/* the cards: one sample inquiry */
+.jc { display: grid; gap: 12px; padding: 20px; border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: 0 24px 60px -30px rgba(0, 0, 0, .7); }
+.jc-top { display: flex; align-items: center; gap: 10px; font-size: .9rem; font-weight: 600; }
+.jc-name { font-size: 2rem; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
+.jc-sub { color: var(--muted); font-size: .9rem; }
+.jc-ringing { display: flex; gap: 6px; }
+.jc-ringing i { width: 10px; height: 10px; border-radius: 50%; background: var(--cobalt); animation: ring 1.4s ease-in-out 5; }   /* rings a few times, then rests */
+.jc-ringing i:nth-child(2) { animation-delay: .15s; }
+.jc-ringing i:nth-child(3) { animation-delay: .3s; }
+@keyframes ring { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+.dot--miss { background: #B3261E; }
+.jc-quote { padding: 12px 14px; border-radius: 14px; background: var(--sunk); font-style: italic; color: var(--ink-2); }
+.jc-gaps { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.jc-gaps li { padding: 4px 10px; border-radius: 99px; border: 1px dashed #B3261E; color: #8E1F18; font-size: .8rem; font-weight: 600; }
+.jc .bubbles { gap: 8px; }
+.pipe { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.pipe-col { display: grid; gap: 8px; align-content: start; padding: 8px; border-radius: 12px; background: var(--sunk); }
+.pipe-col > p { font-size: .75rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pipe-card { display: grid; gap: 4px; min-height: 64px; padding: 10px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-size: .82rem; }
+.pipe-card span { color: var(--muted); }
+.pipe-card.is-new { border-color: var(--cobalt); box-shadow: 0 0 0 3px rgba(51, 70, 211, .15); }
+.pipe-card.is-ghost { background: transparent; border-style: dashed; }
+.jc-alert { justify-self: start; padding: 4px 10px; border-radius: 99px; background: var(--cobalt-soft); color: #24318F; font-size: .8rem; font-weight: 600; }
+.jc-sms { padding: 12px 14px; border-radius: 16px 16px 16px 6px; background: var(--cobalt); color: #fff; line-height: 1.45; }
+
+@media (min-width: 1000px) {
+  .journey.is-staged { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 64px; }
+  .journey.is-staged .beats { gap: 0; }
+  .journey.is-staged .beat { min-height: 78vh; align-content: center; }
+  .journey.is-staged .beat:first-child { min-height: 60vh; align-content: start; padding-top: 8vh; }
+  .journey.is-staged .beat:last-child { min-height: 70vh; }
+  .journey.is-staged .beat-copy { opacity: .35; transition: opacity .45s var(--ease); }
+  .journey.is-staged .beat.is-active .beat-copy { opacity: 1; }
+  .journey.is-staged .beat-card { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* still read; shown on the stage */
+  .journey.is-staged .stage { display: grid; gap: 16px; position: sticky; top: calc(var(--head-h) + 6vh); align-self: start; height: min(76vh, 620px); grid-template-rows: minmax(0, 1fr) auto auto; }
+  .stage-frame { position: relative; display: grid; place-items: center; }
+  .stage-layer { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(24px) scale(.97); transition: opacity .55s var(--ease), transform .7s var(--ease); pointer-events: none; }
+  .stage-layer > .jc { width: min(100%, 460px); }
+  .stage-layer.is-on { opacity: 1; transform: none; }
+  .stage-layer.is-past { transform: translateY(-24px) scale(.97); }
+  .stage-rail { position: relative; height: 2px; border-radius: 2px; background: var(--dark-line); overflow: hidden; }
+  .stage-fill { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+  .stage-label { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) { .jc-ringing i { animation: none; opacity: 1; } }

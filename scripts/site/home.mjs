@@ -29,6 +29,27 @@ const callPanel = (c, i) => `<div class="call-panel" role="tabpanel" id="call-${
             </div>
           </div>`;
 
+
+// the scroll story: one sample inquiry, start to finish (fictional data, from the plumbing call in the receptionist showcase)
+const STORY = [
+  { id: 'hook', eyebrow: 'A Tuesday, 4:52 PM', title: 'Your next customer is calling.', body: 'Sam has water under the kitchen sink and wants someone today. Your team is on a job.',
+    card: `<div class="jc jc-ring"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Incoming call</p><p class="jc-name">Sam</p><p class="jc-sub">(555) 010-0144 · mobile</p><p class="jc-ringing" aria-hidden="true"><i></i><i></i><i></i></p></div>` },
+  { id: 'old-way', eyebrow: 'The old way', title: 'And nobody can pick up.', body: 'The call goes to voicemail. What’s left is a rushed message someone has to decode later.',
+    card: `<div class="jc jc-missed"><p class="jc-top"><span class="dot dot--miss" aria-hidden="true"></span>Missed call · voicemail 0:41</p><p class="jc-quote">“Hi, um, there’s water under my sink… can someone come today? Call me back.”</p><ul class="jc-gaps"><li>No address</li><li>No time that works</li><li>Is it still leaking?</li></ul></div>` },
+  { id: 'answered', eyebrow: 'With a receptionist', title: 'Now the call gets answered.', body: 'The receptionist asks what your team would ask: what’s wrong, where, how urgent, and when.',
+    card: `<div class="jc jc-call"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Call answered</p><div class="bubbles"><p class="bubble bubble--caller"><b>Caller</b>There’s a leak under my kitchen sink. Can someone come today?</p><p class="bubble bubble--agent"><b>Receptionist</b>Let’s get that started. Is it still leaking, and were you able to close the valve?</p><p class="bubble bubble--caller"><b>Caller</b>I closed the valve and it slowed down.</p></div></div>` },
+  { id: 'request', eyebrow: 'Details, in writing', title: 'The details become a request.', body: 'Instead of a voicemail, your team gets an organized request with everything needed to call back.',
+    card: `<div class="jc jc-req"><p class="jc-top">Service request</p><dl class="req"><div><dt>Problem</dt><dd>Drip under kitchen sink; valve closed</dd></div><div><dt>Location</dt><dd>88 Sample Lane, Glendale</dd></div><div><dt>Urgency</dt><dd>Same-day; contained</dd></div><div><dt>Requested</dt><dd>Today, 4:00–6:00 PM</dd></div><div><dt>Customer</dt><dd>Sam</dd></div></dl></div>` },
+  { id: 'pipeline', eyebrow: 'Organized', title: 'It lands where your team works.', body: 'The request goes into your CRM pipeline with its status and next step, and your team is alerted.',
+    card: `<div class="jc jc-pipe"><p class="jc-top">Pipeline</p><div class="pipe"><div class="pipe-col"><p>New</p><div class="pipe-card is-new"><strong>Sam · leak under sink</strong><span>Next: confirm 4–6 PM</span></div></div><div class="pipe-col"><p>Contacted</p><div class="pipe-card is-ghost"></div></div><div class="pipe-col"><p>Scheduled</p><div class="pipe-card is-ghost"></div></div></div><p class="jc-alert">Team alerted · follow-up set</p></div>` },
+  { id: 'payoff', eyebrow: 'The result', title: 'You call back knowing everything.', body: 'Sam hears what happens next. Your office confirms the visit before anyone is sent.',
+    card: `<div class="jc jc-text"><p class="jc-top">Text to Sam</p><p class="jc-sms">Thanks, Sam. We’ve passed your request to the office. They’ll confirm the 4:00–6:00 PM window with you before anyone is sent.</p><p class="jc-sub">Request status: awaiting office confirmation</p></div>` },
+];
+const beat = (b, i) => `<li class="beat" id="beat-${b.id}" data-beat="${i}">
+          <div class="beat-copy"><p class="label">${String(i + 1).padStart(2, '0')} · ${b.eyebrow}</p><h3 class="h3">${b.title}</h3><p>${b.body}</p></div>
+          <div class="beat-card">${b.card}</div>
+        </li>`;
+
 export default page({
   path: '',
   title: 'Lumera Creative · Websites, AI receptionists and business automation',
@@ -123,32 +144,32 @@ export default page({
   <div class="wrap">
     <div class="section-head" data-reveal>
       <h2 class="h2" id="demo-title">See it working</h2>
-      <p class="lead">Two demonstrations with sample data: a receptionist taking a call, and an inquiry moving through a workflow. They aren’t connected to any client’s phone line or systems.</p>
+      <p class="lead">One call, followed from the first ring to the callback. A demonstration with sample data, not a live client system.</p>
     </div>
-    <div class="demo-grid">
-      <div class="panel" data-biz data-reveal>
-        <div class="panel-head"><h3 class="h4">A receptionist taking a call</h3><span class="tag tag--sample">Demonstration · sample data</span></div>
-        <div class="biz" role="tablist" aria-label="Choose a business">
-          ${CALLS.map((c, i) => `<button type="button" role="tab" id="tab-${c.key}" aria-controls="call-${c.key}" aria-selected="${i === 0}"${i ? ' tabindex="-1"' : ''}>${c.label}</button>`).join('\n          ')}
-        </div>
-        ${CALLS.map(callPanel).join('\n        ')}
-        <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo ${OUT}${NEW_TAB}</a></p>
-      </div>
-      <div class="panel" data-reveal>
-        <div class="panel-head"><h3 class="h4">From inquiry to action</h3><span class="tag tag--sample">Sample inquiry</span></div>
-        <ol class="steps">
-          <li class="step"><div><h4 class="h4">Capture</h4><p>A request for a kitchen remodel estimate arrives through the website, and its details are stored in one place.</p></div></li>
-          <li class="step"><div><h4 class="h4">Qualify</h4><p>It’s checked for the information needed and sorted by type of work.</p></div></li>
-          <li class="step"><div><h4 class="h4">Route</h4><p>It goes to the workflow that handles estimate requests.</p></div></li>
-          <li class="step"><div><h4 class="h4">Notify</h4><p>The team, and the customer, are told what happens next.</p></div></li>
-          <li class="step"><div><h4 class="h4">Record</h4><p>It’s logged in the pipeline with its status and next step: a site visit.</p></div></li>
-        </ol>
+    <div class="journey" data-journey>
+      <ol class="beats">
+        ${STORY.map(beat).join('\n        ')}
+      </ol>
+      <div class="stage" aria-hidden="true">
+        <div class="stage-frame">${STORY.map((b, i) => `<div class="stage-layer" data-layer="${i}">${b.card}</div>`).join('')}</div>
+        <div class="stage-rail"><span class="stage-fill"></span></div>
+        <p class="stage-label"><span class="tag tag--sample">Demonstration · sample data</span></p>
       </div>
     </div>
-    <div class="handoff" data-reveal>
-      <div><h3>Your rules</h3><p>Questions, services, hours and what counts as urgent are set up around your business, and you approve them.</p></div>
-      <div><h3>A person follows up</h3><p>Every call ends with an organized summary for your team. A live transfer during the call isn’t part of the current setup.</p></div>
-      <div><h3>Your calendar decides</h3><p>Openings come from a connected calendar or booking tool where one is set up. Otherwise the receptionist takes a request and your team confirms it.</p></div>
+    <div class="journey-end" data-reveal>
+      <div class="handoff">
+        <div><h3>Your rules</h3><p>Questions, services, hours and what counts as urgent are set up around your business, and you approve them.</p></div>
+        <div><h3>A person follows up</h3><p>Every call ends with an organized summary for your team. A live transfer during the call isn’t part of the current setup.</p></div>
+        <div><h3>Your calendar decides</h3><p>Openings come from a connected calendar or booking tool where one is set up. Otherwise the receptionist takes a request and your team confirms it.</p></div>
+      </div>
+    </div>
+    <div class="panel try" data-biz data-reveal>
+      <div class="panel-head"><h3 class="h4">Try it with another business</h3><span class="tag tag--sample">Demonstration · sample data</span></div>
+      <div class="biz" role="tablist" aria-label="Choose a business">
+        ${CALLS.map((c, i) => `<button type="button" role="tab" id="tab-${c.key}" aria-controls="call-${c.key}" aria-selected="${i === 0}"${i ? ' tabindex="-1"' : ''}>${c.label}</button>`).join('\n        ')}
+      </div>
+      ${CALLS.map(callPanel).join('\n      ')}
+      <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo ${OUT}${NEW_TAB}</a></p>
     </div>
   </div>
 </section>

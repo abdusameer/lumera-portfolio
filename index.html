@@ -168,18 +168,57 @@
   <div class="wrap">
     <div class="section-head" data-reveal>
       <h2 class="h2" id="demo-title">See it working</h2>
-      <p class="lead">Two demonstrations with sample data: a receptionist taking a call, and an inquiry moving through a workflow. They aren’t connected to any client’s phone line or systems.</p>
+      <p class="lead">One call, followed from the first ring to the callback. A demonstration with sample data, not a live client system.</p>
     </div>
-    <div class="demo-grid">
-      <div class="panel" data-biz data-reveal>
-        <div class="panel-head"><h3 class="h4">A receptionist taking a call</h3><span class="tag tag--sample">Demonstration · sample data</span></div>
-        <div class="biz" role="tablist" aria-label="Choose a business">
-          <button type="button" role="tab" id="tab-salon" aria-controls="call-salon" aria-selected="true">Salon</button>
-          <button type="button" role="tab" id="tab-plumbing" aria-controls="call-plumbing" aria-selected="false" tabindex="-1">Plumbing</button>
-          <button type="button" role="tab" id="tab-restaurant" aria-controls="call-restaurant" aria-selected="false" tabindex="-1">Restaurant</button>
-          <button type="button" role="tab" id="tab-hvac" aria-controls="call-hvac" aria-selected="false" tabindex="-1">HVAC</button>
-        </div>
-        <div class="call-panel" role="tabpanel" id="call-salon" aria-labelledby="tab-salon" tabindex="0">
+    <div class="journey" data-journey>
+      <ol class="beats">
+        <li class="beat" id="beat-hook" data-beat="0">
+          <div class="beat-copy"><p class="label">01 · A Tuesday, 4:52 PM</p><h3 class="h3">Your next customer is calling.</h3><p>Sam has water under the kitchen sink and wants someone today. Your team is on a job.</p></div>
+          <div class="beat-card"><div class="jc jc-ring"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Incoming call</p><p class="jc-name">Sam</p><p class="jc-sub">(555) 010-0144 · mobile</p><p class="jc-ringing" aria-hidden="true"><i></i><i></i><i></i></p></div></div>
+        </li>
+        <li class="beat" id="beat-old-way" data-beat="1">
+          <div class="beat-copy"><p class="label">02 · The old way</p><h3 class="h3">And nobody can pick up.</h3><p>The call goes to voicemail. What’s left is a rushed message someone has to decode later.</p></div>
+          <div class="beat-card"><div class="jc jc-missed"><p class="jc-top"><span class="dot dot--miss" aria-hidden="true"></span>Missed call · voicemail 0:41</p><p class="jc-quote">“Hi, um, there’s water under my sink… can someone come today? Call me back.”</p><ul class="jc-gaps"><li>No address</li><li>No time that works</li><li>Is it still leaking?</li></ul></div></div>
+        </li>
+        <li class="beat" id="beat-answered" data-beat="2">
+          <div class="beat-copy"><p class="label">03 · With a receptionist</p><h3 class="h3">Now the call gets answered.</h3><p>The receptionist asks what your team would ask: what’s wrong, where, how urgent, and when.</p></div>
+          <div class="beat-card"><div class="jc jc-call"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Call answered</p><div class="bubbles"><p class="bubble bubble--caller"><b>Caller</b>There’s a leak under my kitchen sink. Can someone come today?</p><p class="bubble bubble--agent"><b>Receptionist</b>Let’s get that started. Is it still leaking, and were you able to close the valve?</p><p class="bubble bubble--caller"><b>Caller</b>I closed the valve and it slowed down.</p></div></div></div>
+        </li>
+        <li class="beat" id="beat-request" data-beat="3">
+          <div class="beat-copy"><p class="label">04 · Details, in writing</p><h3 class="h3">The details become a request.</h3><p>Instead of a voicemail, your team gets an organized request with everything needed to call back.</p></div>
+          <div class="beat-card"><div class="jc jc-req"><p class="jc-top">Service request</p><dl class="req"><div><dt>Problem</dt><dd>Drip under kitchen sink; valve closed</dd></div><div><dt>Location</dt><dd>88 Sample Lane, Glendale</dd></div><div><dt>Urgency</dt><dd>Same-day; contained</dd></div><div><dt>Requested</dt><dd>Today, 4:00–6:00 PM</dd></div><div><dt>Customer</dt><dd>Sam</dd></div></dl></div></div>
+        </li>
+        <li class="beat" id="beat-pipeline" data-beat="4">
+          <div class="beat-copy"><p class="label">05 · Organized</p><h3 class="h3">It lands where your team works.</h3><p>The request goes into your CRM pipeline with its status and next step, and your team is alerted.</p></div>
+          <div class="beat-card"><div class="jc jc-pipe"><p class="jc-top">Pipeline</p><div class="pipe"><div class="pipe-col"><p>New</p><div class="pipe-card is-new"><strong>Sam · leak under sink</strong><span>Next: confirm 4–6 PM</span></div></div><div class="pipe-col"><p>Contacted</p><div class="pipe-card is-ghost"></div></div><div class="pipe-col"><p>Scheduled</p><div class="pipe-card is-ghost"></div></div></div><p class="jc-alert">Team alerted · follow-up set</p></div></div>
+        </li>
+        <li class="beat" id="beat-payoff" data-beat="5">
+          <div class="beat-copy"><p class="label">06 · The result</p><h3 class="h3">You call back knowing everything.</h3><p>Sam hears what happens next. Your office confirms the visit before anyone is sent.</p></div>
+          <div class="beat-card"><div class="jc jc-text"><p class="jc-top">Text to Sam</p><p class="jc-sms">Thanks, Sam. We’ve passed your request to the office. They’ll confirm the 4:00–6:00 PM window with you before anyone is sent.</p><p class="jc-sub">Request status: awaiting office confirmation</p></div></div>
+        </li>
+      </ol>
+      <div class="stage" aria-hidden="true">
+        <div class="stage-frame"><div class="stage-layer" data-layer="0"><div class="jc jc-ring"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Incoming call</p><p class="jc-name">Sam</p><p class="jc-sub">(555) 010-0144 · mobile</p><p class="jc-ringing" aria-hidden="true"><i></i><i></i><i></i></p></div></div><div class="stage-layer" data-layer="1"><div class="jc jc-missed"><p class="jc-top"><span class="dot dot--miss" aria-hidden="true"></span>Missed call · voicemail 0:41</p><p class="jc-quote">“Hi, um, there’s water under my sink… can someone come today? Call me back.”</p><ul class="jc-gaps"><li>No address</li><li>No time that works</li><li>Is it still leaking?</li></ul></div></div><div class="stage-layer" data-layer="2"><div class="jc jc-call"><p class="jc-top"><span class="dot dot--live" aria-hidden="true"></span>Call answered</p><div class="bubbles"><p class="bubble bubble--caller"><b>Caller</b>There’s a leak under my kitchen sink. Can someone come today?</p><p class="bubble bubble--agent"><b>Receptionist</b>Let’s get that started. Is it still leaking, and were you able to close the valve?</p><p class="bubble bubble--caller"><b>Caller</b>I closed the valve and it slowed down.</p></div></div></div><div class="stage-layer" data-layer="3"><div class="jc jc-req"><p class="jc-top">Service request</p><dl class="req"><div><dt>Problem</dt><dd>Drip under kitchen sink; valve closed</dd></div><div><dt>Location</dt><dd>88 Sample Lane, Glendale</dd></div><div><dt>Urgency</dt><dd>Same-day; contained</dd></div><div><dt>Requested</dt><dd>Today, 4:00–6:00 PM</dd></div><div><dt>Customer</dt><dd>Sam</dd></div></dl></div></div><div class="stage-layer" data-layer="4"><div class="jc jc-pipe"><p class="jc-top">Pipeline</p><div class="pipe"><div class="pipe-col"><p>New</p><div class="pipe-card is-new"><strong>Sam · leak under sink</strong><span>Next: confirm 4–6 PM</span></div></div><div class="pipe-col"><p>Contacted</p><div class="pipe-card is-ghost"></div></div><div class="pipe-col"><p>Scheduled</p><div class="pipe-card is-ghost"></div></div></div><p class="jc-alert">Team alerted · follow-up set</p></div></div><div class="stage-layer" data-layer="5"><div class="jc jc-text"><p class="jc-top">Text to Sam</p><p class="jc-sms">Thanks, Sam. We’ve passed your request to the office. They’ll confirm the 4:00–6:00 PM window with you before anyone is sent.</p><p class="jc-sub">Request status: awaiting office confirmation</p></div></div></div>
+        <div class="stage-rail"><span class="stage-fill"></span></div>
+        <p class="stage-label"><span class="tag tag--sample">Demonstration · sample data</span></p>
+      </div>
+    </div>
+    <div class="journey-end" data-reveal>
+      <div class="handoff">
+        <div><h3>Your rules</h3><p>Questions, services, hours and what counts as urgent are set up around your business, and you approve them.</p></div>
+        <div><h3>A person follows up</h3><p>Every call ends with an organized summary for your team. A live transfer during the call isn’t part of the current setup.</p></div>
+        <div><h3>Your calendar decides</h3><p>Openings come from a connected calendar or booking tool where one is set up. Otherwise the receptionist takes a request and your team confirms it.</p></div>
+      </div>
+    </div>
+    <div class="panel try" data-biz data-reveal>
+      <div class="panel-head"><h3 class="h4">Try it with another business</h3><span class="tag tag--sample">Demonstration · sample data</span></div>
+      <div class="biz" role="tablist" aria-label="Choose a business">
+        <button type="button" role="tab" id="tab-salon" aria-controls="call-salon" aria-selected="true">Salon</button>
+        <button type="button" role="tab" id="tab-plumbing" aria-controls="call-plumbing" aria-selected="false" tabindex="-1">Plumbing</button>
+        <button type="button" role="tab" id="tab-restaurant" aria-controls="call-restaurant" aria-selected="false" tabindex="-1">Restaurant</button>
+        <button type="button" role="tab" id="tab-hvac" aria-controls="call-hvac" aria-selected="false" tabindex="-1">HVAC</button>
+      </div>
+      <div class="call-panel" role="tabpanel" id="call-salon" aria-labelledby="tab-salon" tabindex="0">
             <div class="call bubbles">
               <p class="bubble bubble--caller"><b>Caller</b>Hi, I’d like to book a gel manicure on Friday afternoon.</p>
               <p class="bubble bubble--agent"><b>Receptionist</b>Happy to help. A gel manicure takes about 60 minutes. Do you have a preferred technician?</p>
@@ -192,7 +231,7 @@
               <dl class="req"><div><dt>Service</dt><dd>Gel manicure · 60 min</dd></div><div><dt>Staff</dt><dd>Maya</dd></div><div><dt>Time</dt><dd>Friday · 3:45 PM</dd></div><div><dt>Customer</dt><dd>Riley</dd></div></dl>
             </div>
           </div>
-        <div class="call-panel" role="tabpanel" id="call-plumbing" aria-labelledby="tab-plumbing" hidden tabindex="0">
+      <div class="call-panel" role="tabpanel" id="call-plumbing" aria-labelledby="tab-plumbing" hidden tabindex="0">
             <div class="call bubbles">
               <p class="bubble bubble--caller"><b>Caller</b>There’s a leak under my kitchen sink. Can someone come today?</p>
               <p class="bubble bubble--agent"><b>Receptionist</b>Let’s get that started. Is it still leaking, and were you able to close the valve?</p>
@@ -205,7 +244,7 @@
               <dl class="req"><div><dt>Problem</dt><dd>Drip under kitchen sink; valve closed</dd></div><div><dt>Requested</dt><dd>Today, 4:00–6:00 PM window</dd></div><div><dt>Customer</dt><dd>Sam</dd></div><div><dt>Status</dt><dd>Office confirms before anyone is sent</dd></div></dl>
             </div>
           </div>
-        <div class="call-panel" role="tabpanel" id="call-restaurant" aria-labelledby="tab-restaurant" hidden tabindex="0">
+      <div class="call-panel" role="tabpanel" id="call-restaurant" aria-labelledby="tab-restaurant" hidden tabindex="0">
             <div class="call bubbles">
               <p class="bubble bubble--caller"><b>Caller</b>Can I reserve a table for four tomorrow at seven?</p>
               <p class="bubble bubble--agent"><b>Receptionist</b>Happy to check. Any seating preference?</p>
@@ -218,7 +257,7 @@
               <dl class="req"><div><dt>Party</dt><dd>4 adults, indoors</dd></div><div><dt>Asked for</dt><dd>Tomorrow · 7:00 PM</dd></div><div><dt>Offered</dt><dd>Tomorrow · 8:15 PM</dd></div><div><dt>Name</dt><dd>Alex</dd></div></dl>
             </div>
           </div>
-        <div class="call-panel" role="tabpanel" id="call-hvac" aria-labelledby="tab-hvac" hidden tabindex="0">
+      <div class="call-panel" role="tabpanel" id="call-hvac" aria-labelledby="tab-hvac" hidden tabindex="0">
             <div class="call bubbles">
               <p class="bubble bubble--caller"><b>Caller</b>My air conditioner is running, but it isn’t cooling.</p>
               <p class="bubble bubble--agent"><b>Receptionist</b>I can help with that. Is air coming out of the vents, and is it warm?</p>
@@ -231,23 +270,7 @@
               <dl class="req"><div><dt>Issue</dt><dd>Runs but blows warm air; 84°F</dd></div><div><dt>Visit</dt><dd>Tomorrow · 11:30 AM</dd></div><div><dt>Customer</dt><dd>Jordan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
             </div>
           </div>
-        <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></p>
-      </div>
-      <div class="panel" data-reveal>
-        <div class="panel-head"><h3 class="h4">From inquiry to action</h3><span class="tag tag--sample">Sample inquiry</span></div>
-        <ol class="steps">
-          <li class="step"><div><h4 class="h4">Capture</h4><p>A request for a kitchen remodel estimate arrives through the website, and its details are stored in one place.</p></div></li>
-          <li class="step"><div><h4 class="h4">Qualify</h4><p>It’s checked for the information needed and sorted by type of work.</p></div></li>
-          <li class="step"><div><h4 class="h4">Route</h4><p>It goes to the workflow that handles estimate requests.</p></div></li>
-          <li class="step"><div><h4 class="h4">Notify</h4><p>The team, and the customer, are told what happens next.</p></div></li>
-          <li class="step"><div><h4 class="h4">Record</h4><p>It’s logged in the pipeline with its status and next step: a site visit.</p></div></li>
-        </ol>
-      </div>
-    </div>
-    <div class="handoff" data-reveal>
-      <div><h3>Your rules</h3><p>Questions, services, hours and what counts as urgent are set up around your business, and you approve them.</p></div>
-      <div><h3>A person follows up</h3><p>Every call ends with an organized summary for your team. A live transfer during the call isn’t part of the current setup.</p></div>
-      <div><h3>Your calendar decides</h3><p>Openings come from a connected calendar or booking tool where one is set up. Otherwise the receptionist takes a request and your team confirms it.</p></div>
+      <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></p>
     </div>
   </div>
 </section>
