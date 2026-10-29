@@ -213,23 +213,23 @@
     <div class="panel try" data-biz data-reveal>
       <div class="panel-head"><h3 class="h4">Try it with another business</h3><span class="tag tag--sample">Demonstration · sample data</span></div>
       <div class="biz" role="tablist" aria-label="Choose a business">
-        <button type="button" role="tab" id="tab-salon" aria-controls="call-salon" aria-selected="true">Salon</button>
+        <button type="button" role="tab" id="tab-roofing" aria-controls="call-roofing" aria-selected="true">Roofing</button>
         <button type="button" role="tab" id="tab-plumbing" aria-controls="call-plumbing" aria-selected="false" tabindex="-1">Plumbing</button>
-        <button type="button" role="tab" id="tab-restaurant" aria-controls="call-restaurant" aria-selected="false" tabindex="-1">Restaurant</button>
         <button type="button" role="tab" id="tab-hvac" aria-controls="call-hvac" aria-selected="false" tabindex="-1">HVAC</button>
-        <button type="button" role="tab" id="tab-roofing" aria-controls="call-roofing" aria-selected="false" tabindex="-1">Roofing</button>
+        <button type="button" role="tab" id="tab-restaurant" aria-controls="call-restaurant" aria-selected="false" tabindex="-1">Restaurant</button>
+        <button type="button" role="tab" id="tab-salon" aria-controls="call-salon" aria-selected="false" tabindex="-1">Salon</button>
       </div>
-      <div class="call-panel" role="tabpanel" id="call-salon" aria-labelledby="tab-salon" tabindex="0">
+      <div class="call-panel" role="tabpanel" id="call-roofing" aria-labelledby="tab-roofing" tabindex="0">
             <div class="call bubbles">
-              <p class="bubble bubble--caller"><b>Caller</b>Hi, I’d like to book a gel manicure on Friday afternoon.</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>Happy to help. A gel manicure takes about 60 minutes. Do you have a preferred technician?</p>
-              <p class="bubble bubble--caller"><b>Caller</b>Maya, if she’s free.</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>Maya has 1:30 PM or 3:45 PM on Friday. Which would you like?</p>
-              <p class="bubble bubble--caller"><b>Caller</b>3:45, please. My name is Riley.</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Last night’s storm took some shingles off and there’s a water stain on my ceiling.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>I’m sorry to hear that. Is water dripping inside right now, or just the stain?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Just the stain. It stopped when the rain did.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>I can request an inspection Thursday at 10:00 AM or 3:00 PM. Would you like a tarp visit sooner if it rains again?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Thursday at 10, and yes to the tarp. It’s Morgan.</p>
             </div>
             <div class="summary">
-              <p class="summary-title"><span>Appointment request</span><span class="tag tag--sample">Sample</span></p>
-              <dl class="req"><div><dt>Service</dt><dd>Gel manicure · 60 min</dd></div><div><dt>Staff</dt><dd>Maya</dd></div><div><dt>Time</dt><dd>Friday · 3:45 PM</dd></div><div><dt>Customer</dt><dd>Riley</dd></div></dl>
+              <p class="summary-title"><span>Inspection request</span><span class="tag tag--sample">Sample</span></p>
+              <dl class="req"><div><dt>Issue</dt><dd>Missing shingles; ceiling stain, no active leak</dd></div><div><dt>Inspection</dt><dd>Thursday · 10:00 AM</dd></div><div><dt>If it rains</dt><dd>Tarp visit requested</dd></div><div><dt>Customer</dt><dd>Morgan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
             </div>
           </div>
       <div class="call-panel" role="tabpanel" id="call-plumbing" aria-labelledby="tab-plumbing" hidden tabindex="0">
@@ -245,19 +245,6 @@
               <dl class="req"><div><dt>Problem</dt><dd>Drip under kitchen sink; valve closed</dd></div><div><dt>Requested</dt><dd>Today, 4:00–6:00 PM window</dd></div><div><dt>Customer</dt><dd>Sam</dd></div><div><dt>Status</dt><dd>Office confirms before anyone is sent</dd></div></dl>
             </div>
           </div>
-      <div class="call-panel" role="tabpanel" id="call-restaurant" aria-labelledby="tab-restaurant" hidden tabindex="0">
-            <div class="call bubbles">
-              <p class="bubble bubble--caller"><b>Caller</b>Can I reserve a table for four tomorrow at seven?</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>Happy to check. Any seating preference?</p>
-              <p class="bubble bubble--caller"><b>Caller</b>Indoors, please.</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>7:00 is full for four indoors. I can offer 6:30 PM or 8:15 PM.</p>
-              <p class="bubble bubble--caller"><b>Caller</b>8:15 is good. The name is Alex.</p>
-            </div>
-            <div class="summary">
-              <p class="summary-title"><span>Reservation request</span><span class="tag tag--sample">Sample</span></p>
-              <dl class="req"><div><dt>Party</dt><dd>4 adults, indoors</dd></div><div><dt>Asked for</dt><dd>Tomorrow · 7:00 PM</dd></div><div><dt>Offered</dt><dd>Tomorrow · 8:15 PM</dd></div><div><dt>Name</dt><dd>Alex</dd></div></dl>
-            </div>
-          </div>
       <div class="call-panel" role="tabpanel" id="call-hvac" aria-labelledby="tab-hvac" hidden tabindex="0">
             <div class="call bubbles">
               <p class="bubble bubble--caller"><b>Caller</b>My air conditioner is running, but it isn’t cooling.</p>
@@ -271,17 +258,30 @@
               <dl class="req"><div><dt>Issue</dt><dd>Runs but blows warm air; 84°F</dd></div><div><dt>Visit</dt><dd>Tomorrow · 11:30 AM</dd></div><div><dt>Customer</dt><dd>Jordan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
             </div>
           </div>
-      <div class="call-panel" role="tabpanel" id="call-roofing" aria-labelledby="tab-roofing" hidden tabindex="0">
+      <div class="call-panel" role="tabpanel" id="call-restaurant" aria-labelledby="tab-restaurant" hidden tabindex="0">
             <div class="call bubbles">
-              <p class="bubble bubble--caller"><b>Caller</b>Last night’s storm took some shingles off and there’s a water stain on my ceiling.</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>I’m sorry to hear that. Is water dripping inside right now, or just the stain?</p>
-              <p class="bubble bubble--caller"><b>Caller</b>Just the stain. It stopped when the rain did.</p>
-              <p class="bubble bubble--agent"><b>Receptionist</b>I can request an inspection Thursday at 10:00 AM or 3:00 PM. Would you like a tarp visit sooner if it rains again?</p>
-              <p class="bubble bubble--caller"><b>Caller</b>Thursday at 10, and yes to the tarp. It’s Morgan.</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Can I reserve a table for four tomorrow at seven?</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>Happy to check. Any seating preference?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Indoors, please.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>7:00 is full for four indoors. I can offer 6:30 PM or 8:15 PM.</p>
+              <p class="bubble bubble--caller"><b>Caller</b>8:15 is good. The name is Alex.</p>
             </div>
             <div class="summary">
-              <p class="summary-title"><span>Inspection request</span><span class="tag tag--sample">Sample</span></p>
-              <dl class="req"><div><dt>Issue</dt><dd>Missing shingles; ceiling stain, no active leak</dd></div><div><dt>Inspection</dt><dd>Thursday · 10:00 AM</dd></div><div><dt>If it rains</dt><dd>Tarp visit requested</dd></div><div><dt>Customer</dt><dd>Morgan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
+              <p class="summary-title"><span>Reservation request</span><span class="tag tag--sample">Sample</span></p>
+              <dl class="req"><div><dt>Party</dt><dd>4 adults, indoors</dd></div><div><dt>Asked for</dt><dd>Tomorrow · 7:00 PM</dd></div><div><dt>Offered</dt><dd>Tomorrow · 8:15 PM</dd></div><div><dt>Name</dt><dd>Alex</dd></div></dl>
+            </div>
+          </div>
+      <div class="call-panel" role="tabpanel" id="call-salon" aria-labelledby="tab-salon" hidden tabindex="0">
+            <div class="call bubbles">
+              <p class="bubble bubble--caller"><b>Caller</b>Hi, I’d like to book a gel manicure on Friday afternoon.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>Happy to help. A gel manicure takes about 60 minutes. Do you have a preferred technician?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Maya, if she’s free.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>Maya has 1:30 PM or 3:45 PM on Friday. Which would you like?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>3:45, please. My name is Riley.</p>
+            </div>
+            <div class="summary">
+              <p class="summary-title"><span>Appointment request</span><span class="tag tag--sample">Sample</span></p>
+              <dl class="req"><div><dt>Service</dt><dd>Gel manicure · 60 min</dd></div><div><dt>Staff</dt><dd>Maya</dd></div><div><dt>Time</dt><dd>Friday · 3:45 PM</dd></div><div><dt>Customer</dt><dd>Riley</dd></div></dl>
             </div>
           </div>
       <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></p>
