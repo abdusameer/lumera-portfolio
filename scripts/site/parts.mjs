@@ -1,7 +1,7 @@
 // Shared page parts for the Lumera site. scripts/build.mjs writes plain HTML from these; the site itself has no build step at deploy.
 export const SITE = 'https://lumeracreative.agency/';
 export const EMAIL = 'contact@lumeracreative.agency';
-export const V = '20261028e';                       // asset version, bumped when CSS or JS change
+export const V = '20261029a';                       // asset version, bumped when CSS or JS change
 
 export const CSP = "default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'";
 
@@ -18,7 +18,7 @@ const NAV = [
   ['/about/', 'About', 'about'],
 ];
 
-export function head({ path, title, description, audit = false, jsonld = '', noindex = false }) {
+export function head({ path, title, description, audit = false, jsonld = '', noindex = false, opening = false }) {
   const url = SITE + path.replace(/^\//, '');
   return `<!doctype html>
 <html lang="en">
@@ -45,7 +45,7 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="theme-co
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css?v=${V}">
-<script src="/assets/js/site.js?v=${V}" defer></script>
+${opening ? `<script src="/assets/js/opening.js?v=${V}"></script>\n` : ''}<script src="/assets/js/site.js?v=${V}" defer></script>
 <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/lenis-1.1.18.min.js" defer></script>

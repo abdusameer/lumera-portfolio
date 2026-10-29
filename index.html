@@ -22,13 +22,14 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=20261028e">
-<script src="/assets/js/site.js?v=20261028e" defer></script>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261029a">
+<script src="/assets/js/opening.js?v=20261029a"></script>
+<script src="/assets/js/site.js?v=20261029a" defer></script>
 <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/lenis-1.1.18.min.js" defer></script>
-<script src="/assets/js/motion.js?v=20261028e" defer></script>
-<script src="/assets/js/audit.js?v=20261028e" defer></script>
+<script src="/assets/js/motion.js?v=20261029a" defer></script>
+<script src="/assets/js/audit.js?v=20261029a" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -88,7 +89,24 @@
 </header>
 <main id="main">
 
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+  <!-- LUMERA, drawn from Archivo at its narrowest width and heaviest weight; each letter stretches to its box -->
+    <path id="g-L" d="M0 688V0H152V555H354V688Z"/>
+    <path id="g-U" d="M207 700Q143 700 97 678Q51 657 25 605Q0 553 0 464V0H153V474Q153 521 164 545Q175 570 207 570Q239 570 250 545Q261 521 261 474V0H415V464Q415 553 390 605Q365 657 319 678Q273 700 207 700Z"/>
+    <path id="g-M" d="M0 688V0H214L269 309Q273 325 276 350Q280 375 284 401Q289 427 292 447H300Q302 430 306 407Q310 384 314 358Q318 333 321 309L376 0H584V688H440V387Q440 352 441 320Q442 288 444 263Q445 238 445 226H437Q436 237 433 253Q430 269 427 284Q424 299 422 312L351 688H233L162 311Q161 303 158 287Q154 271 152 254Q150 238 146 225H139Q141 246 142 273Q142 301 143 331Q144 361 144 387V688Z"/>
+    <path id="g-E" d="M0 688V0H380V132H153V273H346V404H153V556H384V688Z"/>
+    <path id="g-R" d="M0 688V0H230Q306 0 348 28Q390 56 407 102Q424 148 424 206Q424 265 410 314Q395 363 359 393L447 688H289L224 444H152V688ZM152 320H209Q245 320 258 292Q272 263 272 220Q272 190 266 170Q259 149 246 138Q233 128 206 128H152Z"/>
+    <path id="g-A" d="M0 688 145 0H354L499 688H340L317 561H177L156 688ZM197 434H297L267 249Q266 242 264 229Q262 216 260 199Q257 182 256 167Q254 152 251 137H243Q242 153 239 174Q236 195 234 216Q231 236 228 249Z"/>
+</defs></svg>
+<!-- the opening (assets/js/opening.js): shown only while html.opening is set -->
+<div class="opening-screen" id="opening" aria-hidden="true">
+  <div class="opening-inner"><span class="wm"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><rect class="ln" x="171" y="0" width="12" height="700"/><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><rect class="ln" x="200" y="0" width="15" height="700"/><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><rect class="ln" x="282" y="0" width="20" height="700"/><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><rect class="ln" x="185.5" y="0" width="13" height="700"/><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><rect class="ln" x="215.5" y="0" width="16" height="700"/><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><rect class="ln" x="241" y="0" width="17" height="700"/><use href="#g-A"/></svg></span><span class="opening-tag">Where design meets innovation.</span></div>
+</div>
 <section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-brand">
+    <p class="hero-mark" role="img" aria-label="Lumera"><span class="wm" aria-hidden="true"><svg viewBox="0 0 354 700" preserveAspectRatio="none" style="flex-grow:354;--k:0"><use href="#g-L"/></svg><svg viewBox="0 0 415 700" preserveAspectRatio="none" style="flex-grow:415;--k:1"><use href="#g-U"/></svg><svg viewBox="0 0 584 700" preserveAspectRatio="none" style="flex-grow:584;--k:2"><use href="#g-M"/></svg><svg viewBox="0 0 384 700" preserveAspectRatio="none" style="flex-grow:384;--k:3"><use href="#g-E"/></svg><svg viewBox="0 0 447 700" preserveAspectRatio="none" style="flex-grow:447;--k:4"><use href="#g-R"/></svg><svg viewBox="0 0 499 700" preserveAspectRatio="none" style="flex-grow:499;--k:5"><use href="#g-A"/></svg></span></p>
+    <p class="hero-tag">Where design meets innovation.</p>
+  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <h1 class="display" id="hero-title">Websites, AI receptionists and business automation.</h1>

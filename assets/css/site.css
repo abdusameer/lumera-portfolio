@@ -143,7 +143,37 @@ button { cursor: pointer; }
 .no-scroll { overflow: hidden; }
 
 /* ---------- hero ---------- */
-.hero { padding-block: 40px 64px; }
+.hero { padding-block: 28px 64px; }
+/* the LUMERA wordmark and tagline at the top of the homepage */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.wm { display: flex; align-items: stretch; gap: 2.6%; width: 100%; height: 100%; }
+.wm svg { flex-basis: 0; min-width: 0; height: 100%; fill: currentColor; overflow: visible; }
+.hero-brand { display: grid; gap: 12px; margin-bottom: 40px; }
+.hero-mark { width: 100%; aspect-ratio: 4.2 / 1; max-height: 18svh; color: var(--ink); }
+.hero-brand + .hero-grid .display { font-size: clamp(2.1rem, 1.3rem + 3.2vw, 3.6rem); }   /* LUMERA is the big moment; the headline steps down so the actions stay on the first screen */
+.hero-brand + .hero-grid { align-items: start; }
+.hero-tag { font-size: clamp(1.2rem, .95rem + 1.2vw, 2rem); font-weight: 500; line-height: 1.15; letter-spacing: -.02em; }
+
+/* the opening (opening.js): black, the letters rise as thin white lines, open into LUMERA, the tagline follows, then the black wipes left */
+.opening-screen { display: none; }
+.opening .opening-screen { display: grid; place-items: center; position: fixed; inset: 0; z-index: 100; background: #0A0A09; color: #FFF;
+  clip-path: inset(0 0 0 0); transition: clip-path .5s cubic-bezier(.7, 0, .2, 1);
+  animation: opening-away .4s 3.2s forwards; }                       /* if the script stops part-way, the page still shows */
+@keyframes opening-away { to { opacity: 0; visibility: hidden; } }
+.opening-inner { display: grid; justify-items: center; gap: 22px; width: min(82vw, 36rem); }
+.opening-screen .wm { height: auto; aspect-ratio: 2.1 / 1; }
+.opening-screen .wm svg { clip-path: inset(0 48%); opacity: 0; transform: scaleY(.3); transition: opacity .45s var(--ease), transform .7s var(--ease), clip-path .75s cubic-bezier(.65, 0, .25, 1); transition-delay: calc(var(--k) * 60ms); }
+.opening-screen .wm use { opacity: 0; transition: opacity .2s linear; transition-delay: calc(var(--k) * 60ms); }
+.opening-screen .wm .ln { transition: opacity .5s linear .15s; transition-delay: calc(150ms + var(--k) * 60ms); }   /* a clean full-height line per letter */
+.opening-screen.is-lines .wm svg { opacity: 1; transform: none; }
+.opening-screen.is-open .wm svg { clip-path: inset(0 0); }
+.opening-screen.is-open .wm use { opacity: 1; }
+.opening-screen.is-open .wm .ln { opacity: 0; }
+.opening-tag { font-size: clamp(1rem, .9rem + .6vw, 1.35rem); letter-spacing: -.01em; color: rgba(255, 255, 255, .82); opacity: 0; transform: translateY(12px); transition: opacity .5s var(--ease) .35s, transform .6s var(--ease) .35s; }
+.opening-screen.is-open .opening-tag { opacity: 1; transform: none; }
+.opening-screen.is-out { clip-path: inset(0 100% 0 0); pointer-events: none; }
+.opening-screen.is-quick { transition-duration: .28s; }
+
 @media (min-width: 760px) { .hero { padding-block: 64px 96px; } }
 .hero-grid { display: grid; gap: 48px; align-items: center; }
 @media (min-width: 1000px) { .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; } }

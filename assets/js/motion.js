@@ -67,6 +67,8 @@
   if (hero) {
     const h1 = $('h1', hero), words = h1 ? split(h1) : null;
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    // on the homepage the black opening (opening.js) plays first; this entrance starts as it wipes away
+    if (root.classList.contains('opening')) { tl.pause(); const go = () => tl.play(); doc.addEventListener('lumera:opened', go, { once: true }); setTimeout(go, 3200); }
     if (words) tl.from(words, { yPercent: 115, duration: 1, stagger: 0.055 });
     const after = $$('.lead, .case-q, .btn-row, .hero-note, .crumbs, .page-hero > .wrap > p:first-child', hero).filter(el => !h1 || !el.contains(h1));
     if (after.length) tl.from(after, { opacity: 0, y: 18, duration: 0.8, stagger: 0.08 }, words ? 0.35 : 0);
