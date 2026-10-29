@@ -17,6 +17,8 @@ const CALLS = [
     title: 'Reservation request', rows: [['Party', '4 adults, indoors'], ['Asked for', 'Tomorrow · 7:00 PM'], ['Offered', 'Tomorrow · 8:15 PM'], ['Name', 'Alex']] },
   { key: 'hvac', label: 'HVAC', lines: [['c', 'My air conditioner is running, but it isn’t cooling.'], ['a', 'I can help with that. Is air coming out of the vents, and is it warm?'], ['c', 'It’s blowing, just warm. The thermostat says 84.'], ['a', 'Tomorrow I have 9:00 AM, 11:30 AM or 2:00 PM for a diagnostic visit.'], ['c', '11:30 works. It’s Jordan.']],
     title: 'Service request', rows: [['Issue', 'Runs but blows warm air; 84°F'], ['Visit', 'Tomorrow · 11:30 AM'], ['Customer', 'Jordan'], ['Next step', 'Your team confirms the visit']] },
+  { key: 'roofing', label: 'Roofing', lines: [['c', 'Last night’s storm took some shingles off and there’s a water stain on my ceiling.'], ['a', 'I’m sorry to hear that. Is water dripping inside right now, or just the stain?'], ['c', 'Just the stain. It stopped when the rain did.'], ['a', 'I can request an inspection Thursday at 10:00 AM or 3:00 PM. Would you like a tarp visit sooner if it rains again?'], ['c', 'Thursday at 10, and yes to the tarp. It’s Morgan.']],
+    title: 'Inspection request', rows: [['Issue', 'Missing shingles; ceiling stain, no active leak'], ['Inspection', 'Thursday · 10:00 AM'], ['If it rains', 'Tarp visit requested'], ['Customer', 'Morgan'], ['Next step', 'Your team confirms the visit']] },
 ];
 
 const callPanel = (c, i) => `<div class="call-panel" role="tabpanel" id="call-${c.key}" aria-labelledby="tab-${c.key}"${i ? ' hidden' : ''} tabindex="0">

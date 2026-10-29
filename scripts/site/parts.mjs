@@ -1,7 +1,7 @@
 // Shared page parts for the Lumera site. scripts/build.mjs writes plain HTML from these; the site itself has no build step at deploy.
 export const SITE = 'https://lumeracreative.agency/';
 export const EMAIL = 'contact@lumeracreative.agency';
-export const V = '20261028b';                       // asset version, bumped when CSS or JS change
+export const V = '20261028e';                       // asset version, bumped when CSS or JS change
 
 export const CSP = "default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'";
 

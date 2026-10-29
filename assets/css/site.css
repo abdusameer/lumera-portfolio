@@ -350,7 +350,7 @@ html:not(.js) .af-nojs { display: block; }
 .contact-card p { color: var(--on-dark-muted); }
 .contact-card .btn--primary { width: 100%; }
 .mail-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
-.mail-line a { font-weight: 600; text-decoration: underline; text-underline-offset: .2em; overflow-wrap: break-word; }
+.mail-line a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; text-decoration: underline; text-underline-offset: .2em; overflow-wrap: anywhere; }
 .copy { min-height: 40px; padding: 6px 14px; border: 1px solid currentColor; border-radius: 99px; background: transparent; font-size: .85rem; font-weight: 600; }
 .copy-status { font-size: .85rem; }
 
@@ -492,24 +492,48 @@ html.lenis, html.lenis body { height: auto; }
 .jc-alert { justify-self: start; padding: 4px 10px; border-radius: 99px; background: var(--cobalt-soft); color: #24318F; font-size: .8rem; font-weight: 600; }
 .jc-sms { padding: 12px 14px; border-radius: 16px 16px 16px 6px; background: var(--cobalt); color: #fff; line-height: 1.45; }
 
+/* staged (motion.js): the copy scrolls, a sticky stage shows the card for the beat in view. Shared rules first. */
+.journey.is-staged .beats { gap: 0; }
+.journey.is-staged .beat-copy { opacity: .35; transition: opacity .45s var(--ease); }
+.journey.is-staged .beat.is-active .beat-copy { opacity: 1; }
+.journey.is-staged .beat-card { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* still read; shown on the stage */
+.journey.is-staged .stage { display: grid; gap: 12px; }
+.stage-frame { position: relative; display: grid; place-items: center; min-height: 0; }
+.stage-layer { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(24px) scale(.97); transition: opacity .55s var(--ease), transform .7s var(--ease); pointer-events: none; }
+.stage-layer > .jc { width: min(100%, 460px); }
+.stage-layer.is-on { opacity: 1; transform: none; }
+.stage-layer.is-past { transform: translateY(-24px) scale(.97); }
+.stage-rail { position: relative; height: 2px; border-radius: 2px; background: var(--dark-line); overflow: hidden; }
+.stage-fill { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+.stage-label { justify-self: start; }
+
+/* wide screens: copy on the left, the stage sticks on the right */
 @media (min-width: 1000px) {
   .journey.is-staged { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 64px; }
-  .journey.is-staged .beats { gap: 0; }
   .journey.is-staged .beat { min-height: 78vh; align-content: center; }
   .journey.is-staged .beat:first-child { min-height: 60vh; align-content: start; padding-top: 8vh; }
   .journey.is-staged .beat:last-child { min-height: 70vh; }
-  .journey.is-staged .beat-copy { opacity: .35; transition: opacity .45s var(--ease); }
-  .journey.is-staged .beat.is-active .beat-copy { opacity: 1; }
-  .journey.is-staged .beat-card { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* still read; shown on the stage */
-  .journey.is-staged .stage { display: grid; gap: 16px; position: sticky; top: calc(var(--head-h) + 6vh); align-self: start; height: min(76vh, 620px); grid-template-rows: minmax(0, 1fr) auto auto; }
-  .stage-frame { position: relative; display: grid; place-items: center; }
-  .stage-layer { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(24px) scale(.97); transition: opacity .55s var(--ease), transform .7s var(--ease); pointer-events: none; }
-  .stage-layer > .jc { width: min(100%, 460px); }
-  .stage-layer.is-on { opacity: 1; transform: none; }
-  .stage-layer.is-past { transform: translateY(-24px) scale(.97); }
-  .stage-rail { position: relative; height: 2px; border-radius: 2px; background: var(--dark-line); overflow: hidden; }
-  .stage-fill { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
-  .stage-label { justify-self: start; }
+  .journey.is-staged .stage { position: sticky; top: calc(var(--head-h) + 6vh); align-self: start; height: min(76vh, 620px); grid-template-rows: minmax(0, 1fr) auto auto; gap: 16px; }
+}
+/* phones and tablets tall enough for it: the stage sticks under the header, the copy scrolls up beneath it.
+   Ordinary page scrolling throughout; shorter screens keep the plain list. */
+@media (max-width: 999px) and (min-height: 600px) {
+  .journey.is-staged .stage { order: -1; position: sticky; top: var(--head-h); z-index: 2; height: min(50svh, 440px); grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin-inline: calc(var(--gutter) * -1); padding: 10px var(--gutter) 14px; background: var(--dark); box-shadow: 0 18px 24px -18px var(--dark); }
+  .journey.is-staged .stage-label { display: none; }
+  .journey.is-staged .beat { min-height: 58svh; align-content: start; padding-top: 28px; }
+  .journey.is-staged .beat:last-child { min-height: 44svh; }
+  .stage .jc { gap: 8px; padding: 14px; font-size: .9rem; }
+  .stage .jc-name { font-size: 1.6rem; }
+  .stage .bubble { padding: 8px 12px; font-size: .85rem; }
+  .stage .req div { padding: 7px 0; font-size: .85rem; }
+  .stage .pipe-card { min-height: 52px; }
+}
+/* the shortest phones (iPhone SE and smaller): a slimmer card so the longest one still fits its frame */
+@media (max-width: 999px) and (min-height: 600px) and (max-height: 700px) {
+  .journey.is-staged .stage { padding-block: 6px 10px; }
+  .stage .jc { gap: 6px; padding: 12px; font-size: .84rem; }
+  .stage .bubble { padding: 6px 10px; font-size: .8rem; }
+  .stage .req div { padding: 5px 0; font-size: .8rem; }
 }
 @media (prefers-reduced-motion: reduce) { .jc-ringing i { animation: none; opacity: 1; } }
 

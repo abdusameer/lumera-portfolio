@@ -22,13 +22,13 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/geist-lumera.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=20261028b">
-<script src="/assets/js/site.js?v=20261028b" defer></script>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261028e">
+<script src="/assets/js/site.js?v=20261028e" defer></script>
 <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
 <script src="/assets/vendor/lenis-1.1.18.min.js" defer></script>
-<script src="/assets/js/motion.js?v=20261028b" defer></script>
-<script src="/assets/js/audit.js?v=20261028b" defer></script>
+<script src="/assets/js/motion.js?v=20261028e" defer></script>
+<script src="/assets/js/audit.js?v=20261028e" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -217,6 +217,7 @@
         <button type="button" role="tab" id="tab-plumbing" aria-controls="call-plumbing" aria-selected="false" tabindex="-1">Plumbing</button>
         <button type="button" role="tab" id="tab-restaurant" aria-controls="call-restaurant" aria-selected="false" tabindex="-1">Restaurant</button>
         <button type="button" role="tab" id="tab-hvac" aria-controls="call-hvac" aria-selected="false" tabindex="-1">HVAC</button>
+        <button type="button" role="tab" id="tab-roofing" aria-controls="call-roofing" aria-selected="false" tabindex="-1">Roofing</button>
       </div>
       <div class="call-panel" role="tabpanel" id="call-salon" aria-labelledby="tab-salon" tabindex="0">
             <div class="call bubbles">
@@ -268,6 +269,19 @@
             <div class="summary">
               <p class="summary-title"><span>Service request</span><span class="tag tag--sample">Sample</span></p>
               <dl class="req"><div><dt>Issue</dt><dd>Runs but blows warm air; 84°F</dd></div><div><dt>Visit</dt><dd>Tomorrow · 11:30 AM</dd></div><div><dt>Customer</dt><dd>Jordan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
+            </div>
+          </div>
+      <div class="call-panel" role="tabpanel" id="call-roofing" aria-labelledby="tab-roofing" hidden tabindex="0">
+            <div class="call bubbles">
+              <p class="bubble bubble--caller"><b>Caller</b>Last night’s storm took some shingles off and there’s a water stain on my ceiling.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>I’m sorry to hear that. Is water dripping inside right now, or just the stain?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Just the stain. It stopped when the rain did.</p>
+              <p class="bubble bubble--agent"><b>Receptionist</b>I can request an inspection Thursday at 10:00 AM or 3:00 PM. Would you like a tarp visit sooner if it rains again?</p>
+              <p class="bubble bubble--caller"><b>Caller</b>Thursday at 10, and yes to the tarp. It’s Morgan.</p>
+            </div>
+            <div class="summary">
+              <p class="summary-title"><span>Inspection request</span><span class="tag tag--sample">Sample</span></p>
+              <dl class="req"><div><dt>Issue</dt><dd>Missing shingles; ceiling stain, no active leak</dd></div><div><dt>Inspection</dt><dd>Thursday · 10:00 AM</dd></div><div><dt>If it rains</dt><dd>Tarp visit requested</dd></div><div><dt>Customer</dt><dd>Morgan</dd></div><div><dt>Next step</dt><dd>Your team confirms the visit</dd></div></dl>
             </div>
           </div>
       <p class="panel-note">Each business gets its own questions, services and rules. <a class="text-link" href="https://abdusameer.github.io/lumera-hvac-receptionist/" target="_blank" rel="noopener noreferrer">Open the full receptionist demo <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a></p>
